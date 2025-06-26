@@ -7,7 +7,7 @@ body {
 }
 
 header {
-    background-color: #8B0000;
+    background-color: #8B0000; /* dark red */
     color: white;
     text-align: center;
     padding: 20px 10px;
@@ -19,7 +19,7 @@ main {
 
 h1, h2 {
     color: #f4f4f4;
-    padding-bottom: 15px;
+    text-align: center;
 }
 
 .section-form {
@@ -57,7 +57,7 @@ input {
 
 input:focus {
     outline: none;
-    border-color: #B22222;
+    border-color: #B22222; /* firebrick */
     background-color: #5c5c5c;
 }
 
@@ -69,19 +69,6 @@ button {
     cursor: pointer;
     border-radius: 6px;
     transition: background-color 0.3s ease;
-}
-
-.div-register{
-    margin-top: 25px;
-}
-.register{
-    color: darkorange;
-    text-decoration: none;
-    
-}
-
-.register:hover{
-    color: rgb(218, 84, 7);
 }
 
 button:hover {
