@@ -10,7 +10,7 @@ import com.banco.sistemabancario.Entity.Usuario;
 @Controller
 public class UsuarioController {
     
-    Usuario usuario = new Usuario("juan", "1234");
+    Usuario usuario = new Usuario("juan", 1110450635, "@juan", 31426, "1234");
     
     @GetMapping("/")
     public String redirigirAlLogin() {
@@ -35,7 +35,13 @@ public class UsuarioController {
             return "redirect:/registro.html";
         }
 
+        int xdocumento = Integer.parseInt(documento);
+        int xcelular = Integer.parseInt(celular);
+
         System.out.println("Registro exitoso");
+            Usuario usuario2 = new Usuario(nombre, xdocumento, correo, xcelular, contraseña);
+
+            System.out.println(usuario2.getNombre() + " " + usuario2.getCorreo() + " " + usuario2.getDocumento());
             return "redirect:/login.html";
     }
 }
