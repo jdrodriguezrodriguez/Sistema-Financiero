@@ -1,16 +1,19 @@
 package com.banco.sistemabancario.Controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.banco.sistemabancario.Entity.Usuario;
+import com.banco.sistemabancario.Entity.Persona;
+import com.banco.sistemabancario.Service.PersonaService;
 
 @Controller
-public class UsuarioController {
+public class PersonaController {
     
-    Usuario usuario = new Usuario("juan", 1110450635, "@juan", 31426, "1234");
+    @Autowired
+    private PersonaService personaService;
     
     @GetMapping("/")
     public String redirigirAlLogin() {
@@ -39,7 +42,7 @@ public class UsuarioController {
         int xcelular = Integer.parseInt(celular);
 
         System.out.println("Registro exitoso");
-            Usuario usuario2 = new Usuario(nombre, xdocumento, correo, xcelular, contraseña);
+            Persona usuario2 = new Persona(nombre, xdocumento, correo, xcelular, contraseña);
 
             System.out.println(usuario2.getNombre() + " " + usuario2.getCorreo() + " " + usuario2.getDocumento());
             return "redirect:/login.html";
