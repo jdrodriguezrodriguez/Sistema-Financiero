@@ -1,0 +1,97 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #2e2b2b;
+    color: #f4f4f4;
+}
+
+header {
+    background-color: #8B0000;
+    color: white;
+    text-align: center;
+    padding: 20px 10px;
+}
+
+main {
+    padding: 30px 10px;
+}
+
+h1, h2 {
+    color: #f4f4f4;
+    padding-bottom: 15px;
+}
+
+.section-form {
+    display: grid;
+    padding-left: 20%;
+    padding-top: 5%;
+}
+
+.div-form {
+    width: 500px;
+    padding: 30px;
+    margin: 0 auto;
+    background-color: #3c3c3c;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #f4f4f4;
+}
+
+input {
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    max-width: 300px;
+    display: block;
+    background-color: #4e4e4e;
+    border: 1px solid #8B0000;
+    color: white;
+    border-radius: 4px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #B22222;
+    background-color: #5c5c5c;
+}
+
+button {
+    padding: 12px 25px;
+    background-color: #8B0000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.div-register{
+    margin-top: 25px;
+}
+.register{
+    color: darkorange;
+    text-decoration: none;
+    
+}
+
+.register:hover{
+    color: rgb(218, 84, 7);
+}
+
+button:hover {
+    background-color: #B22222;
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #1f1f1f;
+    color: white;
+    margin-top: 30px;
+}
