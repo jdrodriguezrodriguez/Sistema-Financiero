@@ -1,5 +1,8 @@
 package com.banco.sistemabancario.Controller;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,29 +25,35 @@ public class PersonaController {
   
     @PostMapping("/index")
     public String iniciar(@RequestParam String user, @RequestParam String pass) {
-        if (user.equals(usuario.getNombre()) && pass.equals(usuario.getContraseña())) {
+        if (personaService.Login(user, pass)) {
             System.out.println("Login exitoso");
             return "redirect:/index.html";
         } else {
             System.out.println("Login fallido");
-            return "redirect:/login.html";
+            return "redirect:/login.html?error";
         }
     }
 
     @PostMapping("/registro")
-    public String registrar(@RequestParam String nombre, @RequestParam String documento, @RequestParam String correo, @RequestParam String celular, @RequestParam String contraseña) {
-        if (nombre.isEmpty() && documento.isEmpty() && correo.isEmpty() && celular.isEmpty() && contraseña.isEmpty()) {
+    public String registrar(@RequestParam String nombre, @RequestParam String apellido, @RequestParam String documento, @RequestParam String nacimiento, @RequestParam String correo) {
+        if (nombre.isEmpty() && documento.isEmpty() && documento.isEmpty() && nacimiento.isEmpty() && correo.isEmpty()) {
             System.out.println("Registro fallido");
-            return "redirect:/registro.html";
+            return "redirect:/registro.html?error";
         }
 
-        int xdocumento = Integer.parseInt(documento);
-        int xcelular = Integer.parseInt(celular);
+        LocalDate fechanacimiento = LocalDate.parse(nacimiento);
+
+        Persona persona = new Persona();
+
+        persona.setNombre(nombre);
+        persona.setApellido(apellido);
+        persona.setDocumento(documento);
+        persona.setNacimiento(Date.valueOf(fechanacimiento));
+        persona.setCorreo(correo);
+
+        personaService.registrar(persona);
 
         System.out.println("Registro exitoso");
-            Persona usuario2 = new Persona(nombre, xdocumento, correo, xcelular, contraseña);
-
-            System.out.println(usuario2.getNombre() + " " + usuario2.getCorreo() + " " + usuario2.getDocumento());
-            return "redirect:/login.html";
+        return "redirect:/login.html";
     }
 }

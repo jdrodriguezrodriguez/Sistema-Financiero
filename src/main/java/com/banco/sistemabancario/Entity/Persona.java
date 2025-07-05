@@ -2,34 +2,52 @@ package com.banco.sistemabancario.Entity;
 
 import java.sql.Date;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "persona")
 public class Persona {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idPersona;
+    @Column(name = "idPersona")
+    private Integer idPersona;
     
-    private String nombre, apellido, Correo;
-    private int documento;
+    @Column(nullable = false)
+    private String nombre;
+
+    @Column(nullable = false)
+    private String apellido;
+
+    @Column(nullable = false, unique = true)
+    private String documento;
+
+    @Column(nullable = false)
     private Date nacimiento;
 
-    public Persona(int idPersona, String nombre, String apellido, String correo, int documento, Date nacimiento) {
+    @Column(nullable = false)
+    private String correo;
+
+    public Persona(){
+    }
+
+    public Persona(int idPersona, String nombre, String apellido, String correo, String documento, Date nacimiento) {
         this.idPersona = idPersona;
         this.nombre = nombre;
         this.apellido = apellido;
-        Correo = correo;
+        this.correo = correo;
         this.documento = documento;
         this.nacimiento = nacimiento;
     }
 
-    public Long getIdPersona() {
+    public Integer getIdPersona() {
         return idPersona;
     }
-    public void setIdPersona(Long idPersona) {
+    public void setIdPersona(Integer idPersona) {
         this.idPersona = idPersona;
     }
 
@@ -47,17 +65,10 @@ public class Persona {
         this.apellido = apellido;
     }
 
-    public String getCorreo() {
-        return Correo;
-    }
-    public void setCorreo(String correo) {
-        Correo = correo;
-    }
-
-    public int getDocumento() {
+    public String getDocumento() {
         return documento;
     }
-    public void setDocumento(int documento) {
+    public void setDocumento(String documento) {
         this.documento = documento;
     }
 
@@ -68,5 +79,13 @@ public class Persona {
         this.nacimiento = nacimiento;
     }
 
+    public String getCorreo() {
+        return correo;
+    }
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    
 }
     

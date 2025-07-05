@@ -1,4 +1,4 @@
-package com.banco.sistemabancario;
+ package com.banco.sistemabancario;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

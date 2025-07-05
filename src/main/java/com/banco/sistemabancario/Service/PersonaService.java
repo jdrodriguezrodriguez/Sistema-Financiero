@@ -12,7 +12,17 @@ public class PersonaService {
     @Autowired
     private PersonaRepository personaRepository;
 
-    public Persona buscarPorNombre(String nombre){
-        PersonaRegistrada = personaRepository.findByNombre(nombre);
+    public boolean Login(String nombre, String contraseña){
+
+        Persona persona = personaRepository.findByNombre(nombre);
+
+        if (persona != null && persona.getDocumento().equals(contraseña)) {
+            return true;
+        }
+        return false;
+    }
+
+    public Persona registrar(Persona persona){
+        return personaRepository.save(persona);
     }
 }
