@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="./css/update.css"> 
+    <link rel="stylesheet" href="./css/index.css"> 
+</head>
+<body>
+    <header>
+        <nav class="nav">
+            <div class="logo">Sistema financiero</div> 
+            <ul class="menu">
+                <li><a href="index.html" class="enlace" id="inicio">Inicio</a></li>
+                <li><a href="#" class="enlace" id="actualizar">Cambiar mis datos</a></li> 
+                <li><a href="#" class="enlace" id="otros">Otros</a></li>
+                <li><a href="#" class="enlace" id="contacto">Contáctanos</a></li> 
+                <li><a href="login.html" class="enlace" id="contacto">Cerrar sesión</a></li> 
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="formulario-actualizar">
+        <h2>Actualizar Datos</h2>
+        <form action="#" method="post">
+            <div class="grupo-campos">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+
+                <label for="apellido">Apellido:</label>
+                <input type="text" id="apellido" name="apellido" required>
+
+                <label for="documento">Documento:</label>
+                <input type="text" id="documento" name="documento" required>
+
+                <label for="nacimiento">Fecha de nacimiento:</label>
+                <input type="date" id="nacimiento" name="nacimiento" required>
+
+                <label for="correo">Correo Electrónico:</label>
+                <input type="email" id="correo" name="correo" required>
+            </div>
+
+            <div class="boton-container">
+                <button type="submit">Guardar Cambios</button>
+            </div>
+        </form>
+    </section>
+
+</body>
+</html>
