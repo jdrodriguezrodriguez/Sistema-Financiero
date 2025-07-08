@@ -6,17 +6,6 @@ body {
     color: #f4f4f4;
 }
 
-header {
-    background-color: #8B0000; /* dark red */
-    color: white;
-    text-align: center;
-    padding: 20px 10px;
-}
-
-main {
-    padding: 30px 10px;
-}
-
 h1, h2 {
     color: #f4f4f4;
     text-align: center;
@@ -35,6 +24,7 @@ h1, h2 {
     background-color: #3c3c3c;
     border-radius: 12px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    margin-top: 5%;
 }
 
 label {
@@ -62,6 +52,7 @@ input:focus {
 }
 
 button {
+    margin-top: 20px;
     padding: 12px 25px;
     background-color: #8B0000;
     color: white;

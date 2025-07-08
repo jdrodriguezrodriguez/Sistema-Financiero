@@ -10,13 +10,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.banco.sistemabancario.Entity.Persona;
+import com.banco.sistemabancario.Entity.Usuario;
 import com.banco.sistemabancario.Service.PersonaService;
+import com.banco.sistemabancario.Service.UsuarioService;
 
 @Controller
 public class PersonaController {
     
     @Autowired
     private PersonaService personaService;
+    
+    @Autowired
+    private UsuarioService usuarioService;
     
     @GetMapping("/")
     public String redirigirAlLogin() {
@@ -35,16 +40,18 @@ public class PersonaController {
     }
 
     @PostMapping("/registro")
-    public String registrar(@RequestParam String nombre, @RequestParam String apellido, @RequestParam String documento, @RequestParam String nacimiento, @RequestParam String correo) {
-        if (nombre.isEmpty() && documento.isEmpty() && documento.isEmpty() && nacimiento.isEmpty() && correo.isEmpty()) {
+    public String registrar(@RequestParam String nombre, @RequestParam String apellido, @RequestParam String documento, @RequestParam String nacimiento, @RequestParam String correo, @RequestParam String password) {
+        if (nombre.isEmpty() && documento.isEmpty() && documento.isEmpty() && nacimiento.isEmpty() && correo.isEmpty() && password.isEmpty()) {
             System.out.println("Registro fallido");
             return "redirect:/registro.html?error";
         }
 
+        String username = UsuarioService.GenerarUsername(nombre, apellido);
         LocalDate fechanacimiento = LocalDate.parse(nacimiento);
 
         Persona persona = new Persona();
-
+        Usuario usuario = new Usuario();
+        
         persona.setNombre(nombre);
         persona.setApellido(apellido);
         persona.setDocumento(documento);
@@ -52,6 +59,17 @@ public class PersonaController {
         persona.setCorreo(correo);
 
         personaService.registrar(persona);
+
+        usuario.setUsername(username);
+        usuario.setPassword(password);
+        usuario.setPersona(persona);
+        if (usuario.getRol() == null) {
+            usuario.setRol("CLIENTE");
+        }
+
+        usuarioService.registrar(usuario);
+
+        
 
         System.out.println("Registro exitoso");
         return "redirect:/login.html";
