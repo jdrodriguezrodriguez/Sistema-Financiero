@@ -12,17 +12,18 @@ public class PersonaService {
     @Autowired
     private PersonaRepository personaRepository;
 
-    public boolean Login(String nombre, String contraseña){
-
-        Persona persona = personaRepository.findByNombre(nombre);
-
-        if (persona != null && persona.getDocumento().equals(contraseña)) {
-            return true;
-        }
-        return false;
-    }
-
+    //REGISTRAR PERSONA
     public Persona registrar(Persona persona){
         return personaRepository.save(persona);
+    }
+
+    //VALIDAR CAMPOS REGISTRO
+    public static boolean ValidarRegistro(String nombre, String apellido, String documento, String nacimiento, String correo, String password){
+        if (nombre.isEmpty() && documento.isEmpty() && documento.isEmpty() && nacimiento.isEmpty() && correo.isEmpty() && password.isEmpty()) {
+            System.out.println("Complete los campos vacios");
+            return false;
+        }
+
+        return true;
     }
 }
