@@ -1,5 +1,8 @@
 package com.banco.sistemabancario.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +15,34 @@ public class PersonaService {
     @Autowired
     private PersonaRepository personaRepository;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     //REGISTRAR PERSONA
-    public Persona registrar(Persona persona){
-        return personaRepository.save(persona);
+    public Persona registrar(String nombre, String apellido, String documento, String nacimiento, String correo, String password){
+        
+        if (!ValidarRegistro(nombre, apellido, documento, nacimiento, correo, password)) {
+            return null;
+        }
+
+        Persona persona = new Persona();
+        LocalDate fechanacimiento = LocalDate.parse(nacimiento);
+
+        persona.setNombre(nombre);
+        persona.setApellido(apellido);
+        persona.setDocumento(documento);
+        persona.setNacimiento(Date.valueOf(fechanacimiento));
+        persona.setCorreo(correo);
+      
+        Persona personaRegistro = personaRepository.save(persona);
+
+        if (personaRegistro == null) {
+            System.out.println("No se logro registrar a la persona");
+            return null;
+        }
+
+        usuarioService.registrar(nombre, apellido, password, persona);
+        return personaRegistro;
     }
 
     //VALIDAR CAMPOS REGISTRO
@@ -23,7 +51,6 @@ public class PersonaService {
             System.out.println("Complete los campos vacios");
             return false;
         }
-
         return true;
     }
 }

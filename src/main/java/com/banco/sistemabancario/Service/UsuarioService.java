@@ -3,6 +3,7 @@ package com.banco.sistemabancario.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.banco.sistemabancario.Entity.Persona;
 import com.banco.sistemabancario.Entity.Usuario;
 import com.banco.sistemabancario.Repository.UsuarioRepository;
 
@@ -25,7 +26,18 @@ public class UsuarioService {
     }
 
     //REGISTRAR USUARIO
-    public Usuario registrar(Usuario usuario){
+    public Usuario registrar(String nombre, String apellido, String password, Persona persona){
+
+        String username = UsuarioService.GenerarUsername(nombre, apellido);
+        Usuario usuario = new Usuario();
+
+        usuario.setUsername(username);
+        usuario.setPassword(password);
+        usuario.setPersona(persona);
+        if (usuario.getRol() == null) {
+            usuario.setRol("CLIENTE");
+        }
+
         return usuarioRepository.save(usuario);
     }
 
