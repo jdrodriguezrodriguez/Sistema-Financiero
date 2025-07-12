@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.Entity.Persona;
+import com.banco.sistemabancario.Entity.Usuario;
 import com.banco.sistemabancario.Repository.PersonaRepository;
 
 @Service
@@ -17,6 +18,9 @@ public class PersonaService {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private CuentaService cuentaService;
 
     //REGISTRAR PERSONA
     public Persona registrar(String nombre, String apellido, String documento, String nacimiento, String correo, String password){
@@ -35,13 +39,19 @@ public class PersonaService {
         persona.setCorreo(correo);
       
         Persona personaRegistro = personaRepository.save(persona);
-
         if (personaRegistro == null) {
             System.out.println("No se logro registrar a la persona");
             return null;
         }
 
-        usuarioService.registrar(nombre, apellido, password, persona);
+        Usuario usuarioRegistro = usuarioService.registrar(nombre, apellido, password, persona);
+        if (usuarioRegistro == null) {
+            System.out.println("No se logro registrar el usuario");
+            return null;
+        }
+
+        cuentaService.registrarCuenta(usuarioRegistro);
+
         return personaRegistro;
     }
 

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.Entity.Cuenta;
+import com.banco.sistemabancario.Entity.Usuario;
 import com.banco.sistemabancario.Repository.CuentaRepository;
 
 @Service
@@ -19,11 +20,12 @@ public class CuentaService {
     CuentaRepository cuentaRepository;
 
     //REGISTRAR CUENTA
-    public Cuenta registrarCuenta(){
+    public Cuenta registrarCuenta(Usuario usuario){
 
         Cuenta cuenta = new Cuenta();
 
         cuenta.setNum_cuenta(generarNumeroCuenta());
+        cuenta.setUsuario(usuario);
         cuenta.setEstado(ESTADO_CUENTA);
         cuenta.setSaldo((new BigDecimal("0.00")));
 
@@ -38,7 +40,7 @@ public class CuentaService {
         do{
             int numero = 1000000000 + random.nextInt(900000000);
             numeroCuenta = String.valueOf(numero);
-        }while(cuentaRepository.existsByNumCuenta(numeroCuenta));
+        }while(cuentaRepository.findByNumCuenta(numeroCuenta));
 
         return numeroCuenta;
     }
