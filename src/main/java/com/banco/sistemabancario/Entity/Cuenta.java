@@ -20,7 +20,7 @@ public class Cuenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "num_cuenta")
-    private Integer num_cuenta;
+    private String num_cuenta;
 
     @OneToOne
     @JoinColumn(name = "idUsuario", referencedColumnName = "idUsuario")
@@ -38,17 +38,17 @@ public class Cuenta {
     public Cuenta(){
     }
     
-    public Cuenta(Integer num_cuenta, Usuario usuario, BigDecimal saldo, String estado) {
+    public Cuenta(String num_cuenta, Usuario usuario, BigDecimal saldo, String estado) {
         this.num_cuenta = num_cuenta;
         this.usuario = usuario;
         this.saldo = saldo;
         this.estado = estado;
     }
 
-    public Integer getNum_cuenta() {
+    public String getNum_cuenta() {
         return num_cuenta;
     }
-    public void setNum_cuenta(Integer num_cuenta) {
+    public void setNum_cuenta(String num_cuenta) {
         this.num_cuenta = num_cuenta;
     }
 
