@@ -26,7 +26,7 @@ public class UsuarioService {
     }
 
     //REGISTRAR USUARIO
-    public Usuario registrar(String nombre, String apellido, String password, Persona persona){
+    public Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona){
 
         String username = UsuarioService.GenerarUsername(nombre, apellido);
         Usuario usuario = new Usuario();
@@ -34,6 +34,7 @@ public class UsuarioService {
         usuario.setUsername(username);
         usuario.setPassword(password);
         usuario.setPersona(persona);
+
         if (usuario.getRol() == null) {
             usuario.setRol("CLIENTE");
         }

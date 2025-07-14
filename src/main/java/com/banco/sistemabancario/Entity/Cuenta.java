@@ -5,8 +5,6 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -18,7 +16,6 @@ import jakarta.persistence.Table;
 public class Cuenta {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "num_cuenta")
     private String numCuenta;
 
@@ -27,7 +24,7 @@ public class Cuenta {
     private Usuario usuario;
 
     @OneToMany(mappedBy = "cuenta")     //Atributo en la clase Transaccion//
-    private List<Transaccion> transaccion;
+    private List<Transaccion> transacciones;
 
     @Column(nullable = false)
     private BigDecimal saldo;

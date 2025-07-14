@@ -16,7 +16,7 @@ public class PersonaController {
     @PostMapping("/registro")
     public String registrar(@RequestParam String nombre, @RequestParam String apellido, @RequestParam String documento, @RequestParam String nacimiento, @RequestParam String correo, @RequestParam String password) {
        
-        if (personaService.registrar(nombre, apellido, documento, nacimiento, correo, password) != null) {
+        if (personaService.registrarPersona(nombre, apellido, documento, nacimiento, correo, password) != null) {
             System.out.println("Registro exitoso");
             return "redirect:/login.html";
         }else{

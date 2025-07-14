@@ -40,7 +40,7 @@ public class CuentaService {
         do{
             int numero = 1000000000 + random.nextInt(900000000);
             numeroCuenta = String.valueOf(numero);
-        }while(cuentaRepository.findByNumCuenta(numeroCuenta));
+        }while(cuentaRepository.existsByNumCuenta(numeroCuenta));
 
         return numeroCuenta;
     }

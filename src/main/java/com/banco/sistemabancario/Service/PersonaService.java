@@ -23,7 +23,7 @@ public class PersonaService {
     private CuentaService cuentaService;
 
     //REGISTRAR PERSONA
-    public Persona registrar(String nombre, String apellido, String documento, String nacimiento, String correo, String password){
+    public Persona registrarPersona(String nombre, String apellido, String documento, String nacimiento, String correo, String password){
         
         if (!ValidarRegistro(nombre, apellido, documento, nacimiento, correo, password)) {
             return null;
@@ -44,7 +44,7 @@ public class PersonaService {
             return null;
         }
 
-        Usuario usuarioRegistro = usuarioService.registrar(nombre, apellido, password, persona);
+        Usuario usuarioRegistro = usuarioService.registrarUsuario(nombre, apellido, password, persona);
         if (usuarioRegistro == null) {
             System.out.println("No se logro registrar el usuario");
             return null;

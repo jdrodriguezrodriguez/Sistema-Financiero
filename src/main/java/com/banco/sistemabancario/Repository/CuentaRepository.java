@@ -6,5 +6,5 @@ import com.banco.sistemabancario.Entity.Cuenta;
 
 public interface CuentaRepository extends JpaRepository<Cuenta, Integer>{
     Cuenta save(Cuenta cuenta);
-    boolean findByNumCuenta(String numCuenta);
+    boolean existsByNumCuenta(String numCuenta);
 }

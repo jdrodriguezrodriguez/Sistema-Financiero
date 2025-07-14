@@ -27,9 +27,9 @@ header{
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+     justify-content: center;
     gap: 150px;
-    padding: 25px 25px 25px 50px;
+    padding: 25px;
     transition: all 0.5s ease;
     z-index: 999;
     border-bottom: 1px solid #fff;
@@ -55,6 +55,25 @@ header{
     font-weight: 100;
 }
 
+
+/*PERFIL MENU */
+.menu-perfil li a:hover{
+    padding: 5px 10px;
+    background: #e7e41a;
+    color: #000;
+    border-radius: 15px;
+}
+
+.menu-perfil{
+    list-style: none;
+}
+
+.enlace-perfil{
+    color: #eafa0b;
+    text-decoration: none;
+    font-size: 17px;
+}
+
 .menu{
     display: flex;
 }
@@ -73,12 +92,12 @@ menu li a{
     text-decoration: none;
     font-size: 17px;
 }
+
 .menu li a:hover{
     padding: 5px 10px;
     background: #fff;
     color: #000;
     border-radius: 15px;
-
 }
 
 main {
