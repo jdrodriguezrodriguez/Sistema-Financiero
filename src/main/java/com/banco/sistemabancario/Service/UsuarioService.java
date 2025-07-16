@@ -15,14 +15,14 @@ public class UsuarioService {
 
 
     //INICIAR SESION
-    public boolean Login(String username, String password){
+    public Usuario autenticar(String username, String password){
 
         Usuario usuario = usuarioRepository.findByUsername(username);
 
         if (usuario != null && usuario.getPassword().equals(password)) {
-            return true;
+            return usuario;
         }
-        return false;
+        return null;
     }
 
     //REGISTRAR USUARIO

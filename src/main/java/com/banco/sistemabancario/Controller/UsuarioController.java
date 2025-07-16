@@ -5,8 +5,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.banco.sistemabancario.Entity.Usuario;
 import com.banco.sistemabancario.Service.UsuarioService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class UsuarioController {
@@ -19,11 +23,27 @@ public class UsuarioController {
         return "redirect:/login.html";
     }
   
-    @PostMapping("/index")
-    public String Login(@RequestParam String username, @RequestParam String password) {
-        if (usuarioService.Login(username, password)) {
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return "redirect:/login.html?error";
+    }
+
+    @GetMapping("/api/usuario")
+    @ResponseBody
+    public Usuario obtenerUsuario(HttpSession session){
+        return (Usuario) session.getAttribute("usuario");
+    }
+
+    @PostMapping("/login")
+    public String Login(@RequestParam String username, @RequestParam String password, HttpSession session) {
+        
+        Usuario usuario = usuarioService.autenticar(username, password);
+
+        if (usuario != null) {
+            session.setAttribute("usuario", usuario);
             return "redirect:/index.html";
-        } else {
+        }else {
             System.out.println("Login fallido");
             return "redirect:/login.html?error";
         }

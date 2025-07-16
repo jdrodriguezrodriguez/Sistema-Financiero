@@ -14,10 +14,21 @@
                 <li><a href="#" class="enlace" id="inicio">Inicio</a></li>
                 <li><a href="update.html" class="enlace" id="actualizar">Cambiar mis datos</a></li> 
                 <li><a href="#" class="enlace" id="contacto">Contáctanos</a></li> 
-                <li><a href="login.html" class="enlace" id="contacto">Cerrar sesión</a></li> 
+                <li><a href="/logout" class="enlace" id="contacto">Cerrar sesión</a></li> 
             </ul>
             <ul class="menu-perfil">
-                <li><a href="#" class="enlace-perfil" id="inicio">Inicio</a></li>
+                <li><a href="#" class="enlace-perfil" id="inicio">
+                    <span id="h1"></span>
+                    <script> 
+                        fetch('/api/usuario')
+                            .then(response => response.json())
+                            .then(data => {
+                                const perfil = document.getElementById('h1');
+                                perfil.textContent = data.username;
+                            })
+                            .catch(error => console.error("Error", error))
+                    </script>
+                </a></li>
             </ul>
         </nav>
     </header>
