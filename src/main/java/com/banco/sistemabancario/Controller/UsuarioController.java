@@ -29,19 +29,13 @@ public class UsuarioController {
         return "redirect:/login.html?error";
     }
 
-    @GetMapping("/api/usuario")
-    @ResponseBody
-    public Usuario obtenerUsuario(HttpSession session){
-        return (Usuario) session.getAttribute("usuario");
-    }
-
     @PostMapping("/login")
     public String Login(@RequestParam String username, @RequestParam String password, HttpSession session) {
         
         Usuario usuario = usuarioService.autenticar(username, password);
 
         if (usuario != null) {
-            session.setAttribute("usuario", usuario);
+            session.setAttribute("idUsuario", usuario.getIdUsuario());
             return "redirect:/index.html";
         }else {
             System.out.println("Login fallido");

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
+    <title>Perfil</title>
     <link rel="stylesheet" href="./css/index.css"> 
 </head>
 <body>
@@ -17,14 +17,14 @@
                 <li><a href="/logout" class="enlace" id="contacto">Cerrar sesión</a></li> 
             </ul>
             <ul class="menu-perfil">
-                <li><a href="perfil.html" class="enlace-perfil" id="inicio">
+                <li><a href="#" class="enlace-perfil" id="inicio">
                     <span id="h1"></span>
                     <script> 
                         fetch('/api/usuario')
                             .then(response => response.json())
-                            .then(usuario => {
+                            .then(data => {
                                 const perfil = document.getElementById('h1');
-                                perfil.textContent = usuario.idUsuario;
+                                perfil.textContent = data.username;
                             })
                             .catch(error => console.error("Error", error))
                     </script>
@@ -33,31 +33,21 @@
         </nav>
     </header>
 
-    <section class="categoria">
-    <div class="fila">
-        <div class="operaciones">
-            <h1>Depositar</h1>
-        </div>
-        <div class="operaciones">
-            <h1>Transferir</h1>
-        </div>
+    <div>
+        <h1>Datos:</h1>
+            <ul id="lista"></ul>
+            <script>
+                fetch('/api/usuario')
+                .then(response => response.json())
+                .then(data => {
+                    const lista = document.getElementById("lista");
+                    const item = document.createElement("li");
+                    item.textContent = data.username + ' | ' + data.rol;
+                    lista.appendChild(item);
+                });
+
+            </script>
     </div>
-
-    <div class="fila">
-        <div class="operaciones">
-            <h1>Consultar</h1>
-        </div>
-        <div class="operaciones">
-            <h1>Historial</h1>
-        </div>
-    </div>
-</section>
-
-
-    <footer>
-        <p>© 2025 Sistema Financiero</p>
-    </footer>
-
     <script src="./js/script.js"></script>  
 </body>
 </html>

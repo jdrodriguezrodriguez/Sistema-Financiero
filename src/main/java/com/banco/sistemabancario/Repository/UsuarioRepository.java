@@ -6,5 +6,6 @@ import com.banco.sistemabancario.Entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Usuario findByUsername(String username);
+    Usuario findById(int idUsuario);
     Usuario save(Usuario usuario);
 } 
