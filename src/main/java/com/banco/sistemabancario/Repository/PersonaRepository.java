@@ -8,4 +8,6 @@ import com.banco.sistemabancario.Entity.Usuario;
 public interface PersonaRepository extends JpaRepository<Persona, Integer>{
     Persona save(Persona persona);
     Persona findByUsuario(Usuario usuario);
+    boolean existsByDocumento(String documento);
+    boolean existsByCorreo(String correo);
 } 

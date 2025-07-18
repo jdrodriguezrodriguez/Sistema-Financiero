@@ -3,10 +3,8 @@ package com.banco.sistemabancario.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.banco.sistemabancario.Dto.DatosDTO;
 import com.banco.sistemabancario.Entity.Persona;
 import com.banco.sistemabancario.Entity.Usuario;
-import com.banco.sistemabancario.Entity.Cuenta;
 import com.banco.sistemabancario.Repository.UsuarioRepository;
 
 @Service
@@ -30,6 +28,10 @@ public class UsuarioService {
     //REGISTRAR USUARIO
     public Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona){
 
+        if (!ValidarContraseña(password)) {
+            return null;
+        }
+
         String username = UsuarioService.GenerarUsername(nombre, apellido);
         Usuario usuario = new Usuario();
 
@@ -47,5 +49,13 @@ public class UsuarioService {
     //GENERAR NOMBRE DE USUARIO
     public static String GenerarUsername(String nombre, String apellido){
         return nombre.substring(0, Math.min(4, nombre.length())) + apellido.substring(0, Math.min(2, apellido.length()));
+    }
+
+    //VALIDAR CONTRASEÑA
+    public static boolean ValidarContraseña(String contraseña){
+        if (contraseña.length() != 4) {
+            return false;
+        }
+        return true;
     }
 }

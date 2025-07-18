@@ -24,8 +24,18 @@ public class PersonaService {
 
     //REGISTRAR PERSONA
     public Persona registrarPersona(String nombre, String apellido, String documento, String nacimiento, String correo, String password){
-        
-        if (!ValidarRegistro(nombre, apellido, documento, nacimiento, correo, password)) {
+    
+        if (documentoYaRegistrado(documento)) {
+            System.out.println("El documento "+ documento +" ya fue registrado.");
+            return null;
+        }
+
+        if (correoYaRegistrado(correo)) {
+            System.out.println("El correo "+ correo +" ya fue registrado.");
+            return null;
+        }
+
+        if (!camposRegistroValidos(nombre, apellido, documento, nacimiento, correo, password)) {
             return null;
         }
 
@@ -55,8 +65,18 @@ public class PersonaService {
         return personaRegistro;
     }
 
+    //VALIDAR REGISTRO DEL DOCUMENTO
+    public boolean documentoYaRegistrado(String documento){
+        return personaRepository.existsByDocumento(documento);
+    }
+
+    //VALIDAR REGISTRO DEL CORREO
+    public boolean correoYaRegistrado(String correo){
+        return personaRepository.existsByCorreo(correo);
+    }
+
     //VALIDAR CAMPOS REGISTRO
-    public static boolean ValidarRegistro(String nombre, String apellido, String documento, String nacimiento, String correo, String password){
+    public static boolean camposRegistroValidos(String nombre, String apellido, String documento, String nacimiento, String correo, String password){
         if (nombre.isEmpty() && documento.isEmpty() && documento.isEmpty() && nacimiento.isEmpty() && correo.isEmpty() && password.isEmpty()) {
             System.out.println("Complete los campos vacios");
             return false;
