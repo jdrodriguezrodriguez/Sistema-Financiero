@@ -27,7 +27,7 @@ header{
     width: 100%;
     display: flex;
     align-items: center;
-     justify-content: center;
+    justify-content: center;
     gap: 150px;
     padding: 25px;
     transition: all 0.5s ease;
@@ -71,7 +71,7 @@ header{
 .enlace-perfil{
     color: #eafa0b;
     text-decoration: none;
-    font-size: 17px;
+    font-size: 22px;
 }
 
 .menu{
@@ -109,52 +109,77 @@ h1, h2 {
     text-align: center;
 }
 
+.introduccion{
+    display: flex;
+    padding-top: 8rem;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
+    gap: 10rem;
+}
+
+.texto-portada{
+    width: 30%;
+}
+
+.texto-portada h1{
+    color: #9ea355f1;
+    text-align: left;
+    font-size: 30px;
+}
+
 .categoria {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 40px;
-    padding-top: 5rem;
+    padding-top: 8rem;
     margin: 0 auto;
-    width: 900px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.categoria h1{
+    color: #9ea355f1;
+    font-size: 30px;   
 }
 
 .fila {
     display: flex;
     justify-content: center; 
-    gap: 150px; 
+    gap: 80px;
+    flex-wrap: wrap;
 }
 
 .operaciones {
-    width: 250px;
-    height: 50px;
+    width: 220px;
+    height: 100px;
     padding: 20px;
-    border: 1px solid #000;
-    border-radius: 10px;
+    background-color: #f5f5f5;
+    border: 2px solid #ccc;
+    border-radius: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.operaciones:hover{
-    background: #9ea355b6;
-}
-
-
-button {
-    padding: 12px 25px;
-    background-color: #8B0000;
-    color: white;
-    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
     cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
 }
 
+.operaciones h1 {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.operaciones:hover {
+    background: #9ea355b6;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
 footer {
     text-align: left;
     padding: 15px;
     background-color: #1f1f1f;
     color: white;
-    margin-top: 40px;
+    margin-top: 8rem;
 }

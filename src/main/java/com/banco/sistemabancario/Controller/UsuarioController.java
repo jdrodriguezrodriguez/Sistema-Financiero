@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.banco.sistemabancario.Dto.DatosDTO;
 import com.banco.sistemabancario.Entity.Usuario;
+import com.banco.sistemabancario.Service.DatosDTOService;
 import com.banco.sistemabancario.Service.UsuarioService;
 
 import jakarta.servlet.http.HttpSession;
@@ -17,6 +19,9 @@ public class UsuarioController {
     
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    DatosDTOService datosDTOService;
     
     @GetMapping("/")
     public String redirigirAlLogin() {
@@ -41,5 +46,12 @@ public class UsuarioController {
             System.out.println("Login fallido");
             return "redirect:/login.html?error";
         }
+    }
+
+    @GetMapping("/api/datos")
+    @ResponseBody
+    public DatosDTO obtenerDatos(HttpSession session){
+        Integer idUsuario = (Integer) session.getAttribute("idUsuario");
+        return datosDTOService.datosUsuario(idUsuario);
     }
 }
