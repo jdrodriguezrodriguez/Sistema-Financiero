@@ -28,10 +28,6 @@ public class UsuarioService {
     //REGISTRAR USUARIO
     public Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona){
 
-        if (!ValidarContraseña(password)) {
-            return null;
-        }
-
         String username = UsuarioService.GenerarUsername(nombre, apellido);
         Usuario usuario = new Usuario();
 
