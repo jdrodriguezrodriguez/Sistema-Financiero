@@ -2,6 +2,7 @@ package com.banco.sistemabancario.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,20 @@ public class PersonaService {
     @Autowired
     private CuentaService cuentaService;
 
-    
+    //ACTUALIZAR PERSONA
+    public Persona actualizarPersona(String nombre, String apellido, String correo, String nacimiento, int idUsuario){
+
+        Persona persona = personaRepository.findById(idUsuario)
+                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idUsuario));
+
+        persona.setNombre(nombre);
+        persona.setApellido(apellido);
+        persona.setCorreo(correo);
+        persona.setNacimiento(Date.valueOf(LocalDate.parse(nacimiento)));
+
+        return personaRepository.save(persona);
+    }
+
     //REGISTRAR PERSONA
     public Persona registrarPersona(RegistroPersonaDTO datos){
     
