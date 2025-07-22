@@ -1,5 +1,7 @@
 package com.banco.sistemabancario.Service;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +26,10 @@ public class DatosDTOService {
     CuentaRepository cuentaRepository;
 
     //BUSCAR DATOS DEL USUARIO
-    public DatosDTO datosUsuario(int idUsuario){
-        Usuario usuario = usuarioRepository.findById(idUsuario);
-        Persona persona = personaRepository.findByUsuario(usuario);
+    public DatosDTO datosUsuario(int idPersona){
+
+        Persona persona = personaRepository.findById(idPersona).orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
+        Usuario usuario = usuarioRepository.findByPersona(persona);
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
 
         return new DatosDTO(persona.getNombre(), persona.getApellido(), persona.getDocumento(),

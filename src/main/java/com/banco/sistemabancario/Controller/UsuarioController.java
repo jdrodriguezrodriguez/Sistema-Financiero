@@ -42,7 +42,7 @@ public class UsuarioController {
         Usuario usuario = usuarioService.autenticar(username, password);
 
         if (usuario != null) {
-            session.setAttribute("idUsuario", usuario.getIdUsuario());
+            session.setAttribute("idPersona", usuario.getPersona().getIdPersona());
             return "redirect:/index.html";
         }else {
             System.out.println("Login fallido");
@@ -54,7 +54,7 @@ public class UsuarioController {
     @GetMapping("/api/datos")
     @ResponseBody
     public DatosDTO obtenerDatos(HttpSession session){
-        Integer idUsuario = (Integer) session.getAttribute("idUsuario");
-        return datosDTOService.datosUsuario(idUsuario);
+        Integer idPersona = (Integer) session.getAttribute("idPersona");
+        return datosDTOService.datosUsuario(idPersona);
     }
 }

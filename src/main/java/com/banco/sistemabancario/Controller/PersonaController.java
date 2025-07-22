@@ -18,6 +18,7 @@ public class PersonaController {
     @Autowired
     private PersonaService personaService;
 
+    //REGISTRAR
     @PostMapping("/registro")
     public String registrar(@RequestParam String nombre, 
                             @RequestParam String apellido, 
@@ -43,16 +44,17 @@ public class PersonaController {
         }        
     }
 
-    @PostMapping
+    //ACTUALIZAR
+    @PostMapping("/actualizar")
     public String actualizarDatosPersona(@RequestParam String nombre,
                                         @RequestParam String apellido,
                                         @RequestParam String correo,
                                         @RequestParam String nacimiento,  HttpSession session){
       
-        Integer idUsuario = (Integer) session.getAttribute("idUsuario");
+        Integer idPersona = (Integer) session.getAttribute("idPersona");
 
         try{
-            personaService.actualizarPersona(nombre, apellido, correo, nacimiento, idUsuario);
+            personaService.actualizarPersona(nombre, apellido, correo, nacimiento, idPersona);
             System.out.println("Actualizacion exitosa");
             return "redirect:/index.html";
             

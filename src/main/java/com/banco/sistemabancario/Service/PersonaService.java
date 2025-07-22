@@ -25,15 +25,17 @@ public class PersonaService {
     private CuentaService cuentaService;
 
     //ACTUALIZAR PERSONA
-    public Persona actualizarPersona(String nombre, String apellido, String correo, String nacimiento, int idUsuario){
+    public Persona actualizarPersona(String nombre, String apellido, String correo, String nacimiento, int idPersona){
 
-        Persona persona = personaRepository.findById(idUsuario)
-                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idUsuario));
+        Persona persona = personaRepository.findById(idPersona)
+                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
 
         persona.setNombre(nombre);
         persona.setApellido(apellido);
         persona.setCorreo(correo);
         persona.setNacimiento(Date.valueOf(LocalDate.parse(nacimiento)));
+
+        System.out.println("ID" + idPersona);
 
         return personaRepository.save(persona);
     }
