@@ -1,6 +1,6 @@
 .formulario-actualizar {
     max-width: 500px;
-    margin: 4rem auto;
+    margin: 7rem auto 2rem;
     padding: 2rem;
     background-color: #f9f9f9;
     border-radius: 10px;
@@ -56,4 +56,19 @@
 
 .boton-container button:hover {
    background-color: #a30000;
+}
+
+.div-link{
+    width: 550px;
+    margin:  0 auto;
+    font-size: 18px;
+}
+
+.linkUsuario{
+    color: inherit;
+    text-decoration: none;
+}
+
+.linkUsuario span{
+    color: #eafa0b;
 }
