@@ -1,59 +1,66 @@
 package com.banco.sistemabancario.Controller;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.banco.sistemabancario.Entity.Persona;
+import com.banco.sistemabancario.Dto.RegistroPersonaDTO;
 import com.banco.sistemabancario.Service.PersonaService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PersonaController {
     
     @Autowired
     private PersonaService personaService;
-    
-    @GetMapping("/")
-    public String redirigirAlLogin() {
-        return "redirect:/login.html";
-    }
-  
-    @PostMapping("/index")
-    public String iniciar(@RequestParam String user, @RequestParam String pass) {
-        if (personaService.Login(user, pass)) {
-            System.out.println("Login exitoso");
-            return "redirect:/index.html";
-        } else {
-            System.out.println("Login fallido");
-            return "redirect:/login.html?error";
-        }
-    }
 
+    //REGISTRAR
     @PostMapping("/registro")
-    public String registrar(@RequestParam String nombre, @RequestParam String apellido, @RequestParam String documento, @RequestParam String nacimiento, @RequestParam String correo) {
-        if (nombre.isEmpty() && documento.isEmpty() && documento.isEmpty() && nacimiento.isEmpty() && correo.isEmpty()) {
-            System.out.println("Registro fallido");
-            return "redirect:/registro.html?error";
+    public String registrar(@RequestParam String nombre, 
+                            @RequestParam String apellido, 
+                            @RequestParam String documento, 
+                            @RequestParam String nacimiento, 
+                            @RequestParam String correo, 
+                            @RequestParam String password) {
+       
+        RegistroPersonaDTO datos = new RegistroPersonaDTO(nombre, apellido, documento, nacimiento, correo, password);
+        
+        try{
+
+            if (personaService.registrarPersona(datos) != null) {
+            System.out.println("Registro exitoso");
+            return "redirect:/login.html";
+            }else{
+                return "redirect:/login.html?error=";
+            }
+            
+        }catch(IllegalArgumentException e){
+            System.out.println("Error en registro: " + e.getMessage());
+            return "redirect:/login.html?error=" + e.getMessage();
+        }        
+    }
+
+    //ACTUALIZAR
+    @PostMapping("/actualizar")
+    public String actualizarDatosPersona(@RequestParam String nombre,
+                                        @RequestParam String apellido,
+                                        @RequestParam String correo,
+                                        @RequestParam String nacimiento,  HttpSession session){
+      
+        Integer idPersona = (Integer) session.getAttribute("idPersona");
+
+        try{
+            personaService.actualizarPersona(nombre, apellido, correo, nacimiento, idPersona);
+            System.out.println("Actualizacion exitosa");
+            return "redirect:/index.html";
+            
+        }catch(NoSuchElementException e){
+            System.out.println("Error en actualizar: " + e.getMessage());
+            return "redirect:/update.html?error=";
         }
-
-        LocalDate fechanacimiento = LocalDate.parse(nacimiento);
-
-        Persona persona = new Persona();
-
-        persona.setNombre(nombre);
-        persona.setApellido(apellido);
-        persona.setDocumento(documento);
-        persona.setNacimiento(Date.valueOf(fechanacimiento));
-        persona.setCorreo(correo);
-
-        personaService.registrar(persona);
-
-        System.out.println("Registro exitoso");
-        return "redirect:/login.html";
     }
 }

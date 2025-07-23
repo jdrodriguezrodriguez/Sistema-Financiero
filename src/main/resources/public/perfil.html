@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil</title>
+    <link rel="stylesheet" href="./css/index.css"> 
+    <link rel="stylesheet" href="./css/perfil.css">
+</head>
+<body>
+    <header>
+        <nav class="nav">
+            <div class="logo">Sistema financiero</div> 
+            <ul class="menu">
+                <li><a href="index.html" class="enlace" id="inicio">Inicio</a></li>
+                <li><a href="update.html" class="enlace" id="actualizar">Cambiar mis datos</a></li> 
+                <li><a href="#" class="enlace" id="contacto">Contáctanos</a></li> 
+                <li><a href="/logout" class="enlace" id="contacto">Cerrar sesión</a></li> 
+            </ul>
+            <ul class="menu-perfil">
+                <li><a href="#" class="enlace-perfil" id="inicio">
+                    <span id="h1"></span>
+                    <script> 
+                        fetch('/api/datos')
+                            .then(response => response.json())
+                            .then(data => {
+                                const perfil = document.getElementById('h1');
+                                perfil.textContent = data.nombre;
+                            })
+                            .catch(error => console.error("Error", error))
+                    </script>
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section>
+        <div class="DatosUsuario">
+            <h1>Datos del usuario</h1>
+            <ul class="datos" id="lista"></ul>
+            <a href="./update.html" class="a-editar">Cambiar mis datos</a>
+        </div>
+
+        <script>
+            fetch('/api/datos')
+                .then(response => response.json())
+                .then(data => {
+                    const lista = document.getElementById("lista");
+
+                    const campos = [
+                        { Label: "Nombre", value: data.nombre + " " + data.apellido },
+                        { Label: "Documento", value: data.documento },
+                        { Label: "Correo", value: data.correo },
+                        { Label: "Usuario", value: data.username },
+                        { Label: "Rol", value: data.rol },
+                        { Label: "Número de cuenta", value: data.numCuenta },
+                        { Label: "Estado", value: data.estado },
+                    ];
+
+                    campos.forEach(campo => {
+                        const item = document.createElement("li");
+                        item.innerHTML = `<span class="label">${campo.Label}:</span> <span class="value">${campo.value}</span>`;
+                        lista.appendChild(item);
+                    });
+                });
+        </script>
+    </section>
+    
+    <footer>
+        <p>© 2025</p>
+        <p>Sistema Financiero</p>
+        <p>Col</p>
+    </footer>
+
+    <script src="./js/script.js"></script>  
+</body>
+</html>

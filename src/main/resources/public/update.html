@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="./css/update.css"> 
+    <link rel="stylesheet" href="./css/index.css"> 
+</head>
+<body>
+    <header>
+        <nav class="nav">
+            <div class="logo">Sistema financiero</div> 
+            <ul class="menu">
+                <li><a href="index.html" class="enlace" id="inicio">Inicio</a></li>
+                <li><a href="update.html" class="enlace" id="actualizar">Cambiar mis datos</a></li> 
+                <li><a href="#" class="enlace" id="contacto">Contáctanos</a></li> 
+                <li><a href="/logout" class="enlace" id="contacto">Cerrar sesión</a></li> 
+            </ul>
+            <ul class="menu-perfil">
+                <li><a href="#" class="enlace-perfil" id="inicio">
+                    <span id="h1"></span>
+                    <script> 
+                        fetch('/api/datos')
+                            .then(response => response.json())
+                            .then(data => {
+                                const perfil = document.getElementById('h1');
+                                perfil.textContent = data.nombre;
+                            })
+                            .catch(error => console.error("Error", error))
+                    </script>
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="formulario-actualizar">
+        <h2>Actualizar Datos</h2>
+        <form action="/actualizar" method="post">
+            <div class="grupo-campos">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+
+                <label for="apellido">Apellido:</label>
+                <input type="text" id="apellido" name="apellido" required>
+
+                <label for="correo">Correo Electrónico:</label>
+                <input type="email" id="correo" name="correo" required>
+
+                <label for="nacimiento">Fecha de nacimiento:</label>
+                <input type="date" id="nacimiento" name="nacimiento" required>
+                
+            </div>
+
+            <div class="boton-container">
+                <button type="submit">Guardar Cambios</button>
+            </div>
+        </form>
+    </section>
+
+    <div class="div-link">
+        <a href="#" class="linkUsuario">Cambiar datos de mi <span>usuario</span></a>
+    </div>
+
+    <footer>
+        <p>© 2025 Sistema Financiero</p>
+    </footer>
+
+    <script src="./js/script.js"></script>  
+
+</body>
+</html>
