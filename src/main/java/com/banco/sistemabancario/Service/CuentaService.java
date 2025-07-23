@@ -13,7 +13,7 @@ import com.banco.sistemabancario.Repository.CuentaRepository;
 @Service
 public class CuentaService {
 
-    private static final String ESTADO_CUENTA = "ACTIVO";
+    private static final String ESTADO_CUENTA = "ACTIVA";
     private final Random random = new Random();
 
     @Autowired
