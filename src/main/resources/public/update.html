@@ -58,13 +58,15 @@
         </form>
     </section>
 
-    <div class="div-link" id="overlay-usuarioDatos-trigger">
-        <a href="#" class="linkUsuario">Cambiar datos de mi <span>usuario</span></a>
+    <div id="overlay"></div>
+    <div class="link-hidden" id="update-link">
+        <a href="#" class="linkUsuario" id="link-trigger-update">Cambiar datos de mi <span>usuario</span></a>
     </div>
 
-    <div id="overlay-usuarioDatos">
-        <div id="menu-update-usuario" class="hidden-update">
-            <form action="#" method="post">
+    <div id="overlay-update"></div>
+    <div id="menu-update" class="hidden-update">
+            <h2>Actualizar usuario</h2>
+            <form action="/actualizarUsuario" method="post">
                 <div class="grupo-campos-usuario">
                     <label for="nombre">Usuario:</label>
                     <input type="text" id="nombre" name="nombre" required>
@@ -73,12 +75,11 @@
                     <input type="password" id="password" name="password" required>
                 </div>
 
-                <div class="boton-container">
+                <div class="boton-update">
                     <button type="submit">Actualizar usuario</button>
                 </div>
             </form>
         </div>
-    </div>
 
     <footer>
         <p>© 2025 Sistema Financiero</p>
