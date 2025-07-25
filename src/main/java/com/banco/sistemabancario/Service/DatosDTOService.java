@@ -17,18 +17,21 @@ import com.banco.sistemabancario.Repository.UsuarioRepository;
 public class DatosDTOService {
     
     @Autowired
-    PersonaRepository personaRepository;
+    private PersonaRepository personaRepository;
 
     @Autowired 
-    UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired 
-    CuentaRepository cuentaRepository;
+    private CuentaRepository cuentaRepository;
+
+    @Autowired
+    private PersonaService personaService;
 
     //BUSCAR DATOS DEL USUARIO
     public DatosDTO datosUsuario(int idPersona){
 
-        Persona persona = personaRepository.findById(idPersona).orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
+        Persona persona = personaService.obtenerPersonaPorId(idPersona);
         Usuario usuario = usuarioRepository.findByPersona(persona);
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
 

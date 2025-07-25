@@ -27,9 +27,7 @@ public class PersonaService {
     //ACTUALIZAR PERSONA
     public Persona actualizarPersona(String nombre, String apellido, String correo, String nacimiento, int idPersona){
 
-        Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
-
+        Persona persona = obtenerPersonaPorId(idPersona);
         persona.setNombre(nombre);
         persona.setApellido(apellido);
         persona.setCorreo(correo);
@@ -38,6 +36,12 @@ public class PersonaService {
         System.out.println("ID" + idPersona);
 
         return personaRepository.save(persona);
+    }
+
+    //OBTENER PERSONA POR ID
+    public Persona obtenerPersonaPorId(int idPersona){
+        return personaRepository.findById(idPersona)
+                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
     }
 
     //REGISTRAR PERSONA

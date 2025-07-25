@@ -57,4 +57,19 @@ public class UsuarioController {
         Integer idPersona = (Integer) session.getAttribute("idPersona");
         return datosDTOService.datosUsuario(idPersona);
     }
+
+    //ACTUALIZAR USUARIO
+    @PostMapping("/actualizarUsuario")
+    public String actualizarDatosUsuario(@RequestParam String username, @RequestParam String password, HttpSession session){
+        Integer idPersona = (Integer) session.getAttribute("idPersona");
+
+        try {
+            usuarioService.actualizarUsuario(username, password, idPersona);
+            System.out.println("Usuario actualizado.");
+            return "redirect:/index.html";
+        } catch (NoSuchElementException e) {
+            System.out.println("Error en actualizar el usuario: " + e.getMessage());
+            return "redirect:/update.html?error=";
+        }
+    }
 }

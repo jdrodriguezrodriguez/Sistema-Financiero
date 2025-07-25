@@ -45,7 +45,7 @@ public class PersonaController {
     }
 
     //ACTUALIZAR
-    @PostMapping("/actualizar")
+    @PostMapping("/actualizarPersona")
     public String actualizarDatosPersona(@RequestParam String nombre,
                                         @RequestParam String apellido,
                                         @RequestParam String correo,
@@ -55,11 +55,11 @@ public class PersonaController {
 
         try{
             personaService.actualizarPersona(nombre, apellido, correo, nacimiento, idPersona);
-            System.out.println("Actualizacion exitosa");
+            System.out.println("Datos personales actualizados.");
             return "redirect:/index.html";
             
         }catch(NoSuchElementException e){
-            System.out.println("Error en actualizar: " + e.getMessage());
+            System.out.println("Error en actualizar los datos personales: " + e.getMessage());
             return "redirect:/update.html?error=";
         }
     }

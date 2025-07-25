@@ -13,6 +13,19 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private PersonaService personaService;
+
+    //ACTUALIZAR USUARIO
+    public Usuario actualizarUsuario(String username, String password, int idPersona){
+        Persona persona = personaService.obtenerPersonaPorId(idPersona);
+        Usuario usuario = usuarioRepository.findByPersona(persona);
+
+        usuario.setUsername(username);
+        usuario.setPassword(password);
+
+        return usuarioRepository.save(usuario);
+    }
 
     //INICIAR SESION
     public Usuario autenticar(String username, String password){
