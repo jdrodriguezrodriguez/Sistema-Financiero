@@ -71,7 +71,10 @@ public class UsuarioController {
             return "redirect:/index.html";
         } catch (NoSuchElementException e) {
             System.out.println("Error en actualizar el usuario: " + e.getMessage());
-            return "redirect:/update.html?error=";
+            return "redirect:/update.html?error=notfound";
+        } catch (IllegalArgumentException e) {
+            System.out.println("Validación fallida: " + e.getMessage());
+            return "redirect:/update.html?error=username";
         }
     }
 }

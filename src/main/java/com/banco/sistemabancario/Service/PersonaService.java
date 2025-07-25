@@ -35,8 +35,6 @@ public class PersonaService {
         persona.setCorreo(correo);
         persona.setNacimiento(Date.valueOf(LocalDate.parse(nacimiento)));
 
-        System.out.println("ID" + idPersona);
-
         return personaRepository.save(persona);
     }
 

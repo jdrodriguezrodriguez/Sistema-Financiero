@@ -3,6 +3,7 @@ package com.banco.sistemabancario.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import com.banco.sistemabancario.Entity.Persona;
 import com.banco.sistemabancario.Entity.Usuario;
@@ -24,6 +25,8 @@ public class UsuarioService {
                 .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
         Usuario usuario = usuarioRepository.findByPersona(persona);
 
+        validarUsuario(username, usuario.getIdUsuario());
+
         usuario.setUsername(username);
         usuario.setPassword(password);
 
@@ -32,13 +35,9 @@ public class UsuarioService {
 
     //INICIAR SESION
     public Usuario autenticar(String username, String password){
-
-        Usuario usuario = usuarioRepository.findByUsername(username);
-
-        if (usuario != null && usuario.getPassword().equals(password)) {
-            return usuario;
-        }
-        return null;
+        return usuarioRepository.findByUsername(username)
+                .filter(e -> e.getPassword().equals(password))
+                .orElse(null);
     }
 
     //REGISTRAR USUARIO
@@ -69,5 +68,15 @@ public class UsuarioService {
             return false;
         }
         return true;
+    }
+
+    //VALIDAR NOMBRE PARA USUARIO
+    public void validarUsuario(String username, int idActual){
+
+        Optional<Usuario> existente = usuarioRepository.findByUsername(username);
+
+        if (existente.isPresent() && !existente.get().getIdUsuario().equals(Integer.valueOf(idActual))) {
+            throw new IllegalArgumentException("El usuario ya existe, cambiar username " + username);
+        }
     }
 }
