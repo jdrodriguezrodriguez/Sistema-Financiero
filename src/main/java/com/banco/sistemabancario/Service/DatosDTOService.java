@@ -25,13 +25,11 @@ public class DatosDTOService {
     @Autowired 
     private CuentaRepository cuentaRepository;
 
-    @Autowired
-    private PersonaService personaService;
-
     //BUSCAR DATOS DEL USUARIO
     public DatosDTO datosUsuario(int idPersona){
 
-        Persona persona = personaService.obtenerPersonaPorId(idPersona);
+        Persona persona = personaRepository.findById(idPersona)
+                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
         Usuario usuario = usuarioRepository.findByPersona(persona);
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
 

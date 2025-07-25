@@ -1,5 +1,7 @@
 package com.banco.sistemabancario.Controller;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +39,7 @@ public class UsuarioController {
 
     //INICIAR SESION
     @PostMapping("/login")
-    public String Login(@RequestParam String username, @RequestParam String password, HttpSession session) {
+    public String login(@RequestParam String username, @RequestParam String password, HttpSession session) {
         
         Usuario usuario = usuarioService.autenticar(username, password);
 
