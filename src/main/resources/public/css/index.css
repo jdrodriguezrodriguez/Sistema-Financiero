@@ -169,6 +169,11 @@ h1, h2 {
 .operaciones h1 {
     font-size: 1.2rem;
     color: #333;
+    text-decoration: none;
+}
+
+.operaciones a {
+    text-decoration: none;
 }
 
 .operaciones:hover {
