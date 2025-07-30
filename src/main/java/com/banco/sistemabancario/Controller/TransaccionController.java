@@ -1,9 +1,16 @@
-
 package com.banco.sistemabancario.Controller;
 
 import java.net.http.HttpClient;
+import java.util.NoSuchElementException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.banco.sistemabancario.Service.TransaccionService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class TransaccionController {
@@ -12,7 +19,7 @@ public class TransaccionController {
     private TransaccionService transaccionService;
 
 
-    @Post
+    @PostMapping("")
     public String depositarDinero(@RequestParam String valor, HttpSession session){
 
         try {

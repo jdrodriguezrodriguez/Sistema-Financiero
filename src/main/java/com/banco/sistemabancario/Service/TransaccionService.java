@@ -6,6 +6,11 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.NoSuchElementException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.Entity.Cuenta;
 import com.banco.sistemabancario.Entity.Persona;
@@ -45,14 +50,14 @@ public class TransaccionService {
         cuenta.setSaldo(cuenta.getSaldo().add(monto));
         cuentaRepository.save(cuenta);
 
-        Transaccion transaccion = new Transaccion(idPersona, cuenta.getNum_cuenta(), cuenta.getNum_cuenta(), "DEPOSITO", monto, generarFecha(), "Deposito de $" + valor);
+        Transaccion transaccion = new Transaccion(idPersona, cuenta, cuenta.getNum_cuenta(), "DEPOSITO", monto, generarFechaActual(), "Deposito de $" + valor);
 
         return transaccionRepository.save(transaccion);
     }
 
     //GENERAR FECHA ACTUAL
     public static String generarFechaActual(){
-        LocalDateTime ahora = LocalDateTime();
+        LocalDateTime ahora = LocalDateTime.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return ahora.format(formato);
     }
