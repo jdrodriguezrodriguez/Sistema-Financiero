@@ -2,6 +2,10 @@
 package com.banco.sistemabancario.Service;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.banco.sistemabancario.Entity.Cuenta;
 import com.banco.sistemabancario.Entity.Persona;
@@ -28,15 +32,29 @@ public class TransaccionService {
     private CuentaRepository cuentaRepository;
 
     //DEPOSITAR
-    public Transaccion depositar(int idPersona, BigDecimal valor, String descripcion){
+    public Transaccion depositar(int idPersona, String valor){
+
+        BigDecimal monto = new BigDecimal(valor);
+
         Persona persona = personaRepository.findById(idPersona)
                 .orElseThrow( () -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
-
         Usuario usuario = usuarioRepository.findByPersona(persona);
-
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
 
-        return transaccion = new Transaccion(idPersona, cuenta.getNum_cuenta(), cuenta.getNum_cuenta, "DEPOSITO", valor, null, descripcion);
+        
+        cuenta.setSaldo(cuenta.getSaldo().add(monto));
+        cuentaRepository.save(cuenta);
+
+        Transaccion transaccion = new Transaccion(idPersona, cuenta.getNum_cuenta(), cuenta.getNum_cuenta(), "DEPOSITO", monto, generarFecha(), "Deposito de $" + valor);
+
+        return transaccionRepository.save(transaccion);
+    }
+
+    //GENERAR FECHA ACTUAL
+    public static String generarFechaActual(){
+        LocalDateTime ahora = LocalDateTime();
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return ahora.format(formato);
     }
 
 }
