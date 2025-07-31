@@ -1,6 +1,5 @@
 package com.banco.sistemabancario.Controller;
 
-import java.net.http.HttpClient;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
