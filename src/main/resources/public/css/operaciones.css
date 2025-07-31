@@ -33,6 +33,16 @@
     transition: border 0.3s;
 }
 
+.grupo-campos h1{
+    color: #000000;
+    text-align: left;
+    font-size: 1.8rem;
+}
+
+.grupo-campos ul{
+    margin: 0;
+}
+
 .grupo-campos input:focus{
     border-color: #007bff;
     outline: none;
