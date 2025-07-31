@@ -33,6 +33,26 @@ public class TransaccionService {
     @Autowired
     private CuentaRepository cuentaRepository;
 
+    //TRANSFERIR
+    public Transaccion transferir(int idPersona, String cuentaDestino, String valor, String descripcion){
+        
+        BigDecimal monto = new BigDecimal(valor);
+
+        Persona persona = personaRepository.findById(idPersona)
+                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
+        Usuario usuario = usuarioRepository.findByPersona(persona);
+        Cuenta cuentaEntrada = cuentaRepository.findByUsuario(usuario);
+        Cuenta cuentaSalida = cuentaRepository.findById(cuentaDestino)
+                .orElseThrow(() -> new NoSuchElementException("No se encontro a la cuenta con el ID: " + cuentaDestino));
+
+        cuentaEntrada.setSaldo(cuentaEntrada.getSaldo().subtract(monto));
+        cuentaSalida.setSaldo(cuentaSalida.getSaldo().add(monto));
+        
+        Transaccion transaccion = new Transaccion(cuentaEntrada, cuentaDestino, "TRANSACCION",  monto, generarFechaActual(), descripcion);
+        
+        return transaccion;
+    }
+
     //DEPOSITAR
     public Transaccion depositar(int idPersona, String valor){
 
