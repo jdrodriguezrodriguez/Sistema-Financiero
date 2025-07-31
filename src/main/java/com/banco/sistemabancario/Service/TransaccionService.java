@@ -51,6 +51,16 @@ public class TransaccionService {
         return transaccionRepository.save(transaccion);
     }
 
+    //CONSULTAR
+    public BigDecimal consultar(int idPersona){
+        Persona persona = personaRepository.findById(idPersona)
+                .orElseThrow( () -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
+        Usuario usuario = usuarioRepository.findByPersona(persona);
+        Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
+
+        return cuenta.getSaldo();
+    }
+
     //GENERAR FECHA ACTUAL
     public static String generarFechaActual(){
         LocalDateTime ahora = LocalDateTime.now();

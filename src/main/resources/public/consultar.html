@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>transferencia</title>
+    <title>Consultar</title>
     <link rel="stylesheet" href="./css/index.css"> 
     <link rel="stylesheet" href="./css/operaciones.css">
 </head>
@@ -35,22 +35,21 @@
     </header>
 
     <section class="depositar-form">
-        <h2>Ingrese los datos para transferir</h2>
-        <form action="#" method="post">
+        <h2>Tu saldo:</h2>
             <div class="grupo-campos">
+                <ul class="datos" id="lista"></ul>
+                <script>
+                    fetch("/transaccion/consultar")
+                    .then(response => response.json())
+                    .then(data =>{
+                        const lista = document.getElementById("lista");
+                        const item = document.createElement("li");
 
-                <label for="valor">Saldo: 
-                    <ul>
-                        <li>
-                            Valor $
-                        </li>
-                    </ul>
-                </label>
+                        item.textContent = data.saldo;
 
-            <div class="boton-container">
-                <button type="submit">Confirmar</button>
-            </div>
-        </form>
+                        lista.appendChild(item);
+                    })
+                </script>
     </section>
    
 
