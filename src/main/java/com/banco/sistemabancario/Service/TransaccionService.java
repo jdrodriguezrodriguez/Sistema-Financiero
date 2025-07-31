@@ -45,12 +45,11 @@ public class TransaccionService {
                 .orElseThrow( () -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
         Usuario usuario = usuarioRepository.findByPersona(persona);
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
-
         
         cuenta.setSaldo(cuenta.getSaldo().add(monto));
         cuentaRepository.save(cuenta);
 
-        Transaccion transaccion = new Transaccion(idPersona, cuenta, cuenta.getNum_cuenta(), "DEPOSITO", monto, generarFechaActual(), "Deposito de $" + valor);
+        Transaccion transaccion = new Transaccion(cuenta, cuenta.getNum_cuenta(), "DEPOSITO", monto, generarFechaActual(), "Deposito de $" + valor);
 
         return transaccionRepository.save(transaccion);
     }

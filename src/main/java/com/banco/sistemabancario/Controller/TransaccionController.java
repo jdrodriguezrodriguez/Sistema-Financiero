@@ -19,7 +19,7 @@ public class TransaccionController {
     private TransaccionService transaccionService;
 
 
-    @PostMapping("")
+    @PostMapping("/transaccion/depositar")
     public String depositarDinero(@RequestParam String valor, HttpSession session){
 
         try {

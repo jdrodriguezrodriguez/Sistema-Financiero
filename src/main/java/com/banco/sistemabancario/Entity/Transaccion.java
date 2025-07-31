@@ -43,22 +43,14 @@ public class Transaccion {
     public Transaccion(){
     }
 
-    public Transaccion(Integer id, Cuenta cuenta, String cuenta_destino, String tipo, BigDecimal monto,
+    public Transaccion(Cuenta cuenta, String cuenta_destino, String tipo, BigDecimal monto,
             String fecha, String descripcion) {
-        this.id = id;
         this.cuenta = cuenta;
         this.cuenta_destino = cuenta_destino;
         this.tipo = tipo;
         this.monto = monto;
         this.fecha = fecha;
         this.descripcion = descripcion;
-    }
-
-    public Integer getIdTransaccion() {
-        return id;
-    }
-    public void setIdTransaccion(Integer id) {
-        this.id = id;
     }
 
     public Cuenta getCuenta() {
