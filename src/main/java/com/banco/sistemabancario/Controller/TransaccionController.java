@@ -15,6 +15,8 @@ import com.banco.sistemabancario.Service.TransaccionService;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @Controller
@@ -23,13 +25,28 @@ public class TransaccionController {
     @Autowired
     private TransaccionService transaccionService;
 
+    //TRANSFERIR DINERO
+    @PostMapping("/transaccion/transferir")
+    public String transferirDinero(@RequestParam String valor, @RequestParam String cuentaDestino, @RequestParam String descripcion, HttpSession session) {
+        try {
+            System.out.println("VALOR TOMADO: " + valor);
+            Integer idPersona = (Integer) session.getAttribute("idPersona");
+            transaccionService.transferir(idPersona, cuentaDestino, valor, descripcion);
 
+            return "redirect:/index.html";
+
+        } catch (NoSuchElementException e) {
+            System.out.print("Error al transferir: " + e);
+            return "redirect:/index.html?error";
+        }
+    }
+    
     //DEPOSITAR DINERO
     @PostMapping("/transaccion/depositar")
     public String depositarDinero(@RequestParam String valor, HttpSession session){
 
         try {
-
+            
             Integer idPersona = (Integer) session.getAttribute("idPersona");
             transaccionService.depositar(idPersona, valor);
 

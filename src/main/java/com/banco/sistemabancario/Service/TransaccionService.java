@@ -36,7 +36,7 @@ public class TransaccionService {
     //TRANSFERIR
     public Transaccion transferir(int idPersona, String cuentaDestino, String valor, String descripcion){
         
-        BigDecimal monto = new BigDecimal(valor);
+        BigDecimal monto = new BigDecimal(valor.trim());
 
         Persona persona = personaRepository.findById(idPersona)
                 .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
@@ -47,10 +47,29 @@ public class TransaccionService {
 
         cuentaEntrada.setSaldo(cuentaEntrada.getSaldo().subtract(monto));
         cuentaSalida.setSaldo(cuentaSalida.getSaldo().add(monto));
+
+        Transaccion historialEntrada = transaccionRepository.findByCuenta(cuentaEntrada);
+        Transaccion historialSalida = transaccionRepository.findByCuenta(cuentaSalida);
+
+        historialEntrada.setCuenta(cuentaEntrada);
+        historialEntrada.setCuenta_destino(cuentaDestino);
+        historialEntrada.setTipo("TRANSACCION");
+        historialEntrada.setMonto(monto);
+        historialEntrada.setFecha(generarFechaActual());
+        historialEntrada.setDescripcion(descripcion);
+
+        historialSalida.setCuenta(cuentaEntrada);
+        historialSalida.setCuenta_destino(cuentaDestino);
+        historialSalida.setTipo("TRANSACCION");
+        historialSalida.setMonto(monto);
+        historialSalida.setFecha(generarFechaActual());
+        historialSalida.setDescripcion(descripcion);
         
-        Transaccion transaccion = new Transaccion(cuentaEntrada, cuentaDestino, "TRANSACCION",  monto, generarFechaActual(), descripcion);
+        cuentaRepository.save(cuentaEntrada);
+        cuentaRepository.save(cuentaSalida);
+        transaccionRepository.save(historialEntrada);
         
-        return transaccion;
+        return transaccionRepository.save(historialSalida);
     }
 
     //DEPOSITAR
