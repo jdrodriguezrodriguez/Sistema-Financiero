@@ -2,6 +2,7 @@ package com.banco.sistemabancario.Controller;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.banco.sistemabancario.Entity.Transaccion;
 import com.banco.sistemabancario.Service.TransaccionService;
 
 import jakarta.servlet.http.HttpSession;
@@ -39,7 +41,7 @@ public class TransaccionController {
             return "redirect:/index.html?error";
         }
     }
-    
+
     //DEPOSITAR DINERO
     @PostMapping("/transaccion/depositar")
     public String depositarDinero(@RequestParam String valor, HttpSession session){
@@ -57,6 +59,25 @@ public class TransaccionController {
         }
     }
 
+    //CONSULTAR HISTORIAL
+    @GetMapping("/transaccion/historial")
+    public Map<String, Object> consultarTransacciones(HttpSession session) {
+
+        try {
+            Integer idPersona = (Integer) session.getAttribute("idPersona");
+            List<Transaccion> historial = transaccionService.transacciones(idPersona);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("cuenta:", historial.get(0));
+
+            return response;
+            
+        } catch (NoSuchElementException e) {
+            System.out.println("Error al consultar el historial: " + e);  
+            return null; 
+        }
+    }
+    
     //CONSULTAR DINERO
     @GetMapping("/transaccion/consultar")
     @ResponseBody

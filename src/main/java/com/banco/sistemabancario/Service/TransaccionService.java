@@ -72,6 +72,17 @@ public class TransaccionService {
         return transaccionRepository.save(historialSalida);
     }
 
+    //TRANSFERENCIAS
+    public List<Transaccion> transacciones(int idPersona){
+        Persona persona = personaRepository.findById(idPersona)
+                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
+        Usuario usuario = usuarioRepository.findByPersona(persona);
+        Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
+        List<Transaccion> transaccion = transaccionRepository.findByCuenta(cuenta);
+
+        return transaccion;
+    }
+
     //DEPOSITAR
     public Transaccion depositar(int idPersona, String valor){
 
