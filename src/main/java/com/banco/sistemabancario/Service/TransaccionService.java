@@ -4,6 +4,7 @@ package com.banco.sistemabancario.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,19 +49,18 @@ public class TransaccionService {
         cuentaEntrada.setSaldo(cuentaEntrada.getSaldo().subtract(monto));
         cuentaSalida.setSaldo(cuentaSalida.getSaldo().add(monto));
 
-        Transaccion historialEntrada = transaccionRepository.findByCuenta(cuentaEntrada);
-        Transaccion historialSalida = transaccionRepository.findByCuenta(cuentaSalida);
-
+        Transaccion historialEntrada = new Transaccion();
         historialEntrada.setCuenta(cuentaEntrada);
         historialEntrada.setCuenta_destino(cuentaDestino);
-        historialEntrada.setTipo("TRANSACCION");
-        historialEntrada.setMonto(monto);
+        historialEntrada.setTipo("TRANSFERENCIA");
+        historialEntrada.setMonto(monto.negate());
         historialEntrada.setFecha(generarFechaActual());
         historialEntrada.setDescripcion(descripcion);
 
+        Transaccion historialSalida = new Transaccion();
         historialSalida.setCuenta(cuentaEntrada);
         historialSalida.setCuenta_destino(cuentaDestino);
-        historialSalida.setTipo("TRANSACCION");
+        historialSalida.setTipo("TRANSFERENCIA");
         historialSalida.setMonto(monto);
         historialSalida.setFecha(generarFechaActual());
         historialSalida.setDescripcion(descripcion);

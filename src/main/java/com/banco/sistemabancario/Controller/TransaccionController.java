@@ -15,7 +15,6 @@ import com.banco.sistemabancario.Service.TransaccionService;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -29,7 +28,7 @@ public class TransaccionController {
     @PostMapping("/transaccion/transferir")
     public String transferirDinero(@RequestParam String valor, @RequestParam String cuentaDestino, @RequestParam String descripcion, HttpSession session) {
         try {
-            System.out.println("VALOR TOMADO: " + valor);
+           
             Integer idPersona = (Integer) session.getAttribute("idPersona");
             transaccionService.transferir(idPersona, cuentaDestino, valor, descripcion);
 
