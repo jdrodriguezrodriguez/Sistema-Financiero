@@ -61,16 +61,12 @@ public class TransaccionController {
 
     //CONSULTAR HISTORIAL
     @GetMapping("/transaccion/historial")
-    public Map<String, Object> consultarTransacciones(HttpSession session) {
+    @ResponseBody
+    public List<Transaccion> consultarTransacciones(HttpSession session) {
 
         try {
             Integer idPersona = (Integer) session.getAttribute("idPersona");
-            List<Transaccion> historial = transaccionService.transacciones(idPersona);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("cuenta:", historial.get(0));
-
-            return response;
+            return transaccionService.transacciones(idPersona);
             
         } catch (NoSuchElementException e) {
             System.out.println("Error al consultar el historial: " + e);  

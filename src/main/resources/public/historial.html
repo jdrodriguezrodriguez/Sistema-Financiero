@@ -39,15 +39,24 @@
             <div class="grupo-campos">
                 <ul class="datos" id="lista"></ul>
                 <script>
-                    fetch("/transaccion/consultar")
+                    fetch("/transaccion/historial")
                     .then(response => response.json())
                     .then(data =>{
                         const lista = document.getElementById("lista");
-                        const item = document.createElement("h1");
+                       
+                        lista.innerHTML="";
 
-                        item.textContent = "$" + data.saldo;
+                        data.forEach(transaccion => {
+                            const item = document.createElement("div");
 
-                        lista.appendChild(item);
+                            item.innerHTML = `
+                                <h3> Monto: $${transaccion.monto}<h3>
+                                <h3> descripcion: $${transaccion.descripcion}<h3>
+                                <h3> fecha: $${transaccion.fecha}<h3>
+                            `
+
+                            lista.appendChild("item");
+                        });
                     })
                 </script>
     </section>
