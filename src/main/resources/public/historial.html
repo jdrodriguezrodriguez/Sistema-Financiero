@@ -34,28 +34,33 @@
         </nav>
     </header>
 
-    <section class="depositar-form">
+    <section class="historial-section">
         <h2>Tu transacciones:</h2>
-            <div class="grupo-campos">
-                <ul class="datos" id="lista"></ul>
+            <div class="grupo-campos-historial">
+                <div class="datos" id="div-lista"></div>
                 <script>
                     fetch("/transaccion/historial")
                     .then(response => response.json())
                     .then(data =>{
-                        const lista = document.getElementById("lista");
+                        const lista = document.getElementById("div-lista");
                        
                         lista.innerHTML="";
 
                         data.forEach(transaccion => {
                             const item = document.createElement("div");
+                            item.className = "data-historia";
 
                             item.innerHTML = `
-                                <h3> Monto: $${transaccion.monto}<h3>
-                                <h3> descripcion: $${transaccion.descripcion}<h3>
-                                <h3> fecha: $${transaccion.fecha}<h3>
+                                
+                                <p> <b>Mi cuenta:</b> ${transaccion.cuenta.num_cuenta}<p>
+                                <p> <b>Cuenta externa:</b> ${transaccion.cuenta_destino}<p>
+                                <p> <b>Tipo de movimiento:</b> ${transaccion.tipo}<p>
+                                <p> <b>Valor:</b> $${transaccion.monto}<p>
+                                <p> <b>Descripcion:</b> ${transaccion.descripcion}<p>
+                                <p> <b>Fecha:</b> ${transaccion.fecha}<p>
                             `
 
-                            lista.appendChild("item");
+                            lista.appendChild(item);
                         });
                     })
                 </script>
