@@ -3,7 +3,6 @@ package com.banco.sistemabancario.Service;
 import java.math.BigDecimal;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.Entity.Cuenta;
@@ -16,8 +15,11 @@ public class CuentaService {
     private static final String ESTADO_CUENTA = "ACTIVA";
     private final Random random = new Random();
 
-    @Autowired
     CuentaRepository cuentaRepository;
+
+    public CuentaService(CuentaRepository cuentaRepository) {
+        this.cuentaRepository = cuentaRepository;
+    }
 
     //REGISTRAR CUENTA
     public Cuenta registrarCuenta(Usuario usuario){

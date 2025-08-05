@@ -1,6 +1,5 @@
 package com.banco.sistemabancario.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -13,11 +12,13 @@ import com.banco.sistemabancario.Repository.UsuarioRepository;
 @Service
 public class UsuarioService {
     
-    @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private PersonaRepository personaRepository;
+
+    public UsuarioService(UsuarioRepository usuarioRepository, PersonaRepository personaRepository) {
+        this.usuarioRepository = usuarioRepository;
+        this.personaRepository = personaRepository;
+    }
 
     //ACTUALIZAR USUARIO
     public Usuario actualizarUsuario(String username, String password, int idPersona){
@@ -43,7 +44,7 @@ public class UsuarioService {
     //REGISTRAR USUARIO
     public Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona){
 
-        String username = UsuarioService.GenerarUsername(nombre, apellido);
+        String username = UsuarioService.generarUsername(nombre, apellido);
         Usuario usuario = new Usuario();
 
         usuario.setUsername(username);
@@ -58,13 +59,13 @@ public class UsuarioService {
     }
 
     //GENERAR NOMBRE DE USUARIO
-    public static String GenerarUsername(String nombre, String apellido){
+    public static String generarUsername(String nombre, String apellido){
         return nombre.substring(0, Math.min(4, nombre.length())) + apellido.substring(0, Math.min(2, apellido.length()));
     }
 
     //VALIDAR CONTRASEÑA
-    public static boolean ValidarContraseña(String contraseña){
-        if (contraseña.length() != 4) {
+    public static boolean validarPassword(String password){
+        if (password.length() != 4) {
             return false;
         }
         return true;

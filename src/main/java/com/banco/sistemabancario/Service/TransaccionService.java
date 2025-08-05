@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.Entity.Cuenta;
@@ -22,27 +21,25 @@ import com.banco.sistemabancario.Repository.UsuarioRepository;
 @Service
 public class TransaccionService {
 
-    @Autowired
     private TransaccionRepository transaccionRepository;
-
-    @Autowired
     private PersonaRepository personaRepository;
-
-    @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private CuentaRepository cuentaRepository;
+
+    public TransaccionService(TransaccionRepository transaccionRepository, PersonaRepository personaRepository,
+            UsuarioRepository usuarioRepository, CuentaRepository cuentaRepository) {
+        this.transaccionRepository = transaccionRepository;
+        this.personaRepository = personaRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.cuentaRepository = cuentaRepository;
+    }
 
     //TRANSFERIR
     public Transaccion transferir(int idPersona, String cuentaDestino, String valor, String descripcion){
         
         BigDecimal monto = new BigDecimal(valor.trim());
 
-        Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
-        Usuario usuario = usuarioRepository.findByPersona(persona);
-        Cuenta cuentaEntrada = cuentaRepository.findByUsuario(usuario);
+        Cuenta cuentaEntrada = buscarCuenta(idPersona);
         Cuenta cuentaSalida = cuentaRepository.findById(cuentaDestino)
                 .orElseThrow(() -> new NoSuchElementException("No se encontro a la cuenta con el ID: " + cuentaDestino));
 
@@ -74,10 +71,7 @@ public class TransaccionService {
 
     //TRANSFERENCIAS
     public List<Transaccion> transacciones(int idPersona){
-        Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
-        Usuario usuario = usuarioRepository.findByPersona(persona);
-        Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
+        Cuenta cuenta = buscarCuenta(idPersona);
         List<Transaccion> transaccion = transaccionRepository.findByCuenta(cuenta);
 
         return transaccion;
@@ -88,10 +82,7 @@ public class TransaccionService {
 
         BigDecimal monto = new BigDecimal(valor);
 
-        Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow( () -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
-        Usuario usuario = usuarioRepository.findByPersona(persona);
-        Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
+        Cuenta cuenta = buscarCuenta(idPersona);
         
         cuenta.setSaldo(cuenta.getSaldo().add(monto));
         cuentaRepository.save(cuenta);
@@ -103,11 +94,7 @@ public class TransaccionService {
 
     //CONSULTAR
     public BigDecimal consultar(int idPersona){
-        Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow( () -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
-        Usuario usuario = usuarioRepository.findByPersona(persona);
-        Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
-
+        Cuenta cuenta = buscarCuenta(idPersona);
         return cuenta.getSaldo();
     }
 
@@ -118,4 +105,21 @@ public class TransaccionService {
         return ahora.format(formato);
     }
 
+    //BUSCAR CUENTA
+    public Cuenta buscarCuenta(int idPersona){
+        Persona persona = personaRepository.findById(idPersona)
+                .orElseThrow( () -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
+
+        Usuario usuario = usuarioRepository.findByPersona(persona);
+        if (usuario == null) {
+            throw new NoSuchElementException("No se encontró el usuario para la persona con ID: " + idPersona);
+        }
+
+        Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
+        if (cuenta == null) {
+            throw new NoSuchElementException("No se encontró la cuenta para el usuario con ID: " + usuario.getIdUsuario());
+        }
+        
+        return cuenta;
+    }
 }
