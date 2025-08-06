@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.Dto;
+package com.banco.sistemabancario.dto;
 
 import java.sql.Date;
 

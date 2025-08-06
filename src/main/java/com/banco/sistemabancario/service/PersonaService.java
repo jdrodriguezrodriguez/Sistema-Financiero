@@ -1,41 +1,43 @@
-package com.banco.sistemabancario.Service;
+package com.banco.sistemabancario.service;
 
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.banco.sistemabancario.Dto.RegistroPersonaDTO;
-import com.banco.sistemabancario.Entity.Persona;
-import com.banco.sistemabancario.Entity.Usuario;
-import com.banco.sistemabancario.Repository.PersonaRepository;
+import com.banco.sistemabancario.dto.RegistroPersonaDTO;
+import com.banco.sistemabancario.entity.Persona;
+import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.repository.PersonaRepository;
 
 @Service
 public class PersonaService {
     
-    @Autowired
+    private static final Logger logger = LoggerFactory.getLogger(PersonaService.class);
+
     private PersonaRepository personaRepository;
-
-    @Autowired
     private UsuarioService usuarioService;
-
-    @Autowired
     private CuentaService cuentaService;
+
+    public PersonaService(PersonaRepository personaRepository, UsuarioService usuarioService, CuentaService cuentaService) {
+        this.personaRepository = personaRepository;
+        this.usuarioService = usuarioService;
+        this.cuentaService = cuentaService;
+    }
 
     //ACTUALIZAR PERSONA
     public Persona actualizarPersona(String nombre, String apellido, String correo, String nacimiento, int idPersona){
 
         Persona persona = personaRepository.findById(idPersona)
                 .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
-
+                
         persona.setNombre(nombre);
         persona.setApellido(apellido);
         persona.setCorreo(correo);
         persona.setNacimiento(Date.valueOf(LocalDate.parse(nacimiento)));
-
-        System.out.println("ID" + idPersona);
 
         return personaRepository.save(persona);
     }
@@ -77,7 +79,7 @@ public class PersonaService {
     //VALIDAR CAMPOS REGISTRO
     public static boolean camposRegistroValidos(RegistroPersonaDTO datos){
         if (datos.getNombre().isEmpty() && datos.getApellido().isEmpty() && datos.getDocumento().isEmpty() && datos.getNacimiento().isEmpty() && datos.getCorreo().isEmpty() && datos.getPassword().isEmpty()) {
-            System.out.println("Complete los campos vacios");
+            logger.error("Complete los campos vacios");
             return false;
         }
         return true;
@@ -97,54 +99,8 @@ public class PersonaService {
             throw new IllegalArgumentException("Hay campos obligatorios vacios.");
         }
 
-        if (!UsuarioService.ValidarContraseña(datos.getPassword())) {
+        if (!UsuarioService.validarPassword(datos.getPassword())) {
             throw new IllegalArgumentException("La contraseña debe tener exactamente cuatro digitos.");
         }
     }
 }
-
-
-/*
-//REGISTRAR PERSONA
-    public Persona registrarPersona(String nombre, String apellido, String documento, String nacimiento, String correo, String password){
-    
-        if (documentoYaRegistrado(documento)) {
-            System.out.println("El documento "+ documento +" ya fue registrado.");
-            return null;
-        }
-
-        if (correoYaRegistrado(correo)) {
-            System.out.println("El correo "+ correo +" ya fue registrado.");
-            return null;
-        }
-
-        if (!camposRegistroValidos(nombre, apellido, documento, nacimiento, correo, password)) {
-            return null;
-        }
-
-        Persona persona = new Persona();
-        LocalDate fechanacimiento = LocalDate.parse(nacimiento);
-
-        persona.setNombre(nombre);
-        persona.setApellido(apellido);
-        persona.setDocumento(documento);
-        persona.setNacimiento(Date.valueOf(fechanacimiento));
-        persona.setCorreo(correo);
-      
-        Persona personaRegistro = personaRepository.save(persona);
-        if (personaRegistro == null) {
-            System.out.println("No se logro registrar a la persona");
-            return null;
-        }
-
-        Usuario usuarioRegistro = usuarioService.registrarUsuario(nombre, apellido, password, persona);
-        if (usuarioRegistro == null) {
-            System.out.println("No se logro registrar el usuario");
-            return null;
-        }
-
-        cuentaService.registrarCuenta(usuarioRegistro);
-
-        return personaRegistro;
-    }
- */

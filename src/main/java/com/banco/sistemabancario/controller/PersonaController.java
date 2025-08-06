@@ -1,22 +1,27 @@
-package com.banco.sistemabancario.Controller;
+package com.banco.sistemabancario.controller;
 
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.banco.sistemabancario.Dto.RegistroPersonaDTO;
-import com.banco.sistemabancario.Service.PersonaService;
+import com.banco.sistemabancario.dto.RegistroPersonaDTO;
+import com.banco.sistemabancario.service.PersonaService;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PersonaController {
     
-    @Autowired
+    private static final Logger logger =  LoggerFactory.getLogger(PersonaController.class);
+
     private PersonaService personaService;
+    public PersonaController(PersonaService personaService) {
+        this.personaService = personaService;
+    }
 
     //REGISTRAR
     @PostMapping("/registro")
@@ -32,20 +37,20 @@ public class PersonaController {
         try{
 
             if (personaService.registrarPersona(datos) != null) {
-            System.out.println("Registro exitoso");
+            logger.info("El registro se realizo correctamente");
             return "redirect:/login.html";
             }else{
                 return "redirect:/login.html?error=";
             }
             
         }catch(IllegalArgumentException e){
-            System.out.println("Error en registro: " + e.getMessage());
-            return "redirect:/login.html?error=" + e.getMessage();
+            logger.error("Error al registrar a la persona", e);
+            return "redirect:/login.html?error=";
         }        
     }
 
     //ACTUALIZAR
-    @PostMapping("/actualizar")
+    @PostMapping("/actualizarPersona")
     public String actualizarDatosPersona(@RequestParam String nombre,
                                         @RequestParam String apellido,
                                         @RequestParam String correo,
@@ -55,11 +60,11 @@ public class PersonaController {
 
         try{
             personaService.actualizarPersona(nombre, apellido, correo, nacimiento, idPersona);
-            System.out.println("Actualizacion exitosa");
+            logger.info("Los datos personales fueron actualizados correctamente");
             return "redirect:/index.html";
             
         }catch(NoSuchElementException e){
-            System.out.println("Error en actualizar: " + e.getMessage());
+            logger.error("Error en actualizar los datos personales:", e);
             return "redirect:/update.html?error=";
         }
     }
