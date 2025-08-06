@@ -1,19 +1,21 @@
-package com.banco.sistemabancario.Controller;
+package com.banco.sistemabancario.controller;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.banco.sistemabancario.Entity.Transaccion;
-import com.banco.sistemabancario.Service.TransaccionService;
+import com.banco.sistemabancario.entity.Transaccion;
+import com.banco.sistemabancario.service.TransaccionService;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +25,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class TransaccionController {
 
-    @Autowired
+    private static final Logger logger =  LoggerFactory.getLogger(TransaccionController.class);
+
     private TransaccionService transaccionService;
+    public TransaccionController(TransaccionService transaccionService) {
+        this.transaccionService = transaccionService;
+    }
 
     //TRANSFERIR DINERO
     @PostMapping("/transaccion/transferir")
@@ -37,7 +43,7 @@ public class TransaccionController {
             return "redirect:/index.html";
 
         } catch (NoSuchElementException e) {
-            System.out.print("Error al transferir: " + e);
+            logger.error("Error al transferir el dinero", e);
             return "redirect:/index.html?error";
         }
     }
@@ -54,7 +60,7 @@ public class TransaccionController {
             return "redirect:/index.html";
 
         } catch (NoSuchElementException e) {
-            System.out.print("Error al depositar: " + e);
+            logger.error("Error al depositar el dinero", e);
             return "redirect:/index.html?error";
         }
     }
@@ -69,8 +75,8 @@ public class TransaccionController {
             return transaccionService.transacciones(idPersona);
             
         } catch (NoSuchElementException e) {
-            System.out.println("Error al consultar el historial: " + e);  
-            return null; 
+            logger.error("Error al consultar el historial de transacciones", e);
+            return Collections.emptyList(); 
         }
     }
     
@@ -89,9 +95,8 @@ public class TransaccionController {
             return reponse;
 
         } catch (NoSuchElementException e) {
-            System.out.println("Error al consultar: " + e);  
-            return null; 
+            logger.error("Error al consultar el dinero actual del usuario", e); 
+            return Collections.emptyMap();
         }
     }
-    
 }

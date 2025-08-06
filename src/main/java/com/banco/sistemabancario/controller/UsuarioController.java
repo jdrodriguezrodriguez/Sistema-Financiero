@@ -1,30 +1,36 @@
-package com.banco.sistemabancario.Controller;
+package com.banco.sistemabancario.controller;
 
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.banco.sistemabancario.Dto.DatosDTO;
-import com.banco.sistemabancario.Entity.Usuario;
-import com.banco.sistemabancario.Service.DatosDTOService;
-import com.banco.sistemabancario.Service.UsuarioService;
+import com.banco.sistemabancario.dto.DatosDTO;
+import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.service.DatosDTOService;
+import com.banco.sistemabancario.service.UsuarioService;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class UsuarioController {
     
-    @Autowired
-    private UsuarioService usuarioService;
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
-    @Autowired
-    DatosDTOService datosDTOService;
+    private UsuarioService usuarioService;
+    private DatosDTOService datosDTOService;
+
+    public UsuarioController(UsuarioService usuarioService, DatosDTOService datosDTOService) {
+        this.usuarioService = usuarioService;
+        this.datosDTOService = datosDTOService;
+    }
     
+    //REDIRIGIR AL LOGIN
     @GetMapping("/")
     public String redirigirAlLogin() {
         return "redirect:/login.html";
@@ -47,7 +53,7 @@ public class UsuarioController {
             session.setAttribute("idPersona", usuario.getPersona().getIdPersona());
             return "redirect:/index.html";
         }else {
-            System.out.println("Login fallido");
+            logger.error("Error al iniciar sesion");
             return "redirect:/login.html?error";
         }
     }
@@ -67,13 +73,13 @@ public class UsuarioController {
 
         try {
             usuarioService.actualizarUsuario(username, password, idPersona);
-            System.out.println("Usuario actualizado.");
+            logger.info("Usuario actualizado correctamente");
             return "redirect:/index.html";
         } catch (NoSuchElementException e) {
-            System.out.println("Error en actualizar el usuario: " + e.getMessage());
+            logger.error("Error al actualizar al usuario", e);
             return "redirect:/update.html?error=notfound";
         } catch (IllegalArgumentException e) {
-            System.out.println("Validación fallida: " + e.getMessage());
+            logger.error("Validacion fallida", e);
             return "redirect:/update.html?error=username";
         }
     }

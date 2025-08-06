@@ -1,16 +1,16 @@
-package com.banco.sistemabancario.Service;
+package com.banco.sistemabancario.service;
 
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
-import com.banco.sistemabancario.Dto.DatosDTO;
-import com.banco.sistemabancario.Entity.Cuenta;
-import com.banco.sistemabancario.Entity.Persona;
-import com.banco.sistemabancario.Entity.Usuario;
-import com.banco.sistemabancario.Repository.CuentaRepository;
-import com.banco.sistemabancario.Repository.PersonaRepository;
-import com.banco.sistemabancario.Repository.UsuarioRepository;
+import com.banco.sistemabancario.dto.DatosDTO;
+import com.banco.sistemabancario.entity.Cuenta;
+import com.banco.sistemabancario.entity.Persona;
+import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.repository.CuentaRepository;
+import com.banco.sistemabancario.repository.PersonaRepository;
+import com.banco.sistemabancario.repository.UsuarioRepository;
 
 @Service
 public class DatosDTOService {

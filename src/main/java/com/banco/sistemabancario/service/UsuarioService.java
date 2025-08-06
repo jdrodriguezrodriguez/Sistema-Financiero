@@ -1,13 +1,13 @@
-package com.banco.sistemabancario.Service;
+package com.banco.sistemabancario.service;
 
 import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import com.banco.sistemabancario.Entity.Persona;
-import com.banco.sistemabancario.Entity.Usuario;
-import com.banco.sistemabancario.Repository.PersonaRepository;
-import com.banco.sistemabancario.Repository.UsuarioRepository;
+import com.banco.sistemabancario.entity.Persona;
+import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.repository.PersonaRepository;
+import com.banco.sistemabancario.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService {

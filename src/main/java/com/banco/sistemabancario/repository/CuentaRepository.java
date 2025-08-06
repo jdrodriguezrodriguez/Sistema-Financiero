@@ -1,9 +1,9 @@
-package com.banco.sistemabancario.Repository;
+package com.banco.sistemabancario.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.banco.sistemabancario.Entity.Cuenta;
-import com.banco.sistemabancario.Entity.Usuario;
+import com.banco.sistemabancario.entity.Cuenta;
+import com.banco.sistemabancario.entity.Usuario;
 
 public interface CuentaRepository extends JpaRepository<Cuenta, String>{
     boolean existsByNumCuenta(String numCuenta);

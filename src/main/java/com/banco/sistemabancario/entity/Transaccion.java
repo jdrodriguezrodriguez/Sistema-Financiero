@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.Entity;
+package com.banco.sistemabancario.entity;
 
 import java.math.BigDecimal;
 

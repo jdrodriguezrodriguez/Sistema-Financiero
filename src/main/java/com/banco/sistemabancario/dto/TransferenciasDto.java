@@ -1,8 +1,8 @@
-package com.banco.sistemabancario.Dto;
+package com.banco.sistemabancario.dto;
 
 import java.math.BigDecimal;
 
-import com.banco.sistemabancario.Entity.Cuenta;
+import com.banco.sistemabancario.entity.Cuenta;
 
 public class TransferenciasDto {
 

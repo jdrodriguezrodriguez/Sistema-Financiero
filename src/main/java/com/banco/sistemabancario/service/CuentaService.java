@@ -1,13 +1,13 @@
-package com.banco.sistemabancario.Service;
+package com.banco.sistemabancario.service;
 
 import java.math.BigDecimal;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
 
-import com.banco.sistemabancario.Entity.Cuenta;
-import com.banco.sistemabancario.Entity.Usuario;
-import com.banco.sistemabancario.Repository.CuentaRepository;
+import com.banco.sistemabancario.entity.Cuenta;
+import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.repository.CuentaRepository;
 
 @Service
 public class CuentaService {
