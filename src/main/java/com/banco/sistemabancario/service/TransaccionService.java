@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.entity.Cuenta;
@@ -20,6 +22,8 @@ import com.banco.sistemabancario.repository.UsuarioRepository;
 
 @Service
 public class TransaccionService {
+
+    private static final BigDecimal MONTO_MINIMO = new BigDecimal("2000.00");
 
     private TransaccionRepository transaccionRepository;
     private PersonaRepository personaRepository;
@@ -36,37 +40,40 @@ public class TransaccionService {
 
     //TRANSFERIR
     public Transaccion transferir(int idPersona, String cuentaDestino, String valor, String descripcion){
+
         
-        BigDecimal monto = new BigDecimal(valor.trim());
+        try {
+            BigDecimal monto = new BigDecimal(valor.trim());
+            if (monto.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("El valor debe ser mayor $0.");
+            }
 
-        Cuenta cuentaEntrada = buscarCuenta(idPersona);
-        Cuenta cuentaSalida = cuentaRepository.findById(cuentaDestino)
-                .orElseThrow(() -> new NoSuchElementException("No se encontro a la cuenta con el ID: " + cuentaDestino));
+            Cuenta cuentaEntrada = buscarCuenta(idPersona);
+            Cuenta cuentaSalida = cuentaRepository.findById(cuentaDestino)
+                    .orElseThrow(() -> new NoSuchElementException("No se encontro a la cuenta con el ID: " + cuentaDestino));
 
-        cuentaEntrada.setSaldo(cuentaEntrada.getSaldo().subtract(monto));
-        cuentaSalida.setSaldo(cuentaSalida.getSaldo().add(monto));
+            if (!cuentaSalida.getEstado().equals("ACTIVA")) {
+                throw new IllegalArgumentException("La cuenta destino se encuentra deshabilitada.");
+            }
 
-        Transaccion historialEntrada = new Transaccion();
-        historialEntrada.setCuenta(cuentaEntrada);
-        historialEntrada.setCuenta_destino(cuentaDestino);
-        historialEntrada.setTipo("TRANSFERENCIA");
-        historialEntrada.setMonto(monto.negate());
-        historialEntrada.setFecha(generarFechaActual());
-        historialEntrada.setDescripcion(descripcion);
+            if (cuentaEntrada.getSaldo().compareTo(monto) < 0) {                        //0 ==, 1 >, -1 <
+                throw new IllegalArgumentException("Saldo insuficiente para realizar la transaccion.");
+            }
 
-        Transaccion historialSalida = new Transaccion();
-        historialSalida.setCuenta(cuentaEntrada);
-        historialSalida.setCuenta_destino(cuentaDestino);
-        historialSalida.setTipo("TRANSFERENCIA");
-        historialSalida.setMonto(monto);
-        historialSalida.setFecha(generarFechaActual());
-        historialSalida.setDescripcion(descripcion);
-        
-        cuentaRepository.save(cuentaEntrada);
-        cuentaRepository.save(cuentaSalida);
-        transaccionRepository.save(historialEntrada);
-        
-        return transaccionRepository.save(historialSalida);
+            cuentaEntrada.setSaldo(cuentaEntrada.getSaldo().subtract(monto));
+            cuentaSalida.setSaldo(cuentaSalida.getSaldo().add(monto));
+
+           Transaccion historialEntrada = crearTransaccion(cuentaEntrada, cuentaDestino, "TRANSFERENCIA", monto.negate(), descripcion);
+           Transaccion historialSalida = crearTransaccion(cuentaSalida, cuentaDestino, "TRANSFERENCIA", monto, descripcion);
+            
+            cuentaRepository.save(cuentaEntrada);
+            cuentaRepository.save(cuentaSalida);
+            transaccionRepository.save(historialEntrada);
+            
+            return transaccionRepository.save(historialSalida);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Formato de valor inválido:" + e.getMessage());
+        }
     }
 
     //TRANSFERENCIAS
@@ -77,23 +84,42 @@ public class TransaccionService {
 
     //DEPOSITAR
     public Transaccion depositar(int idPersona, String valor){
+        try {
 
-        BigDecimal monto = new BigDecimal(valor);
+            BigDecimal monto = new BigDecimal(valor.trim());
 
-        Cuenta cuenta = buscarCuenta(idPersona);
-        
-        cuenta.setSaldo(cuenta.getSaldo().add(monto));
-        cuentaRepository.save(cuenta);
+            if (monto.compareTo(MONTO_MINIMO) <= 0) {
+                throw new IllegalArgumentException("El valor a depositar debe ser mayor o igual a $2.000");
+            }
 
-        Transaccion transaccion = new Transaccion(cuenta, cuenta.getNum_cuenta(), "DEPOSITO", monto, generarFechaActual(), "Deposito de $" + valor);
+            Cuenta cuenta = buscarCuenta(idPersona);
+            cuenta.setSaldo(cuenta.getSaldo().add(monto));
+            cuentaRepository.save(cuenta);
 
-        return transaccionRepository.save(transaccion);
+            Transaccion transaccion = new Transaccion(cuenta, cuenta.getNum_cuenta(), "DEPOSITO", monto, generarFechaActual(), "Deposito de $" + valor);
+
+            return transaccionRepository.save(transaccion);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Formato de valor inválido" + e.getMessage());
+        }
     }
 
     //CONSULTAR
     public BigDecimal consultar(int idPersona){
         Cuenta cuenta = buscarCuenta(idPersona);
         return cuenta.getSaldo();
+    }
+
+    //CREAR TRANSACCION
+    public Transaccion crearTransaccion(Cuenta cuenta, String cuentaDestino, String tipo, BigDecimal monto, String descripcion){
+        Transaccion t = new Transaccion();
+        t.setCuenta(cuenta);
+        t.setCuenta_destino(cuentaDestino);
+        t.setTipo(tipo);
+        t.setFecha(generarFechaActual());
+        t.setMonto(monto);
+        t.setDescripcion(descripcion);
+        return t;
     }
 
     //GENERAR FECHA ACTUAL

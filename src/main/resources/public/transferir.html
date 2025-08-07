@@ -39,7 +39,7 @@
         <form action="/transaccion/transferir" method="post">
             <div class="grupo-campos">
                 <label for="valor">Valor a transferir:</label>
-                <input type="number" id="valor" name="valor">
+                <input type="number" id="valor" name="valor" required min="500">
 
                 <label for="valor">Numero de cuenta:</label>
                 <input type="text" id="cuentaDestino" name="cuentaDestino" required>
