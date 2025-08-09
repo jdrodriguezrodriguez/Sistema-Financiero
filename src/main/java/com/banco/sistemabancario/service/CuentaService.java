@@ -1,7 +1,6 @@
 package com.banco.sistemabancario.service;
 
 import java.math.BigDecimal;
-import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;

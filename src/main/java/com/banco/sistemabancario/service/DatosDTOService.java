@@ -8,6 +8,7 @@ import com.banco.sistemabancario.dto.DatosDTO;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
 import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
@@ -29,7 +30,7 @@ public class DatosDTOService {
     public DatosDTO datosUsuario(int idPersona){
 
         Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
+                .orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
         Usuario usuario = usuarioRepository.findByPersona(persona);
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
 

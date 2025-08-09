@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
 
@@ -23,7 +24,7 @@ public class UsuarioService {
     //ACTUALIZAR USUARIO
     public Usuario actualizarUsuario(String username, String password, int idPersona){
         Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
+                .orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
         Usuario usuario = usuarioRepository.findByPersona(persona);
 
         validarUsuario(username, usuario.getIdUsuario());

@@ -2,7 +2,6 @@ package com.banco.sistemabancario.service;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,13 +10,16 @@ import org.springframework.stereotype.Service;
 import com.banco.sistemabancario.dto.RegistroPersonaDTO;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.exception.CamposVaciosException;
+import com.banco.sistemabancario.exception.CorreoYaRegistradoException;
+import com.banco.sistemabancario.exception.DocumentoYaRegistradoException;
+import com.banco.sistemabancario.exception.PasswordInvalidaException;
+import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 
 @Service
 public class PersonaService {
     
-    private static final Logger logger = LoggerFactory.getLogger(PersonaService.class);
-
     private PersonaRepository personaRepository;
     private UsuarioService usuarioService;
     private CuentaService cuentaService;
@@ -28,11 +30,11 @@ public class PersonaService {
         this.cuentaService = cuentaService;
     }
 
-    //ACTUALIZAR PERSONA
+    //ACTUALIZAR PERSONA EXISTENTE
     public Persona actualizarPersona(String nombre, String apellido, String correo, String nacimiento, int idPersona){
 
         Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
+                .orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
                 
         persona.setNombre(nombre);
         persona.setApellido(apellido);
@@ -78,8 +80,12 @@ public class PersonaService {
 
     //VALIDAR CAMPOS REGISTRO
     public static boolean camposRegistroValidos(RegistroPersonaDTO datos){
-        if (datos.getNombre().isEmpty() && datos.getApellido().isEmpty() && datos.getDocumento().isEmpty() && datos.getNacimiento().isEmpty() && datos.getCorreo().isEmpty() && datos.getPassword().isEmpty()) {
-            logger.error("Complete los campos vacios");
+        if (datos.getNombre().isEmpty() 
+        || datos.getApellido().isEmpty() 
+        || datos.getDocumento().isEmpty() 
+        || datos.getNacimiento().isEmpty() 
+        || datos.getCorreo().isEmpty() 
+        || datos.getPassword().isEmpty()) {
             return false;
         }
         return true;
@@ -88,19 +94,19 @@ public class PersonaService {
     //VALIDAR DATOS REGISTRO
     public void validarDatosRegistro(RegistroPersonaDTO datos){
         if (documentoYaRegistrado(datos.getDocumento())) {
-            throw new IllegalArgumentException("Ya existe una persona registrada con el documento: " + datos.getDocumento());
+            throw new DocumentoYaRegistradoException("Ya existe una persona registrada con el documento: " + datos.getDocumento());
         }
 
         if (correoYaRegistrado(datos.getCorreo())) {
-            throw new IllegalArgumentException("Ya existe una persona registrada con el correo electronico: " + datos.getCorreo());
+            throw new CorreoYaRegistradoException("Ya existe una persona registrada con el correo electronico: " + datos.getCorreo());
         }
 
         if (!camposRegistroValidos(datos)) {
-            throw new IllegalArgumentException("Hay campos obligatorios vacios.");
+            throw new CamposVaciosException("Hay campos obligatorios vacios.");
         }
 
         if (!UsuarioService.validarPassword(datos.getPassword())) {
-            throw new IllegalArgumentException("La contraseña debe tener exactamente cuatro digitos.");
+            throw new PasswordInvalidaException("La contraseña debe tener exactamente cuatro digitos.");
         }
     }
 }
