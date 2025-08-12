@@ -1,17 +1,21 @@
 package com.banco.sistemabancario.controller;
 
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.banco.sistemabancario.dto.RegistroPersonaDTO;
 import com.banco.sistemabancario.service.PersonaService;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 public class PersonaController {
@@ -25,28 +29,18 @@ public class PersonaController {
 
     //REGISTRAR
     @PostMapping("/registro")
-    public String registrar(@RequestParam String nombre, 
-                            @RequestParam String apellido, 
-                            @RequestParam String documento, 
-                            @RequestParam String nacimiento, 
-                            @RequestParam String correo, 
-                            @RequestParam String password) {
+    public ResponseEntity<?> registrar(@Valid @RequestBody RegistroPersonaDTO datos) {
        
-        RegistroPersonaDTO datos = new RegistroPersonaDTO(nombre, apellido, documento, nacimiento, correo, password);
-        
         try{
 
-            if (personaService.registrarPersona(datos) != null) {
+            personaService.registrarPersona(datos);
             logger.info("El registro se realizo correctamente");
-            return "redirect:/login.html";
-            }else{
-                return "redirect:/login.html?error=";
-            }
+            return ResponseEntity.ok(Map.of("Mensaje", "Registro exitoso"));
             
         }catch(IllegalArgumentException e){
-            logger.error("Error al registrar a la persona", e);
-            return "redirect:/login.html?error=";
-        }        
+            logger.error("Error al registrar a la persona {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }       
     }
 
     //ACTUALIZAR

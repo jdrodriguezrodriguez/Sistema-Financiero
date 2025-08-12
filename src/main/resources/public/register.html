@@ -25,7 +25,7 @@
         <div class="div-form">
             <section class="section-form">
                 <h2>Completa tus datos</h2>
-                <form action="/registro" method="post">
+                <form id="RegistrarForm">
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" required>
 
@@ -36,7 +36,7 @@
                     <input type="text" id="documento" name="documento" required>
 
                     <label for="documento">Nacimiento</label>
-                    <input type="date" name="nacimiento" required>
+                    <input type="date" id="nacimiento" name="nacimiento" required>
 
                     <label for="correo">Correo Electrónico:</label>
                     <input type="email" id="correo" name="correo" required>
@@ -46,6 +46,7 @@
 
                     <button type="submit">Registrarse</button>
                 </form>
+                <div id="resultado" class="resultado"></div>
             </section>  
         </div>
     </main>
@@ -55,5 +56,6 @@
     </footer>
 
     <script src="./js/script.js"></script>
+    <script src="./js/registro.js"></script>
 </body>
 </html>

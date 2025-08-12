@@ -1,12 +1,29 @@
 package com.banco.sistemabancario.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class RegistroPersonaDTO {
 
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
+
+    @NotBlank(message = "El apellid oes obligatorio")
     private String apellido;
+
+    @NotBlank(message = "El documento es obligatorio")
     private String documento;
+
+    @NotBlank(message =  "La fecha de nacimiento es obligatoria")
     private String nacimiento;
+
+    @Email(message = "Correo invalido")
+    @NotBlank(message = "El correo es obligatorio")
     private String correo;
+
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Size(min = 4, max = 4, message = "La contraseña debe tener cuatro caracteres")
     private String password;
 
     public RegistroPersonaDTO(String nombre, String apellido, String documento, String nacimiento, String correo,
