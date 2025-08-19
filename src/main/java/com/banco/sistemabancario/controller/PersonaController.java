@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.banco.sistemabancario.dto.RegistroPersonaDTO;
+import com.banco.sistemabancario.dto.ActualizarPersonaDto;
+import com.banco.sistemabancario.dto.RegistroPersonaDto;
 import com.banco.sistemabancario.service.PersonaService;
 
 import jakarta.servlet.http.HttpSession;
@@ -29,7 +30,7 @@ public class PersonaController {
 
     //REGISTRAR
     @PostMapping("/registro")
-    public ResponseEntity<?> registrar(@Valid @RequestBody RegistroPersonaDTO datos) {
+    public ResponseEntity<?> registrar(@Valid @RequestBody RegistroPersonaDto datos) {
        
         try{
 
@@ -45,21 +46,18 @@ public class PersonaController {
 
     //ACTUALIZAR
     @PostMapping("/actualizarPersona")
-    public String actualizarDatosPersona(@RequestParam String nombre,
-                                        @RequestParam String apellido,
-                                        @RequestParam String correo,
-                                        @RequestParam String nacimiento,  HttpSession session){
+    public ResponseEntity<?> actualizarDatosPersona(@RequestBody ActualizarPersonaDto actualizarPersonaDto,  HttpSession session){
       
         Integer idPersona = (Integer) session.getAttribute("idPersona");
 
         try{
-            personaService.actualizarPersona(nombre, apellido, correo, nacimiento, idPersona);
+            personaService.actualizarPersona(actualizarPersonaDto, idPersona);
             logger.info("Los datos personales fueron actualizados correctamente");
-            return "redirect:/index.html";
+            return ResponseEntity.ok(Map.of("Mensaje", "Actualizacion exitosa"));
             
         }catch(NoSuchElementException e){
             logger.error("Error en actualizar los datos personales:", e);
-            return "redirect:/update.html?error=";
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

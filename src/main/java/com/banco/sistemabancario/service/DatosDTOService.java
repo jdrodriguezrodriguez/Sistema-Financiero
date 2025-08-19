@@ -2,7 +2,7 @@ package com.banco.sistemabancario.service;
 
 import org.springframework.stereotype.Service;
 
-import com.banco.sistemabancario.dto.DatosDTO;
+import com.banco.sistemabancario.dto.DatosDto;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
@@ -25,14 +25,14 @@ public class DatosDTOService {
     }
 
     //BUSCAR DATOS DEL USUARIO
-    public DatosDTO datosUsuario(int idPersona){
+    public DatosDto datosUsuario(int idPersona){
 
         Persona persona = personaRepository.findById(idPersona)
                 .orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
         Usuario usuario = usuarioRepository.findByPersona(persona);
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
 
-        return new DatosDTO(persona.getNombre(), persona.getApellido(), persona.getDocumento(),
+        return new DatosDto(persona.getNombre(), persona.getApellido(), persona.getDocumento(),
                             persona.getCorreo(), usuario.getUsername(), usuario.getRol(), 
                             cuenta.getNum_cuenta(), cuenta.getEstado(), persona.getNacimiento());  
     }

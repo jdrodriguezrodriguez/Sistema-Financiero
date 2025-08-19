@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.banco.sistemabancario.dto.DatosDTO;
+import com.banco.sistemabancario.dto.DatosDto;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.service.DatosDTOService;
 import com.banco.sistemabancario.service.UsuarioService;
@@ -61,7 +61,7 @@ public class UsuarioController {
     //DATOS DEL USUARIO EN LINEA
     @GetMapping("/api/datos")
     @ResponseBody
-    public DatosDTO obtenerDatos(HttpSession session){
+    public DatosDto obtenerDatos(HttpSession session){
         Integer idPersona = (Integer) session.getAttribute("idPersona");
         return datosDTOService.datosUsuario(idPersona);
     }

@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class RegistroPersonaDTO {
+public class RegistroPersonaDto {
 
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
@@ -26,7 +26,7 @@ public class RegistroPersonaDTO {
     @Size(min = 4, max = 4, message = "La contraseña debe tener cuatro caracteres")
     private String password;
 
-    public RegistroPersonaDTO(String nombre, String apellido, String documento, String nacimiento, String correo,
+    public RegistroPersonaDto(String nombre, String apellido, String documento, String nacimiento, String correo,
             String password) {
         this.nombre = nombre;
         this.apellido = apellido;

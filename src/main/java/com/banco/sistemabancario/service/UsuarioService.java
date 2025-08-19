@@ -1,7 +1,6 @@
 package com.banco.sistemabancario.service;
 
 import org.springframework.stereotype.Service;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.banco.sistemabancario.entity.Persona;
