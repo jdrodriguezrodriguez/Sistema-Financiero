@@ -1,21 +1,31 @@
 package com.banco.sistemabancario.controller;
 
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.dto.DatosDto;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.service.DatosDTOService;
 import com.banco.sistemabancario.service.UsuarioService;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @Controller
 public class UsuarioController {
@@ -67,20 +77,25 @@ public class UsuarioController {
     }
 
     //ACTUALIZAR USUARIO
-    @PostMapping("/actualizarUsuario")
-    public String actualizarDatosUsuario(@RequestParam String username, @RequestParam String password, HttpSession session){
+    @PutMapping("/actualizarUsuario")
+    public ResponseEntity<?> actualizarDatosUsuario(@Valid @RequestBody ActualizarUsuarioDto datos, HttpSession session){
+        
         Integer idPersona = (Integer) session.getAttribute("idPersona");
+        if(idPersona == null){
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesion no valida.");
+        }
 
         try {
-            usuarioService.actualizarUsuario(username, password, idPersona);
+            usuarioService.actualizarUsuario(datos, idPersona);
             logger.info("Usuario actualizado correctamente");
-            return "redirect:/index.html";
+            return ResponseEntity.ok(Map.of("Mensaje", "Actualizacion exitosa."));
+
         } catch (NoSuchElementException e) {
             logger.error("Error al actualizar al usuario", e);
-            return "redirect:/update.html?error=notfound";
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (IllegalArgumentException e) {
             logger.error("Validacion fallida", e);
-            return "redirect:/update.html?error=username";
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

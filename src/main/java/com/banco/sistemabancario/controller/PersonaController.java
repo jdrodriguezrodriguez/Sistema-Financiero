@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,12 +29,11 @@ public class PersonaController {
         this.personaService = personaService;
     }
 
-    //REGISTRAR
+    //REGISTRAR UNA PERSONA
     @PostMapping("/registro")
     public ResponseEntity<?> registrar(@Valid @RequestBody RegistroPersonaDto datos) {
        
         try{
-
             personaService.registrarPersona(datos);
             logger.info("El registro se realizo correctamente");
             return ResponseEntity.ok(Map.of("Mensaje", "Registro exitoso"));
@@ -44,11 +44,14 @@ public class PersonaController {
         }       
     }
 
-    //ACTUALIZAR
+    //ACTUALIZAR UNA PERSONA EXISTENTE
     @PutMapping("/actualizarPersona")
     public ResponseEntity<?> actualizarDatosPersona(@Valid @RequestBody ActualizarPersonaDto actualizarPersonaDto,  HttpSession session){
       
         Integer idPersona = (Integer) session.getAttribute("idPersona");
+        if (idPersona == null) {
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesion no valida");
+        }
 
         try{
             personaService.actualizarPersona(actualizarPersonaDto, idPersona);

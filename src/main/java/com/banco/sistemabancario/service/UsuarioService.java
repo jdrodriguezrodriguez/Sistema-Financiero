@@ -3,6 +3,7 @@ package com.banco.sistemabancario.service;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
+import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
@@ -21,15 +22,15 @@ public class UsuarioService {
     }
 
     //ACTUALIZAR USUARIO
-    public Usuario actualizarUsuario(String username, String password, int idPersona){
+    public Usuario actualizarUsuario(ActualizarUsuarioDto datos, int idPersona){
         Persona persona = personaRepository.findById(idPersona)
                 .orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
         Usuario usuario = usuarioRepository.findByPersona(persona);
 
-        validarUsuario(username, usuario.getIdUsuario());
+        validarUsuario(datos.getUsername(), usuario.getIdUsuario());
 
-        usuario.setUsername(username);
-        usuario.setPassword(password);
+        usuario.setUsername(datos.getUsername());
+        usuario.setPassword(datos.getPassword());
 
         return usuarioRepository.save(usuario);
     }
@@ -71,7 +72,7 @@ public class UsuarioService {
         return true;
     }
 
-    //VALIDAR NOMBRE PARA USUARIO
+    //VALIDAR QUE EL USERNAME NO EXISTA
     public void validarUsuario(String username, int idActual){
 
         Optional<Usuario> existente = usuarioRepository.findByUsername(username);
