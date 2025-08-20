@@ -36,7 +36,7 @@
     
     <section class="formulario-actualizar">
         <h2>Actualizar Datos</h2>
-        <form action="/actualizarPersona" method="post">
+        <form id="ActualizarPersona">
             <div class="grupo-campos">
                 <label for="nombre">Nombre:</label>
                 <input type="text" id="nombre" name="nombre" required>
@@ -56,6 +56,7 @@
                 <button type="submit">Guardar Cambios</button>
             </div>
         </form>
+        <div id="resultado" class="resultado">Actualizacion exitosa.</div>
     </section>
 
     <div id="overlay"></div>
@@ -66,7 +67,7 @@
     <div id="overlay-update"></div>
     <div id="menu-update" class="hidden-update">
             <h2>Actualizar usuario</h2>
-            <form action="/actualizarUsuario" method="post">
+            <form id="ActualizarUsuario">
                 <div class="grupo-campos-usuario">
                     <label for="usuario">Usuario:</label>
                     <input type="text" id="username" name="username" required>
@@ -86,6 +87,7 @@
     </footer>
 
     <script src="./js/script.js"></script>  
+    <script src="./js/actualizar.js"></script>  
 
 </body>
 </html>

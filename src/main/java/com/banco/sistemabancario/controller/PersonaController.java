@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.banco.sistemabancario.dto.ActualizarPersonaDto;
 import com.banco.sistemabancario.dto.RegistroPersonaDto;
@@ -17,6 +16,7 @@ import com.banco.sistemabancario.service.PersonaService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
 public class PersonaController {
@@ -45,8 +45,8 @@ public class PersonaController {
     }
 
     //ACTUALIZAR
-    @PostMapping("/actualizarPersona")
-    public ResponseEntity<?> actualizarDatosPersona(@RequestBody ActualizarPersonaDto actualizarPersonaDto,  HttpSession session){
+    @PutMapping("/actualizarPersona")
+    public ResponseEntity<?> actualizarDatosPersona(@Valid @RequestBody ActualizarPersonaDto actualizarPersonaDto,  HttpSession session){
       
         Integer idPersona = (Integer) session.getAttribute("idPersona");
 
