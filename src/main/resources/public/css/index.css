@@ -188,3 +188,13 @@ footer {
     color: white;
     margin-top: 8rem;
 }
+
+
+/*ERROR RESULTADO*/
+
+.resultado{
+    color: #e06e03;
+    padding-top: 2rem;
+    text-align: center;
+    font-weight: bold;
+}

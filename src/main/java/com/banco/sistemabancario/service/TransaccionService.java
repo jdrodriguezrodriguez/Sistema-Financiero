@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.banco.sistemabancario.dto.TransferirDineroDto;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Transaccion;
 import com.banco.sistemabancario.exception.CuentaDeshabilitadaException;
@@ -35,18 +36,18 @@ public class TransaccionService {
 
     //TRANSFERIR
     @Transactional
-    public Transaccion transferir(int idPersona, String cuentaDestino, String valor, String descripcion){
+    public Transaccion transferir(int idPersona, TransferirDineroDto datos){
 
         
         try {
-            BigDecimal monto = new BigDecimal(valor.trim());
+            BigDecimal monto = new BigDecimal(datos.getValor().trim());
             if (monto.compareTo(BigDecimal.ZERO) <= 0) {
                 throw new ValorInvalidoException("El valor debe ser mayor $0.");
             }
 
             Cuenta cuentaEntrada = cuentaService.buscarCuenta(idPersona);
-            Cuenta cuentaSalida = cuentaRepository.findById(cuentaDestino)
-                    .orElseThrow(() -> new CuentaNoEncontradaException("No se encontro a la cuenta con el ID: " + cuentaDestino));
+            Cuenta cuentaSalida = cuentaRepository.findById(datos.getCuentaDestino())
+                    .orElseThrow(() -> new CuentaNoEncontradaException("No se encontro a la cuenta con el ID: " + datos.getCuentaDestino()));
 
             if (!cuentaSalida.getEstado().equals("ACTIVA")) {
                 throw new CuentaDeshabilitadaException("La cuenta destino se encuentra deshabilitada.");
@@ -59,8 +60,8 @@ public class TransaccionService {
             cuentaEntrada.setSaldo(cuentaEntrada.getSaldo().subtract(monto));
             cuentaSalida.setSaldo(cuentaSalida.getSaldo().add(monto));
 
-           Transaccion historialEntrada = crearTransaccion(cuentaEntrada, cuentaDestino, "TRANSFERENCIA", monto.negate(), descripcion);
-           Transaccion historialSalida = crearTransaccion(cuentaSalida, cuentaDestino, "TRANSFERENCIA", monto, descripcion);
+           Transaccion historialEntrada = crearTransaccion(cuentaEntrada, datos.getCuentaDestino(), "TRANSFERENCIA", monto.negate(), datos.getDescripcion());
+           Transaccion historialSalida = crearTransaccion(cuentaSalida, datos.getCuentaDestino(), "TRANSFERENCIA", monto, datos.getDescripcion());
             
             cuentaRepository.save(cuentaEntrada);
             cuentaRepository.save(cuentaSalida);

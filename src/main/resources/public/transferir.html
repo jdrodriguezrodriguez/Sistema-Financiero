@@ -36,7 +36,7 @@
 
     <section class="depositar-form">
         <h2>Ingrese los datos para transferir</h2>
-        <form action="/transaccion/transferir" method="post">
+        <form id="transferirDinero">
             <div class="grupo-campos">
                 <label for="valor">Valor a transferir:</label>
                 <input type="number" id="valor" name="valor" required min="500">
@@ -51,6 +51,7 @@
             <div class="boton-container">
                 <button type="submit">Confirmar</button>
             </div>
+            <div id="resultado" class="resultado"></div>
         </form>
     </section>
    
@@ -60,5 +61,6 @@
     </footer>
 
     <script src="./js/script.js"></script>  
+    <script src="./js/transacciones.js"></script>  
 </body>
 </html>
