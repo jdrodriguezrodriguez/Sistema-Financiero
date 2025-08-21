@@ -32,7 +32,7 @@ public class TransaccionController {
         this.transaccionService = transaccionService;
     }
 
-    //TRANSFERIR DINERO
+    //TRANSFERIR DINERO ENTRE USUARIOS
     @PostMapping("/transaccion/transferir")
     public String transferirDinero(@RequestParam String valor, @RequestParam String cuentaDestino, @RequestParam String descripcion, HttpSession session) {
         try {
@@ -48,7 +48,7 @@ public class TransaccionController {
         }
     }
 
-    //DEPOSITAR DINERO
+    //DEPOSITAR DINERO A UNA CUENTA
     @PostMapping("/transaccion/depositar")
     public String depositarDinero(@RequestParam String valor, HttpSession session){
 

@@ -25,12 +25,12 @@ document.getElementById("ActualizarPersona").addEventListener("submit", function
     })
 
     .then(data =>{
-        document.getElementById("resultado").innerText = data.Mensaje
+        document.getElementById("resultadoPersona").innerText = data.Mensaje
     })
 
     .catch(async error =>{
         let errData = await error.json();
-        document.getElementById("resultado").innerText = "Actualizacion fallida. " + JSON.stringify(errData);
+        document.getElementById("resultadoPersona").innerText = "Actualizacion fallida. " + JSON.stringify(errData);
     })
 })
 
@@ -58,11 +58,11 @@ document.getElementById("ActualizarUsuario").addEventListener("submit", function
     })
 
     .then(data =>{
-        document.getElementById("resultado").innerText = data.Mensaje
+        document.getElementById("resultadoUsuario").innerText = data.Mensaje
     })
 
     .catch(async error =>{
         let errData = await error.json();
-        document.getElementById("resultado").innerText = "Actualizacion fallida. " + JSON.stringify(errData);
+        document.getElementById("resultadoUsuario").innerText = "Actualizacion fallida. " + JSON.stringify(errData);
     })
 })
