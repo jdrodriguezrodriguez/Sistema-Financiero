@@ -7,6 +7,7 @@ import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
+import com.banco.sistemabancario.exception.UsuarioNoRegistrado;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
 
@@ -39,7 +40,7 @@ public class UsuarioService {
     public Usuario autenticar(String username, String password){
         return usuarioRepository.findByUsername(username)
                 .filter(e -> e.getPassword().equals(password))
-                .orElse(null);
+                .orElseThrow(() -> new UsuarioNoRegistrado("El usuario ingresado no se encuentra registrado."));
     }
 
     //REGISTRAR USUARIO

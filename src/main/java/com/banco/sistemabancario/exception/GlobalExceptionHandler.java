@@ -19,4 +19,13 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity.badRequest().body(errores);
     }
+
+    @ExceptionHandler(UsuarioNoRegistrado.class)
+    public ResponseEntity<Map<String, String>> handleUsuarioNoRegistrado(UsuarioNoRegistrado ex){
+        Map<String, String> errores = new HashMap<>();
+        errores.put("error", "Usuario no registrado");
+        errores.put("detalle", ex.getMessage());
+
+        return ResponseEntity.status(404).body(errores);
+    }
 }

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.dto.DatosDto;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.exception.GlobalExceptionHandler;
+import com.banco.sistemabancario.exception.UsuarioNoRegistrado;
 import com.banco.sistemabancario.service.DatosDTOService;
 import com.banco.sistemabancario.service.UsuarioService;
 
@@ -27,15 +29,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
 public class UsuarioController {
+
+    private final GlobalExceptionHandler globalExceptionHandler;
     
     private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
     private UsuarioService usuarioService;
     private DatosDTOService datosDTOService;
 
-    public UsuarioController(UsuarioService usuarioService, DatosDTOService datosDTOService) {
+    public UsuarioController(UsuarioService usuarioService, DatosDTOService datosDTOService, GlobalExceptionHandler globalExceptionHandler) {
         this.usuarioService = usuarioService;
         this.datosDTOService = datosDTOService;
+        this.globalExceptionHandler = globalExceptionHandler;
     }
     
     //REDIRIGIR AL LOGIN
@@ -53,17 +58,13 @@ public class UsuarioController {
 
     //INICIAR SESION
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, HttpSession session) {
+    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password, HttpSession session) {
         
         Usuario usuario = usuarioService.autenticar(username, password);
 
-        if (usuario != null) {
-            session.setAttribute("idPersona", usuario.getPersona().getIdPersona());
-            return "redirect:/index.html";
-        }else {
-            logger.error("Error al iniciar sesion");
-            return "redirect:/login.html?error";
-        }
+        session.setAttribute("idPersona", usuario.getPersona().getIdPersona());
+        
+        return ResponseEntity.ok(Map.of("Mensaje", "Acceso correcto"));
     }
 
     //DATOS DEL USUARIO EN LINEA
