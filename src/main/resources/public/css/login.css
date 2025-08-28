@@ -73,11 +73,17 @@ button {
 
 .div-register{
     margin-top: 25px;
+    margin-bottom: 25px;
 }
 .register{
     color: darkorange;
     text-decoration: none;
-    
+}
+.resultado{
+    color: #b11515;
+    padding-top: 2rem;
+    text-align: center;
+    font-weight: bold;
 }
 
 .register:hover{

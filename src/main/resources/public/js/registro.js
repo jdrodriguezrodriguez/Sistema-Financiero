@@ -25,7 +25,7 @@ document.getElementById("RegistrarForm").addEventListener("submit", function(e){
         })
 
     .then(data =>{
-        document.getElementById("resultado").innerText = "Registro exitoso."
+        document.getElementById("resultado").innerText = data.Mensaje
     })
 
     .catch(async error =>{

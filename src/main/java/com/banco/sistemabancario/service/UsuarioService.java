@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
+import com.banco.sistemabancario.dto.LoginUsuarioDto;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
@@ -37,9 +38,9 @@ public class UsuarioService {
     }
 
     //INICIAR SESION
-    public Usuario autenticar(String username, String password){
-        return usuarioRepository.findByUsername(username)
-                .filter(e -> e.getPassword().equals(password))
+    public Usuario autenticar(LoginUsuarioDto datos){
+        return usuarioRepository.findByUsername(datos.getUsername())
+                .filter(e -> e.getPassword().equals(datos.getPassword()))
                 .orElseThrow(() -> new UsuarioNoRegistrado("El usuario ingresado no se encuentra registrado."));
     }
 

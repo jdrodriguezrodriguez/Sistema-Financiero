@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.dto.DatosDto;
+import com.banco.sistemabancario.dto.LoginUsuarioDto;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.exception.GlobalExceptionHandler;
 import com.banco.sistemabancario.exception.UsuarioNoRegistrado;
@@ -29,18 +30,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
 public class UsuarioController {
-
-    private final GlobalExceptionHandler globalExceptionHandler;
     
     private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
     private UsuarioService usuarioService;
     private DatosDTOService datosDTOService;
 
-    public UsuarioController(UsuarioService usuarioService, DatosDTOService datosDTOService, GlobalExceptionHandler globalExceptionHandler) {
+    public UsuarioController(UsuarioService usuarioService, DatosDTOService datosDTOService) {
         this.usuarioService = usuarioService;
         this.datosDTOService = datosDTOService;
-        this.globalExceptionHandler = globalExceptionHandler;
     }
     
     //REDIRIGIR AL LOGIN
@@ -58,13 +56,14 @@ public class UsuarioController {
 
     //INICIAR SESION
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password, HttpSession session) {
+    public ResponseEntity<?> login(@RequestBody LoginUsuarioDto datos, HttpSession session) {
         
-        Usuario usuario = usuarioService.autenticar(username, password);
+        Usuario usuario = usuarioService.autenticar(datos);
 
         session.setAttribute("idPersona", usuario.getPersona().getIdPersona());
         
         return ResponseEntity.ok(Map.of("Mensaje", "Acceso correcto"));
+        // return "redirect:/index.html";
     }
 
     //DATOS DEL USUARIO EN LINEA

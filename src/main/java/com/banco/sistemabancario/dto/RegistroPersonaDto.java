@@ -9,7 +9,7 @@ public class RegistroPersonaDto {
     @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @NotBlank(message = "El apellid oes obligatorio")
+    @NotBlank(message = "El apellido es obligatorio")
     private String apellido;
 
     @NotBlank(message = "El documento es obligatorio")
