@@ -26,6 +26,6 @@ document.getElementById("transferirDinero").addEventListener("submit", function(
 
     .catch(async error =>{
         let errorData = await error.json()
-        document.getElementById("resultado").innerText = "Transferencia fallida " + JSON.stringify(errorData);
+        document.getElementById("resultado").innerText = errorData.detalle;
     })
 })

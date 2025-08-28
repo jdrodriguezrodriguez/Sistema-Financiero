@@ -29,4 +29,14 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(404).body(errores);
     }
+
+    @ExceptionHandler(CuentaNoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> handleCuentaNoencontradaException(CuentaNoEncontradaException ex){
+        Map<String, String> errores = new HashMap<>();
+
+        errores.put("error", "Cuenta no existe");
+        errores.put("detalle", ex.getMessage());
+
+        return ResponseEntity.status(404).body(errores);
+    }
 }
