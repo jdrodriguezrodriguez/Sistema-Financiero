@@ -100,10 +100,6 @@ public class PersonaService {
             throw new CorreoYaRegistradoException("Ya existe una persona registrada con el correo electronico: " + datos.getCorreo());
         }
 
-        if (!camposRegistroValidos(datos)) {
-            throw new CamposVaciosException("Hay campos obligatorios vacios.");
-        }
-
         if (!UsuarioService.validarPassword(datos.getPassword())) {
             throw new PasswordInvalidaException("La contraseña debe tener exactamente cuatro digitos.");
         }

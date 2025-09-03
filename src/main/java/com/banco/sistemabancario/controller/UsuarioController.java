@@ -11,15 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.dto.DatosDto;
 import com.banco.sistemabancario.dto.LoginUsuarioDto;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.exception.GlobalExceptionHandler;
-import com.banco.sistemabancario.exception.UsuarioNoRegistrado;
 import com.banco.sistemabancario.service.DatosDTOService;
 import com.banco.sistemabancario.service.UsuarioService;
 
@@ -63,7 +60,6 @@ public class UsuarioController {
         session.setAttribute("idPersona", usuario.getPersona().getIdPersona());
         
         return ResponseEntity.ok(Map.of("Mensaje", "Acceso correcto"));
-        // return "redirect:/index.html";
     }
 
     //DATOS DEL USUARIO EN LINEA

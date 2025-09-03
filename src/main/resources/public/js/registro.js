@@ -30,7 +30,24 @@ document.getElementById("RegistrarForm").addEventListener("submit", function(e){
 
     .catch(async error =>{
         let errData = await error.json();
-        document.getElementById("resultado").innerText = "Registro fallido. " + JSON.stringify(errData);
+       if (errData.nombre) {
+            document.getElementById("resultado").innerText = errData.nombre;
+        }
+        if (errData.apellido) {
+            document.getElementById("resultado").innerText = errData.apellido;
+        }
+        if (errData.documento) {
+            document.getElementById("resultado").innerText =  errData.documento;
+        }
+        if (errData.nacimiento) {
+            document.getElementById("resultado").innerText = errData.nacimiento;
+        }
+        if (errData.correo) {
+            document.getElementById("resultado").innerText = errData.correo;
+        }
+        if (errData.password) {
+            document.getElementById("resultado").innerText = errData.password;
+        }
     });
     
 });
