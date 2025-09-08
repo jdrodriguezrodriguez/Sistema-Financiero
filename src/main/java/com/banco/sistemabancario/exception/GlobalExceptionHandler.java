@@ -1,7 +1,6 @@
 package com.banco.sistemabancario.exception;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -101,5 +100,4 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity.badRequest().body(errores);
     }
-
 }

@@ -9,7 +9,6 @@ import com.banco.sistemabancario.dto.ActualizarPersonaDto;
 import com.banco.sistemabancario.dto.RegistroPersonaDto;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.exception.CamposVaciosException;
 import com.banco.sistemabancario.exception.CorreoYaRegistradoException;
 import com.banco.sistemabancario.exception.DocumentoYaRegistradoException;
 import com.banco.sistemabancario.exception.PasswordInvalidaException;
