@@ -39,9 +39,15 @@ public class UsuarioController {
     }
     
     //REDIRIGIR AL LOGIN
-    @GetMapping("/")
+    @GetMapping("/login")
     public String redirigirAlLogin() {
         return "redirect:/login.html";
+    }
+
+    //REDIRIGIR AL LOGIN
+    @GetMapping("/index")
+    public String regirigirIndex() {
+        return "redirect:/index.html";
     }
   
     //LIMPIAR SESION

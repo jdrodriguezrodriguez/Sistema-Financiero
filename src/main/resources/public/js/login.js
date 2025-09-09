@@ -22,7 +22,7 @@ document.getElementById("LoginForm").addEventListener("submit", function (e){
 
     .then(data =>{
         /*document.getElementById("resultado").innerText = data.Mensaje*/
-        window.location.replace("/index.html");
+        window.location.replace("/index");
     })
 
     .catch(async error =>{
