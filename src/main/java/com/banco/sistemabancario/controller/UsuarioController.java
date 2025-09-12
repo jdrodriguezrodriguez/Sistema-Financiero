@@ -38,8 +38,9 @@ public class UsuarioController {
         this.datosDTOService = datosDTOService;
     }
     
+
     //REDIRIGIR AL LOGIN
-    @GetMapping("/login")
+    @GetMapping("/")
     public String redirigirAlLogin() {
         return "redirect:/login.html";
     }

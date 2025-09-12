@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.core.userdetails.UserDetailsResourceFactoryBean;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,47 +22,45 @@ import org.springframework.security.web.SecurityFilterChain;
 
 
 
-import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity                       //PERMITE TRABAJAR CON ANOTACIONES
 public class SecurityConfig{
 
-    /*
-    private AuthenticationConfiguration authenticationConfiguration;
-
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration){
-        this.authenticationConfiguration = authenticationConfiguration;
-    }*/
-    
-
     //FILTRO (CONDICIONES PERSONALIZADAS)
-    @Bean
+    /*@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-        /*httpSecurity.authorizeHttpRequests(auth -> auth
-            .requestMatchers("/login/**")
-            .permitAll()
-            .anyRequest().authenticated()
-            )
-            .formLogin(withDefaults())
-            .logout(withDefaults());
-
-        return httpSecurity.build();*/
-
+        
         return httpSecurity
             .csrf(csrf -> csrf.disable()) //VULNERABILIDAD EN LOS FORM WEB
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //NO GUARDA LA SESSION EN MEMORIA
-            .httpBasic(Customizer.withDefaults())                                       //SE USA PARA USU Y PASS - CON TOKEN ES DISTINTO
+            .formLogin(formLogin -> formLogin.loginPage("/login.html").permitAll())                                     //SE USA PARA USU Y PASS - CON TOKEN ES DISTINTO
             .authorizeHttpRequests(http -> {
-                http.requestMatchers(HttpMethod.GET, "/").permitAll();                  //ENDPOINT PERMITIDO PARA TODOS
+
+                //CONFIGURAR LOS ENDPOINTS PUBLICOS
+                http.requestMatchers(HttpMethod.GET, "/").permitAll();   
+                http.requestMatchers("/login.html", "/css/**", "/js/**").permitAll();               //ENDPOINT PERMITIDO PARA TODOS
                 http.requestMatchers(HttpMethod.POST, "/login").permitAll();                  //ENDPOINT PERMITIDO PARA TODOS
+
+                //CONFIGURAR LOS ENDPOINTS PRIVADOS
                 http.requestMatchers(HttpMethod.GET, "/index").hasAuthority("READ");    //ENDPOINT DEBE TENER LA AUTORIZACION DADA EN EL USERDETAILSSERVICE
 
+                //CONFIGURAR LOS ENDPOINTS NO ESPECIFICADOS
                 http.anyRequest().denyAll();                                            //EL RESTO, SERA DENEGADO
+                //http.anyRequest().authenticated();                                      //ACCEDE SI ESTA AUTENTICADO
             }).build();
-    }
+    }*/
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+        
+        return httpSecurity
+            .csrf(csrf -> csrf.disable()) //VULNERABILIDAD EN LOS FORM WEB
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //NO GUARDA LA SESSION EN MEMORIA
+            .build();
+        }
 
     //ADMINISTRADOR DE AUTENTICACION
     @Bean
@@ -83,9 +80,10 @@ public class SecurityConfig{
     }
 
     //DETALLES DEL USUARIO
+    @Bean
     public UserDetailsService userDetailsService(){
         UserDetails userDetails = User.withUsername("juan")
-            .password("root")
+            .password("{noop}root")
             .roles("ADMIN")
             .authorities("READ", "CREATED")
             .build();
