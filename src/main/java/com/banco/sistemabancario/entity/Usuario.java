@@ -71,12 +71,17 @@ public class Usuario {
     public Usuario(){
     }
 
-    public Usuario(int idUsuario, String username, String password, String rol, Persona persona){
+    public Usuario(int idUsuario, String username, String password, String rol, Persona persona, boolean isEnabled, boolean accountNoExpired, boolean accountNoLocked, boolean credentialNoExpired, Set<Roles> roles){
         this.idUsuario = idUsuario;
         this.username = username;
         this.password = password;
         this.rol = rol;
         this.persona = persona;
+        this.isEnabled = isEnabled;
+        this.accountNoExpired = accountNoExpired;
+        this.accountNoLocked = accountNoLocked;
+        this.credentialNoExpired = credentialNoExpired;
+        this.roles = roles;
     }
 
     public Integer getIdUsuario(){
@@ -112,5 +117,40 @@ public class Usuario {
     }
     public void setPersona(Persona persona) {
         this.persona = persona;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+    public void setEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
+
+    public boolean isAccountNoExpired() {
+        return accountNoExpired;
+    }
+    public void setAccountNoExpired(boolean accountNoExpired) {
+        this.accountNoExpired = accountNoExpired;
+    }
+
+    public boolean isAccountNoLocked() {
+        return accountNoLocked;
+    }
+    public void setAccountNoLocked(boolean accountNoLocked) {
+        this.accountNoLocked = accountNoLocked;
+    }
+
+    public boolean isCredentialNoExpired() {
+        return credentialNoExpired;
+    }
+    public void setCredentialNoExpired(boolean credentialNoExpired) {
+        this.credentialNoExpired = credentialNoExpired;
+    }
+
+    public Set<Roles> getRoles() {
+        return roles;
+    }
+    public void setRoles(Set<Roles> roles) {
+        this.roles = roles;
     }
 }

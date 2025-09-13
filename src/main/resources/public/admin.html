@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="./css/index.css"> 
+</head>
+<body>
+    <header>
+        <nav class="nav">
+            <div class="logo">Sistema financiero - Administrador</div> 
+            <ul class="menu">
+                <li><a href="#" class="enlace" id="inicio">Inicio</a></li>
+                <li><a href="/logout" class="enlace" id="contacto">Cerrar sesión</a></li> 
+            </ul>
+            <ul class="menu-perfil">
+                <li><a href="perfil.html" class="enlace-perfil" id="inicio">
+                    <span id="h1"></span>
+                    <script> 
+                        fetch('/api/datos')
+                            .then(response => response.json())
+                            .then(usuario => {
+                                const perfil = document.getElementById('h1');
+                                perfil.textContent = usuario.nombre;
+                            })
+                            .catch(error => console.error("Error", error))
+                    </script>
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="introduccion">
+        <div class="texto-portada">
+            <h1>Bienvenido</h1>
+            <p>¡Bienvenido al Sistema Financiero! Podras gestionar los usuarios, roles, cuentas y demas entidades que esten en la cobertura de el sistema financiero.</p>
+        </div>
+        
+        <div class="portada"><img src="Images/admin.png" class="admin" alt="Sistema financiero"></div>
+    </section>
+
+    <section class="categoria-admin">
+        <h1>¿Que operacion deseas realizar?</h1>
+        <div class="fila">
+            <div class="operaciones">
+                <a href="#"><h1>Editar</h1></a>
+            </div>
+            <div class="operaciones">
+                <a href="#"><h1>Eliminar</h1></a>
+            </div>
+        </div>
+
+        <div class="fila">
+            <div class="operaciones">
+                <a href="#"><h1>Consultar</h1></a>
+            </div>
+            <div class="operaciones">
+                <a href="#"><h1>Bloquear</h1></a>
+            </div>
+        </div>
+    </section>
+
+
+    <footer>
+        <p>© 2025 Sistema Financiero</p>
+    </footer>
+
+    <script src="./js/script.js"></script>  
+</body>
+</html>

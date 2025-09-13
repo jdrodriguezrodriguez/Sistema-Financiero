@@ -32,6 +32,35 @@ public class Roles {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "roles_permisos", joinColumns =  @JoinColumn(name = "roles_id"), inverseJoinColumns = @JoinColumn(name = "permisos_id"))
-    private Set<Permisos> roles = new HashSet<>();
+    private Set<Permisos> permisosList = new HashSet<>();
 
+    // Constructor sin argumentos requerido por Hibernate
+    public Roles() {}
+
+    public Roles(Integer id, RoleEnum roleEnum, Set<Permisos> permisosList) {
+        this.id = id;
+        this.roleEnum = roleEnum;
+        this.permisosList = permisosList;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public RoleEnum getRoleEnum() {
+        return roleEnum;
+    }
+    public void setRoleEnum(RoleEnum roleEnum) {
+        this.roleEnum = roleEnum;
+    }
+
+    public Set<Permisos> getPermisosList() {
+        return permisosList;
+    }
+    public void setRoles(Set<Permisos> permisosList) {
+        this.permisosList = permisosList;
+    }
 }

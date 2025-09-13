@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,8 +48,15 @@ public class UsuarioController {
 
     //REDIRIGIR AL LOGIN
     @GetMapping("/index")
+    @PreAuthorize("hashAuthority('CREATE') or hasAuthority('READ')")  
     public String regirigirIndex() {
         return "redirect:/index.html";
+    }
+
+    //REDIRIGIR AL ADMIN
+    @GetMapping("/admin")
+    public String regirigirAdmin() {
+        return "redirect:/admin.html";
     }
   
     //LIMPIAR SESION

@@ -1,6 +1,14 @@
 package com.banco.sistemabancario.service;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
@@ -13,7 +21,7 @@ import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements UserDetailsService{
     
     private UsuarioRepository usuarioRepository;
     private PersonaRepository personaRepository;
@@ -22,6 +30,42 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
         this.personaRepository = personaRepository;
     }
+
+    /* NUEVA IMPLEMENTACION*/
+    /* */
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
+        
+        Usuario usuario = usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("El usuario: " + username + "no existe"));
+
+
+        //TOMAR ROLES y PERMISOS DE USUARIO PARA CONVERTIR A OBJETO DE SPRING SECURITY
+
+        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();   //SPRING MANEJA PERMISOS CON GRANTEDAUTHORITY Y ESTA ES UNA DE SUS IMPLEMENTACIONES
+
+        usuario.getRoles()
+            .forEach( roles -> authorityList.add(new SimpleGrantedAuthority("ROLE_" .concat(roles.getRoleEnum().name()))));         //TOMAMOS LOS ROLES Y LOS CONVERTIMOS A SimpleGrantedAuthority 
+                                                                                                                                    //(Permiso o autorizacion)
+
+        usuario.getRoles().stream()       //RECORRER CADA ROL
+            .flatMap(role -> role.getPermisosList().stream())  //ROL RECORRE CADA PERMISO
+            .forEach(permiso -> authorityList.add(new SimpleGrantedAuthority(permiso.getName())));
+
+            return new User(usuario.getUsername(), 
+                usuario.getPassword(), 
+                usuario.isEnabled(),
+                usuario.isAccountNoExpired(),
+                usuario.isCredentialNoExpired(),
+                usuario.isAccountNoLocked(),
+                authorityList
+                );
+        }       
+
+    /* */
+    /* */
+    
 
     //ACTUALIZAR USUARIO
     public Usuario actualizarUsuario(ActualizarUsuarioDto datos, int idPersona){
@@ -39,6 +83,8 @@ public class UsuarioService {
 
     //INICIAR SESION
     public Usuario autenticar(LoginUsuarioDto datos){
+        loadUserByUsername(datos.getUsername()); 
+
         return usuarioRepository.findByUsername(datos.getUsername())
                 .filter(e -> e.getPassword().equals(datos.getPassword()))
                 .orElseThrow(() -> new UsuarioNoRegistrado("El usuario ingresado no se encuentra registrado."));
