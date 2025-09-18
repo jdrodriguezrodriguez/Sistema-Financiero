@@ -6,7 +6,7 @@ document.getElementById("LoginForm").addEventListener("submit", function (e){
         password: document.getElementById("password").value
     }
 
-    fetch("/login", {
+    fetch("/autenticar", {
         method: "POST",
         headers:{
             "Content-Type": "application/json"
@@ -21,7 +21,6 @@ document.getElementById("LoginForm").addEventListener("submit", function (e){
     })
 
     .then(data =>{
-        /*document.getElementById("resultado").innerText = data.Mensaje*/
         window.location.replace("/index");
     })
 

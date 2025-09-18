@@ -2,6 +2,7 @@ package com.banco.sistemabancario.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -25,46 +26,41 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig{
 
     //FILTRO (CONDICIONES PERSONALIZADAS)
-    /*@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-        
-        return httpSecurity
-            .csrf(csrf -> csrf.disable()) //VULNERABILIDAD EN LOS FORM WEB
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //NO GUARDA LA SESSION EN MEMORIA
-            .formLogin(formLogin -> formLogin.loginPage("/login.html").permitAll())                                     //SE USA PARA USU Y PASS - CON TOKEN ES DISTINTO
-            .authorizeHttpRequests(http -> {
-
-                //CONFIGURAR LOS ENDPOINTS PUBLICOS
-                http.requestMatchers(HttpMethod.GET, "/").permitAll();   
-                http.requestMatchers("/login.html", "/css/**", "/js/**").permitAll();               //ENDPOINT PERMITIDO PARA TODOS
-                http.requestMatchers(HttpMethod.POST, "/login").permitAll();                  //ENDPOINT PERMITIDO PARA TODOS
-
-                //CONFIGURAR LOS ENDPOINTS PRIVADOS
-                http.requestMatchers(HttpMethod.GET, "/index").hasAuthority("READ");    //ENDPOINT DEBE TENER LA AUTORIZACION DADA EN EL USERDETAILSSERVICE
-
-                //CONFIGURAR LOS ENDPOINTS NO ESPECIFICADOS
-                http.anyRequest().denyAll();                                            //EL RESTO, SERA DENEGADO
-                //http.anyRequest().authenticated();                                      //ACCEDE SI ESTA AUTENTICADO
-            }).build();
-    }*/
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         
         return httpSecurity
             .csrf(csrf -> csrf.disable()) //VULNERABILIDAD EN LOS FORM WEB
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //NO GUARDA LA SESSION EN MEMORIA
-            .build();
-        }
+            .authorizeHttpRequests(auth -> {
 
-    /*ADMINISTRADOR DE AUTENTICACION*/
+                //CONFIGURAR LOS ENDPOINTS PUBLICOS
+                auth.requestMatchers(HttpMethod.GET, "/", "/login.html", "/register.html", "/css/**", "/js/**").permitAll();   
+                auth.requestMatchers(HttpMethod.POST, "/autenticar").permitAll();                 
+                auth.requestMatchers(HttpMethod.POST, "/registro").permitAll();
+
+
+                //CONFIGURAR LOS ENDPOINTS PRIVADOS
+                auth.requestMatchers(HttpMethod.GET, "/index.html", "/index").hasAuthority("CREATE");
+                auth.requestMatchers(HttpMethod.GET, "/admin.html", "/admin").hasRole("ADMIN");    
+
+                //CONFIGURAR LOS ENDPOINTS NO ESPECIFICADOS
+                auth.anyRequest().authenticated();                                     
+            })
+            .sessionManagement(session -> //ADMINISTRADOR DE LA SESION
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //NO GUARDA LA SESSION EN MEMORIA
+            .httpBasic()
+            .and()
+            .build();
+    }
+
+    //GESTIONA EL PROCESO DE AUTENTICACION
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-        //PROVEEDOR - BUSCA LOS USUARIOS Y DEMAS EN BASE DE DATOS POR MEDIO DEL SERVICIO EN USUARIOS 
-            //(CONVIERTE LOS DATOS DEL USUARIO COMO ROLES, PERMISOS Y DEMAS EN UN OBJETO DE S.SECURITY)
+    //PROVEEDOR - BUSCA LOS USUARIOS Y DEMAS EN BASE DE DATOS POR MEDIO DEL SERVICIO EN USUARIOS 
+    //(CONVIERTE LOS DATOS DEL USUARIO COMO ROLES, PERMISOS Y DEMAS EN UN OBJETO DE S.SECURITY)
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();

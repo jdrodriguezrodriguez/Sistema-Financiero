@@ -34,6 +34,15 @@ public class UsuarioService implements UserDetailsService{
     /* NUEVA IMPLEMENTACION*/
     /* */
 
+    //INICIAR SESION
+    public Usuario autenticar(LoginUsuarioDto datos){
+        loadUserByUsername(datos.getUsername()); 
+
+        return usuarioRepository.findByUsername(datos.getUsername())
+                .filter(e -> e.getPassword().equals(datos.getPassword()))
+                .orElseThrow(() -> new UsuarioNoRegistrado("El usuario ingresado no se encuentra registrado."));
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         
@@ -42,17 +51,37 @@ public class UsuarioService implements UserDetailsService{
 
 
         //TOMAR ROLES y PERMISOS DE USUARIO PARA CONVERTIR A OBJETO DE SPRING SECURITY
-
-        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();   //SPRING MANEJA PERMISOS CON GRANTEDAUTHORITY Y ESTA ES UNA DE SUS IMPLEMENTACIONES
+        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();   //CREAR LISTA DE PERMISOS,  YA QUE SPRING MANEJA PERMISOS CON GRANTEDAUTHORITY Y ESTA ES UNA DE SUS IMPLEMENTACIONES
 
         usuario.getRoles()
-            .forEach( roles -> authorityList.add(new SimpleGrantedAuthority("ROLE_" .concat(roles.getRoleEnum().name()))));         //TOMAMOS LOS ROLES Y LOS CONVERTIMOS A SimpleGrantedAuthority 
-                                                                                                                                    //(Permiso o autorizacion)
-
+            .forEach( rol -> 
+                authorityList.add(
+                    new SimpleGrantedAuthority("ROLE_" .concat(rol.getRoleEnum().name()))));          //TOMAMOS LOS ROLES Y LOS CONVERTIMOS A SimpleGrantedAuthority - PREFIJO ROLE_ OBLIGATORIO
+                                                                                                       
         usuario.getRoles().stream()       //RECORRER CADA ROL
-            .flatMap(role -> role.getPermisosList().stream())  //ROL RECORRE CADA PERMISO
-            .forEach(permiso -> authorityList.add(new SimpleGrantedAuthority(permiso.getName())));
+            .flatMap(rol -> rol.getPermisosList().stream())  //ROL RECORRE CADA PERMISO
+            .forEach(permiso -> 
+                authorityList.add(new SimpleGrantedAuthority(permiso.getName())));  //AGREGAR CADA PERMISO A CADA ROL
 
+        //CONSTRUCCION DEL OBJETO USERDETAILS DE SPRING SECURITY PARA AUTENTICAR
+
+
+         /*System.out.println("===== USUARIO CARGADO =====");
+        System.out.println("Username: " + usuario.getUsername());
+        System.out.println("Password: " + usuario.getPassword());
+        System.out.println("Roles: " + usuario.getRoles().stream()
+                            .map(r -> r.getRoleEnum().name())
+                            .toList());
+        System.out.println("Permisos: " + usuario.getRoles().stream()
+                            .flatMap(r -> r.getPermisosList().stream())
+                            .map(p -> p.getName())
+                            .toList());
+        System.out.println("Authorities finales: " + authorityList);
+        System.out.println("===========================");
+
+
+        System.out.println("Usuario: " + usuario.getUsername() + usuario.getRoles());*/
+        
             return new User(usuario.getUsername(), 
                 usuario.getPassword(), 
                 usuario.isEnabled(),
@@ -79,15 +108,6 @@ public class UsuarioService implements UserDetailsService{
         usuario.setPassword(datos.getPassword());
 
         return usuarioRepository.save(usuario);
-    }
-
-    //INICIAR SESION
-    public Usuario autenticar(LoginUsuarioDto datos){
-        loadUserByUsername(datos.getUsername()); 
-
-        return usuarioRepository.findByUsername(datos.getUsername())
-                .filter(e -> e.getPassword().equals(datos.getPassword()))
-                .orElseThrow(() -> new UsuarioNoRegistrado("El usuario ingresado no se encuentra registrado."));
     }
 
     //REGISTRAR USUARIO
