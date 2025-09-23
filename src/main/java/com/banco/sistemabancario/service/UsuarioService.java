@@ -31,9 +31,6 @@ public class UsuarioService implements UserDetailsService{
         this.personaRepository = personaRepository;
     }
 
-    /* NUEVA IMPLEMENTACION*/
-    /* */
-
     //INICIAR SESION
     public Usuario autenticar(LoginUsuarioDto datos){
         loadUserByUsername(datos.getUsername()); 
@@ -43,6 +40,7 @@ public class UsuarioService implements UserDetailsService{
                 .orElseThrow(() -> new UsuarioNoRegistrado("El usuario ingresado no se encuentra registrado."));
     }
 
+    
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         
@@ -66,7 +64,7 @@ public class UsuarioService implements UserDetailsService{
         //CONSTRUCCION DEL OBJETO USERDETAILS DE SPRING SECURITY PARA AUTENTICAR
 
 
-         /*System.out.println("===== USUARIO CARGADO =====");
+         /*System.out.println("USUARIO CARGADO");
         System.out.println("Username: " + usuario.getUsername());
         System.out.println("Password: " + usuario.getPassword());
         System.out.println("Roles: " + usuario.getRoles().stream()
@@ -78,8 +76,6 @@ public class UsuarioService implements UserDetailsService{
                             .toList());
         System.out.println("Authorities finales: " + authorityList);
         System.out.println("===========================");
-
-
         System.out.println("Usuario: " + usuario.getUsername() + usuario.getRoles());*/
         
             return new User(usuario.getUsername(), 
@@ -91,10 +87,6 @@ public class UsuarioService implements UserDetailsService{
                 authorityList
                 );
         }       
-
-    /* */
-    /* */
-    
 
     //ACTUALIZAR USUARIO
     public Usuario actualizarUsuario(ActualizarUsuarioDto datos, int idPersona){

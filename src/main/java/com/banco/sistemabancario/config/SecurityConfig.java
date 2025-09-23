@@ -1,5 +1,6 @@
 package com.banco.sistemabancario.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,10 +26,19 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity                       //PERMITE TRABAJAR CON ANOTACIONES
 public class SecurityConfig{
 
+    @Autowired
+    JwtUtils jwtUtils;
+
+    @Autowired
+    UserDetailsService userDetailsService;
+
     //FILTRO (CONDICIONES PERSONALIZADAS)
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception{
         
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/autenticar"); //CAMBIAR LA RUTA DE LOGIN
+
         return httpSecurity
             .csrf(csrf -> csrf.disable()) //VULNERABILIDAD EN LOS FORM WEB
             .authorizeHttpRequests(auth -> {
@@ -48,8 +58,7 @@ public class SecurityConfig{
             })
             .sessionManagement(session -> //ADMINISTRADOR DE LA SESION
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //NO GUARDA LA SESSION EN MEMORIA
-            .httpBasic()
-            .and()
+            .addFilter(jwtAuthenticationFilter) //AGREGA EL FILTRO DE AUTENTICACION
             .build();
     }
 

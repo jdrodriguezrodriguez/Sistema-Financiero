@@ -2,14 +2,16 @@ package com.banco.sistemabancario.config;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.banco.sistemabancario.controller.PersonaController;
 import com.banco.sistemabancario.exception.GlobalExceptionHandler;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -55,6 +57,26 @@ public class JwtUtils {
             logger.error("Error al validar el token", e);
             return false;
         }
+    }
+
+    //OBTENER EL USERNAME DEL TOKEN+
+    public String getUsername(String token){
+        return getClaim(token, Claims::getSubject);
+    }
+
+    //OBTENER UN SOLO CLAIM
+    public <T> T getClaim(String token, Function<Claims, T> claimsTFunction){
+        Claims claims = extractAllClaims(token);
+        return claimsTFunction.apply(claims);
+    }
+
+    //OBTENER TODOS LOS CLAIMS DEL TOKEN
+    public Claims extractAllClaims(String token){
+        return Jwts.parser()
+            .setSigningKey(getSignatureKey())
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
     }
 
     //OBTENER FIRMA DEL TOKEN
