@@ -1,0 +1,31 @@
+document.getElementById("LoginForm").addEventListener("submit", function (e){
+    e.preventDefault()
+
+    const datos = {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value
+    }
+
+    fetch("/autenticar", {
+        method: "POST",
+        headers:{
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(datos)
+    })
+
+    .then(response =>{
+        if(!response.ok) throw response
+
+        return response.json();
+    })
+
+    .then(data =>{
+        window.location.replace("/index");
+    })
+
+    .catch(async error =>{
+        let errores = await error.json();
+        document.getElementById("resultado").innerText = errores.detalle
+    })    
+})

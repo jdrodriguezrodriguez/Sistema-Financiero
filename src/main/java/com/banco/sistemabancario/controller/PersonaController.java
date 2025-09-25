@@ -1,17 +1,23 @@
 package com.banco.sistemabancario.controller;
 
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
-import com.banco.sistemabancario.dto.RegistroPersonaDTO;
+import com.banco.sistemabancario.dto.ActualizarPersonaDto;
+import com.banco.sistemabancario.dto.RegistroPersonaDto;
 import com.banco.sistemabancario.service.PersonaService;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
 public class PersonaController {
@@ -23,49 +29,38 @@ public class PersonaController {
         this.personaService = personaService;
     }
 
-    //REGISTRAR
+    //REGISTRAR UNA PERSONA
     @PostMapping("/registro")
-    public String registrar(@RequestParam String nombre, 
-                            @RequestParam String apellido, 
-                            @RequestParam String documento, 
-                            @RequestParam String nacimiento, 
-                            @RequestParam String correo, 
-                            @RequestParam String password) {
+    public ResponseEntity<?> registrar(@Valid @RequestBody RegistroPersonaDto datos) {
        
-        RegistroPersonaDTO datos = new RegistroPersonaDTO(nombre, apellido, documento, nacimiento, correo, password);
-        
         try{
-
-            if (personaService.registrarPersona(datos) != null) {
+            personaService.registrarPersona(datos);
             logger.info("El registro se realizo correctamente");
-            return "redirect:/login.html";
-            }else{
-                return "redirect:/login.html?error=";
-            }
+            return ResponseEntity.ok(Map.of("Mensaje", "Registro exitoso"));
             
         }catch(IllegalArgumentException e){
-            logger.error("Error al registrar a la persona", e);
-            return "redirect:/login.html?error=";
-        }        
+            logger.error("Error al registrar a la persona {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }       
     }
 
-    //ACTUALIZAR
-    @PostMapping("/actualizarPersona")
-    public String actualizarDatosPersona(@RequestParam String nombre,
-                                        @RequestParam String apellido,
-                                        @RequestParam String correo,
-                                        @RequestParam String nacimiento,  HttpSession session){
+    //ACTUALIZAR UNA PERSONA EXISTENTE
+    @PutMapping("/actualizarPersona")
+    public ResponseEntity<?> actualizarDatosPersona(@Valid @RequestBody ActualizarPersonaDto actualizarPersonaDto,  HttpSession session){
       
         Integer idPersona = (Integer) session.getAttribute("idPersona");
+        if (idPersona == null) {
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesion no valida");
+        }
 
         try{
-            personaService.actualizarPersona(nombre, apellido, correo, nacimiento, idPersona);
+            personaService.actualizarPersona(actualizarPersonaDto, idPersona);
             logger.info("Los datos personales fueron actualizados correctamente");
-            return "redirect:/index.html";
+            return ResponseEntity.ok(Map.of("Mensaje", "Actualizacion exitosa"));
             
         }catch(NoSuchElementException e){
             logger.error("Error en actualizar los datos personales:", e);
-            return "redirect:/update.html?error=";
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

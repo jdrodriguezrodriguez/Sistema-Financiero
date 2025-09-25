@@ -69,6 +69,4 @@ public class Cuenta {
     public void setEstado(String estado) {
         this.estado = estado;
     }
-
-    
 }

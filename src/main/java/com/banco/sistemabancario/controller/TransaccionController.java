@@ -9,17 +9,22 @@ import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.banco.sistemabancario.dto.TransferirDineroDto;
 import com.banco.sistemabancario.entity.Transaccion;
 import com.banco.sistemabancario.service.TransaccionService;
 
 import jakarta.servlet.http.HttpSession;
-import org.springframework.web.bind.annotation.GetMapping;
+import jakarta.validation.Valid;
 
+import org.springframework.web.bind.annotation.GetMapping;
 
 
 @Controller
@@ -32,23 +37,27 @@ public class TransaccionController {
         this.transaccionService = transaccionService;
     }
 
-    //TRANSFERIR DINERO
+    //TRANSFERIR DINERO ENTRE USUARIOS
     @PostMapping("/transaccion/transferir")
-    public String transferirDinero(@RequestParam String valor, @RequestParam String cuentaDestino, @RequestParam String descripcion, HttpSession session) {
-        try {
-           
-            Integer idPersona = (Integer) session.getAttribute("idPersona");
-            transaccionService.transferir(idPersona, cuentaDestino, valor, descripcion);
+    public ResponseEntity<?> transferirDinero(@Valid @RequestBody TransferirDineroDto datos, HttpSession session) {
 
-            return "redirect:/index.html";
+        Integer idPersona = (Integer) session.getAttribute("idPersona");
+        if (idPersona == null) {
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesion no valida.");
+        }
+
+        try {
+            transaccionService.transferir(idPersona, datos);
+
+            return ResponseEntity.ok(Map.of("Mensaje", "Transaccion realizada con exito."));
 
         } catch (NoSuchElementException e) {
             logger.error("Error al transferir el dinero", e);
-            return "redirect:/index.html?error";
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    //DEPOSITAR DINERO
+    //DEPOSITAR DINERO A UNA CUENTA
     @PostMapping("/transaccion/depositar")
     public String depositarDinero(@RequestParam String valor, HttpSession session){
 

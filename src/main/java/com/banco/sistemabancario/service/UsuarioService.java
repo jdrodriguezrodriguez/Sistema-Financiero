@@ -1,16 +1,27 @@
 package com.banco.sistemabancario.service;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import java.util.NoSuchElementException;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
+import com.banco.sistemabancario.dto.LoginUsuarioDto;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
+import com.banco.sistemabancario.exception.UsuarioNoRegistrado;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements UserDetailsService{
     
     private UsuarioRepository usuarioRepository;
     private PersonaRepository personaRepository;
@@ -20,25 +31,58 @@ public class UsuarioService {
         this.personaRepository = personaRepository;
     }
 
+    /*
+    public Usuario autenticar(LoginUsuarioDto datos){
+        return usuarioRepository.findByUsername(datos.getUsername())
+                .filter(e -> e.getPassword().equals(datos.getPassword()))
+                .orElseThrow(() -> new UsuarioNoRegistrado("El usuario ingresado no se encuentra registrado."));
+    }*/
+
+    
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
+        
+        Usuario usuario = usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("El usuario: " + username + "no existe"));
+
+
+        //TOMAR ROLES y PERMISOS DE USUARIO PARA CONVERTIR A OBJETO DE SPRING SECURITY
+        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();   //CREAR LISTA DE PERMISOS,  YA QUE SPRING MANEJA PERMISOS CON GRANTEDAUTHORITY Y ESTA ES UNA DE SUS IMPLEMENTACIONES
+
+        usuario.getRoles()
+            .forEach( rol -> 
+                authorityList.add(
+                    new SimpleGrantedAuthority("ROLE_" .concat(rol.getRoleEnum().name()))));      //TOMAMOS LOS ROLES Y LOS CONVERTIMOS A SimpleGrantedAuthority - PREFIJO ROLE_ OBLIGATORIO
+                                                                                                       
+        usuario.getRoles().stream()     
+            .flatMap(rol -> rol.getPermisosList().stream())  
+            .forEach(permiso -> 
+                authorityList.add(new SimpleGrantedAuthority(permiso.getName())));  //AGREGAR CADA PERMISO A CADA ROL
+
+        //CONSTRUCCION DEL OBJETO USERDETAILS DE SPRING SECURITY PARA AUTENTICAR
+
+            return new User(usuario.getUsername(), 
+                usuario.getPassword(), 
+                usuario.isEnabled(),
+                usuario.isAccountNoExpired(),
+                usuario.isCredentialNoExpired(),
+                usuario.isAccountNoLocked(),
+                authorityList
+                );
+        }       
+
     //ACTUALIZAR USUARIO
-    public Usuario actualizarUsuario(String username, String password, int idPersona){
+    public Usuario actualizarUsuario(ActualizarUsuarioDto datos, int idPersona){
         Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow(() -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
+                .orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
         Usuario usuario = usuarioRepository.findByPersona(persona);
 
-        validarUsuario(username, usuario.getIdUsuario());
+        validarUsuario(datos.getUsername(), usuario.getIdUsuario());
 
-        usuario.setUsername(username);
-        usuario.setPassword(password);
+        usuario.setUsername(datos.getUsername());
+        usuario.setPassword(datos.getPassword());
 
         return usuarioRepository.save(usuario);
-    }
-
-    //INICIAR SESION
-    public Usuario autenticar(String username, String password){
-        return usuarioRepository.findByUsername(username)
-                .filter(e -> e.getPassword().equals(password))
-                .orElse(null);
     }
 
     //REGISTRAR USUARIO
@@ -71,7 +115,7 @@ public class UsuarioService {
         return true;
     }
 
-    //VALIDAR NOMBRE PARA USUARIO
+    //VALIDAR QUE EL USERNAME NO EXISTA
     public void validarUsuario(String username, int idActual){
 
         Optional<Usuario> existente = usuarioRepository.findByUsername(username);

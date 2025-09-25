@@ -15,9 +15,9 @@
         <div class="div-form">
             <section class="section-form">
                 <h2>Iniciar Sesión</h2>
-                <form action="/login" method="post">
+                <form id="LoginForm">
                     <label for="nombre">Usuario:</label>
-                    <input type="text" id="nombre" name="username" required>
+                    <input type="text" id="username" name="username" required>
 
                     <label for="password">Contraseña:</label>
                     <input type="password" id="password" name="password" required>
@@ -29,6 +29,7 @@
                     <a  class="register" href="/register.html">Registrarme</a>
                 </div>
              </section>  
+            <div id="resultado" class="resultado"></div>
         </div>
     </main>
 
@@ -36,6 +37,7 @@
         <p>© 2025 Sistema Financiero</p>
     </footer>
 
-    <script src="./js/script.js"></script>  
+    <script src="./js/script.js"></script>
+    <script src="./js/login.js"></script>  
 </body>
 </html>

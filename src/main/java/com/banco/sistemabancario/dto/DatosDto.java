@@ -2,15 +2,15 @@ package com.banco.sistemabancario.dto;
 
 import java.sql.Date;
 
-public class DatosDTO {
+public class DatosDto {
 
     private String nombre, apellido, documento, correo, username, rol, numCuenta, estado;
     private Date nacimiento;
 
-    public DatosDTO(){
+    public DatosDto(){
     }
 
-    public DatosDTO(String nombre, String apellido, String documento, String correo, String username, String rol,
+    public DatosDto(String nombre, String apellido, String documento, String correo, String username, String rol,
             String numCuenta, String estado, Date nacimiento) {
         this.nombre = nombre;
         this.apellido = apellido;

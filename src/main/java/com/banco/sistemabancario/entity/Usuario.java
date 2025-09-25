@@ -1,11 +1,18 @@
 package com.banco.sistemabancario.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -17,9 +24,9 @@ public class Usuario {
     @Column(name = "idUsuario")
     private Integer idUsuario;
 
-    @OneToOne
+    @OneToOne           //Usuario//                         //Persona//
     @JoinColumn(name = "idPersona", referencedColumnName = "idPersona")
-                        //Usuario//                         //Persona//
+                        
     private Persona persona;
 
     @Column(nullable = false)
@@ -30,16 +37,51 @@ public class Usuario {
 
     @Column(nullable = false)
     private String rol;
+    
 
+    /* */
+    /* */
+    /* */
+    //NUEVA IMPLEMENTACION, AGREGAR A LA BASE DE DATOS:
+    /* */
+    /* */
+    /* */
+
+    @Column(name = "is_enabled")
+    private boolean isEnabled;
+
+    @Column(name = "account_no_expired")
+    private boolean accountNoExpired;
+
+    @Column(name = "account_no_locked")
+    private boolean accountNoLocked;
+
+    @Column(name = "credential_no_expired")
+    private boolean credentialNoExpired;
+
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)        //CARGAR TODOS LOS ROLES DEL USUARIO
+    @JoinTable(name = "user_roles", joinColumns =  @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Roles> roles = new HashSet<>();
+
+    /* */
+    /* */
+    /* */
+    
     public Usuario(){
     }
 
-    public Usuario(int idUsuario, String username, String password, String rol, Persona persona){
+    public Usuario(int idUsuario, String username, String password, String rol, Persona persona, boolean isEnabled, boolean accountNoExpired, boolean accountNoLocked, boolean credentialNoExpired, Set<Roles> roles){
         this.idUsuario = idUsuario;
         this.username = username;
         this.password = password;
         this.rol = rol;
         this.persona = persona;
+        this.isEnabled = isEnabled;
+        this.accountNoExpired = accountNoExpired;
+        this.accountNoLocked = accountNoLocked;
+        this.credentialNoExpired = credentialNoExpired;
+        this.roles = roles;
     }
 
     public Integer getIdUsuario(){
@@ -77,5 +119,38 @@ public class Usuario {
         this.persona = persona;
     }
 
-    
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+    public void setEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
+
+    public boolean isAccountNoExpired() {
+        return accountNoExpired;
+    }
+    public void setAccountNoExpired(boolean accountNoExpired) {
+        this.accountNoExpired = accountNoExpired;
+    }
+
+    public boolean isAccountNoLocked() {
+        return accountNoLocked;
+    }
+    public void setAccountNoLocked(boolean accountNoLocked) {
+        this.accountNoLocked = accountNoLocked;
+    }
+
+    public boolean isCredentialNoExpired() {
+        return credentialNoExpired;
+    }
+    public void setCredentialNoExpired(boolean credentialNoExpired) {
+        this.credentialNoExpired = credentialNoExpired;
+    }
+
+    public Set<Roles> getRoles() {
+        return roles;
+    }
+    public void setRoles(Set<Roles> roles) {
+        this.roles = roles;
+    }
 }

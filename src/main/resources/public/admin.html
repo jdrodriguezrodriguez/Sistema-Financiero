@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>transferencia</title>
+    <title>Inicio</title>
     <link rel="stylesheet" href="./css/index.css"> 
-    <link rel="stylesheet" href="./css/operaciones.css">
 </head>
 <body>
     <header>
         <nav class="nav">
-            <div class="logo">Sistema financiero</div> 
+            <div class="logo">Sistema financiero - Administrador</div> 
             <ul class="menu">
-                <li><a href="index.html" class="enlace" id="inicio">Inicio</a></li>
-                <li><a href="#" class="enlace" id="actualizar">Servicios</a></li> 
-                <li><a href="#" class="enlace" id="contacto">Contáctanos</a></li> 
+                <li><a href="#" class="enlace" id="inicio">Inicio</a></li>
                 <li><a href="/logout" class="enlace" id="contacto">Cerrar sesión</a></li> 
             </ul>
             <ul class="menu-perfil">
@@ -34,33 +31,41 @@
         </nav>
     </header>
 
-    <section class="depositar-form">
-        <h2>Ingrese los datos para transferir</h2>
-        <form id="transferirDinero">
-            <div class="grupo-campos">
-                <label for="valor">Valor a transferir:</label>
-                <input type="number" id="valor" name="valor" required min="500">
-
-                <label for="valor">Numero de cuenta:</label>
-                <input type="text" id="cuentaDestino" name="cuentaDestino" required>
-
-                <label for="valor">Detalles de transferencia:</label>
-                <input type="text" id="descripcion" name="descripcion" required>
-            </div>
-
-            <div class="boton-container">
-                <button type="submit">Confirmar</button>
-            </div>
-            <div id="resultado" class="resultado"></div>
-        </form>
+    <section class="introduccion">
+        <div class="texto-portada">
+            <h1>Bienvenido</h1>
+            <p>¡Bienvenido al Sistema Financiero! Podras gestionar los usuarios, roles, cuentas y demas entidades que esten en la cobertura de el sistema financiero.</p>
+        </div>
+        
+        <div class="portada"><img src="Images/admin.png" class="admin" alt="Sistema financiero"></div>
     </section>
-   
+
+    <section class="categoria-admin">
+        <h1>¿Que operacion deseas realizar?</h1>
+        <div class="fila">
+            <div class="operaciones">
+                <a href="#"><h1>Editar</h1></a>
+            </div>
+            <div class="operaciones">
+                <a href="#"><h1>Eliminar</h1></a>
+            </div>
+        </div>
+
+        <div class="fila">
+            <div class="operaciones">
+                <a href="#"><h1>Consultar</h1></a>
+            </div>
+            <div class="operaciones">
+                <a href="#"><h1>Bloquear</h1></a>
+            </div>
+        </div>
+    </section>
+
 
     <footer>
         <p>© 2025 Sistema Financiero</p>
     </footer>
 
     <script src="./js/script.js"></script>  
-    <script src="./js/transacciones.js"></script>  
 </body>
 </html>

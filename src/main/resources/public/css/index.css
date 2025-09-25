@@ -139,6 +139,18 @@ h1, h2 {
     max-width: 900px;
 }
 
+.categoria-admin{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding-top: 2rem;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 900px;
+}
+
+
 .categoria h1{
     color: #9ea355f1;
     font-size: 30px;   
@@ -187,4 +199,20 @@ footer {
     background-color: #1f1f1f;
     color: white;
     margin-top: 8rem;
+}
+
+
+/*ERROR RESULTADO*/
+
+.resultado{
+    color: #e06e03;
+    padding-top: 2rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+.admin{
+    width: 300px;
+    height: auto;
 }

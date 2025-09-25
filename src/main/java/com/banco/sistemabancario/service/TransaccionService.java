@@ -5,95 +5,118 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.banco.sistemabancario.dto.TransferirDineroDto;
 import com.banco.sistemabancario.entity.Cuenta;
-import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Transaccion;
-import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.exception.CuentaDeshabilitadaException;
+import com.banco.sistemabancario.exception.CuentaNoEncontradaException;
+import com.banco.sistemabancario.exception.SaldoInsuficienteException;
+import com.banco.sistemabancario.exception.ValorInvalidoException;
 import com.banco.sistemabancario.repository.CuentaRepository;
-import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.TransaccionRepository;
-import com.banco.sistemabancario.repository.UsuarioRepository;
 
 @Service
 public class TransaccionService {
 
-    private TransaccionRepository transaccionRepository;
-    private PersonaRepository personaRepository;
-    private UsuarioRepository usuarioRepository;
-    private CuentaRepository cuentaRepository;
+    private static final BigDecimal MONTO_MINIMO = new BigDecimal("2000.00");
 
-    public TransaccionService(TransaccionRepository transaccionRepository, PersonaRepository personaRepository,
-            UsuarioRepository usuarioRepository, CuentaRepository cuentaRepository) {
+    private TransaccionRepository transaccionRepository;
+    private CuentaRepository cuentaRepository;
+    private CuentaService cuentaService;
+
+    public TransaccionService(TransaccionRepository transaccionRepository, CuentaRepository cuentaRepository, CuentaService cuentaService) {
         this.transaccionRepository = transaccionRepository;
-        this.personaRepository = personaRepository;
-        this.usuarioRepository = usuarioRepository;
         this.cuentaRepository = cuentaRepository;
+        this.cuentaService = cuentaService;
     }
 
     //TRANSFERIR
-    public Transaccion transferir(int idPersona, String cuentaDestino, String valor, String descripcion){
+    @Transactional
+    public Transaccion transferir(int idPersona, TransferirDineroDto datos){
+
         
-        BigDecimal monto = new BigDecimal(valor.trim());
+        try {
+            BigDecimal monto = new BigDecimal(datos.getValor().trim());
+            if (monto.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new ValorInvalidoException("El valor debe ser mayor $0.");
+            }
 
-        Cuenta cuentaEntrada = buscarCuenta(idPersona);
-        Cuenta cuentaSalida = cuentaRepository.findById(cuentaDestino)
-                .orElseThrow(() -> new NoSuchElementException("No se encontro a la cuenta con el ID: " + cuentaDestino));
+            Cuenta cuentaEntrada = cuentaService.buscarCuenta(idPersona);
+            Cuenta cuentaSalida = cuentaRepository.findById(datos.getCuentaDestino())
+                    .orElseThrow(() -> new CuentaNoEncontradaException("No se encontro a la cuenta con el ID: " + datos.getCuentaDestino()));
 
-        cuentaEntrada.setSaldo(cuentaEntrada.getSaldo().subtract(monto));
-        cuentaSalida.setSaldo(cuentaSalida.getSaldo().add(monto));
+            if (!cuentaSalida.getEstado().equals("ACTIVA")) {
+                throw new CuentaDeshabilitadaException("La cuenta destino se encuentra deshabilitada.");
+            }
 
-        Transaccion historialEntrada = new Transaccion();
-        historialEntrada.setCuenta(cuentaEntrada);
-        historialEntrada.setCuenta_destino(cuentaDestino);
-        historialEntrada.setTipo("TRANSFERENCIA");
-        historialEntrada.setMonto(monto.negate());
-        historialEntrada.setFecha(generarFechaActual());
-        historialEntrada.setDescripcion(descripcion);
+            if (cuentaEntrada.getSaldo().compareTo(monto) < 0) {                        //0 ==, 1 >, -1 <
+                throw new SaldoInsuficienteException("Saldo insuficiente para realizar la transaccion.");
+            }
 
-        Transaccion historialSalida = new Transaccion();
-        historialSalida.setCuenta(cuentaEntrada);
-        historialSalida.setCuenta_destino(cuentaDestino);
-        historialSalida.setTipo("TRANSFERENCIA");
-        historialSalida.setMonto(monto);
-        historialSalida.setFecha(generarFechaActual());
-        historialSalida.setDescripcion(descripcion);
-        
-        cuentaRepository.save(cuentaEntrada);
-        cuentaRepository.save(cuentaSalida);
-        transaccionRepository.save(historialEntrada);
-        
-        return transaccionRepository.save(historialSalida);
+            cuentaEntrada.setSaldo(cuentaEntrada.getSaldo().subtract(monto));
+            cuentaSalida.setSaldo(cuentaSalida.getSaldo().add(monto));
+
+           Transaccion historialEntrada = crearTransaccion(cuentaEntrada, datos.getCuentaDestino(), "TRANSFERENCIA", monto.negate(), datos.getDescripcion());
+           Transaccion historialSalida = crearTransaccion(cuentaSalida, datos.getCuentaDestino(), "TRANSFERENCIA", monto, datos.getDescripcion());
+            
+            cuentaRepository.save(cuentaEntrada);
+            cuentaRepository.save(cuentaSalida);
+            transaccionRepository.save(historialEntrada);
+            
+            return transaccionRepository.save(historialSalida);
+        } catch (NumberFormatException e) {
+            throw new ValorInvalidoException("Formato de valor inválido:" + e.getMessage());
+        }
     }
 
     //TRANSFERENCIAS
     public List<Transaccion> transacciones(int idPersona){
-        Cuenta cuenta = buscarCuenta(idPersona);
+        Cuenta cuenta = cuentaService.buscarCuenta(idPersona);
         return transaccionRepository.findByCuenta(cuenta);
     }
 
     //DEPOSITAR
     public Transaccion depositar(int idPersona, String valor){
+        try {
 
-        BigDecimal monto = new BigDecimal(valor);
+            BigDecimal monto = new BigDecimal(valor.trim());
 
-        Cuenta cuenta = buscarCuenta(idPersona);
-        
-        cuenta.setSaldo(cuenta.getSaldo().add(monto));
-        cuentaRepository.save(cuenta);
+            if (monto.compareTo(MONTO_MINIMO) <= 0) {
+                throw new ValorInvalidoException("El valor a depositar debe ser mayor o igual a $2.000");
+            }
 
-        Transaccion transaccion = new Transaccion(cuenta, cuenta.getNum_cuenta(), "DEPOSITO", monto, generarFechaActual(), "Deposito de $" + valor);
+            Cuenta cuenta = cuentaService.buscarCuenta(idPersona);
+            cuenta.setSaldo(cuenta.getSaldo().add(monto));
+            cuentaRepository.save(cuenta);
 
-        return transaccionRepository.save(transaccion);
+            Transaccion transaccion = new Transaccion(cuenta, cuenta.getNum_cuenta(), "DEPOSITO", monto, generarFechaActual(), "Deposito de $" + valor);
+
+            return transaccionRepository.save(transaccion);
+        } catch (NumberFormatException e) {
+            throw new ValorInvalidoException("Formato de valor inválido" + e.getMessage());
+        }
     }
 
     //CONSULTAR
     public BigDecimal consultar(int idPersona){
-        Cuenta cuenta = buscarCuenta(idPersona);
+        Cuenta cuenta = cuentaService.buscarCuenta(idPersona);
         return cuenta.getSaldo();
+    }
+
+    //CREAR TRANSACCION
+    public Transaccion crearTransaccion(Cuenta cuenta, String cuentaDestino, String tipo, BigDecimal monto, String descripcion){
+        Transaccion t = new Transaccion();
+        t.setCuenta(cuenta);
+        t.setCuenta_destino(cuentaDestino);
+        t.setTipo(tipo);
+        t.setFecha(generarFechaActual());
+        t.setMonto(monto);
+        t.setDescripcion(descripcion);
+        return t;
     }
 
     //GENERAR FECHA ACTUAL
@@ -101,23 +124,5 @@ public class TransaccionService {
         LocalDateTime ahora = LocalDateTime.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return ahora.format(formato);
-    }
-
-    //BUSCAR CUENTA
-    public Cuenta buscarCuenta(int idPersona){
-        Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow( () -> new NoSuchElementException("No se encontro a la persona con el ID: " + idPersona));
-
-        Usuario usuario = usuarioRepository.findByPersona(persona);
-        if (usuario == null) {
-            throw new NoSuchElementException("No se encontró el usuario para la persona con ID: " + idPersona);
-        }
-
-        Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
-        if (cuenta == null) {
-            throw new NoSuchElementException("No se encontró la cuenta para el usuario con ID: " + usuario.getIdUsuario());
-        }
-        
-        return cuenta;
     }
 }
