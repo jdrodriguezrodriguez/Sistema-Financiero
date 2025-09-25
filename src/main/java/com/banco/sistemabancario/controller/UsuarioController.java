@@ -64,7 +64,7 @@ public class UsuarioController {
         return "redirect:/login.html";
     }
 
-    //INICIAR SESION
+    /*
     @PostMapping("/autenticar")
     public ResponseEntity<?> login(@RequestBody LoginUsuarioDto datos, HttpSession session) {
         
@@ -73,7 +73,7 @@ public class UsuarioController {
         session.setAttribute("idPersona", usuario.getPersona().getIdPersona());
         
         return ResponseEntity.ok(Map.of("Mensaje", "Acceso correcto"));
-    }
+    }*/
 
     //DATOS DEL USUARIO EN LINEA
     @GetMapping("/api/datos")

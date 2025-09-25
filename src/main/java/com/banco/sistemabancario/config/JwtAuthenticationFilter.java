@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -22,10 +23,12 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
-    private JwtUtils JwtUtils;
+    private final AuthenticationManager authenticationManager;
+    private JwtUtils jwtUtils;
 
     public JwtAuthenticationFilter(JwtUtils jwtUtils) {
-        this.JwtUtils = jwtUtils;
+        this.authenticationManager = null;
+        this.jwtUtils = jwtUtils;
     }
 
     @Override
@@ -39,8 +42,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         try{
             usuario = new ObjectMapper().readValue(request.getInputStream(), Usuario.class);
 
-            username = usuario.getUsername();
-            password = usuario.getPassword();
+            if (usuario != null) {
+                username = usuario.getUsername();
+                password = usuario.getPassword();
+                
+            }else{
+                throw new RuntimeException("Error al autenticar el usuario");
+            }
 
         }catch(Exception e){
             e.printStackTrace() ;
@@ -48,6 +56,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         UsernamePasswordAuthenticationToken authenticationToken  = new UsernamePasswordAuthenticationToken(username, password); //AUTENTICAR CON LOS DOS PARAMETROS
+
         return getAuthenticationManager().authenticate(authenticationToken);
     }
 
@@ -60,8 +69,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             Authentication authResult) throws IOException, ServletException {
         
         User user = (User) authResult.getPrincipal();           //OBTENER EL DETALLES DEL USUARIO AUTENTICADO  
+        if (user == null) {
+            throw new RuntimeException("Error al autenticar el usuario");
+        }
         
-        String token = JwtUtils.generateAccessToken(user.getUsername()); //GENERAR EL TOKEN
+        String token = jwtUtils.generateAccessToken(user.getUsername()); //GENERAR EL TOKEN
 
         response.addHeader("Authorization", token);
         
@@ -70,6 +82,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         httpresponse.put("token", token);
         httpresponse.put("Message", "Autenticacion exitosa");
         httpresponse.put("username", user.getUsername());
+
+        System.out.println("TOKEN: " + token);
+        System.out.println("Usuario: " + user.getUsername());
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(httpresponse));
         response.setStatus(HttpStatus.OK.value());

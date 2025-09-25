@@ -35,12 +35,21 @@ public class JwtUtils {
 
     //CREAER TOKEN
     public String generateAccessToken(String username){
-        return Jwts.builder()
+        try {
+            String token = Jwts.builder()
             .setSubject(username)
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(timeExpiration)))
             .signWith(getSignatureKey(), SignatureAlgorithm.HS256)
             .compact();
+
+            logger.info("Token generado correctamente " + token +"\n");
+            return token;
+            
+        } catch (Exception e) {
+            logger.error("Error al generar el token", e);
+            throw new RuntimeException("Error al generar el token JWT");
+        }
     }
 
     //VALIDAR TOKEN DE ACCESO

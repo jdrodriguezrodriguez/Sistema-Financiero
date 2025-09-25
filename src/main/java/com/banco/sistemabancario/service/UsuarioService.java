@@ -31,14 +31,12 @@ public class UsuarioService implements UserDetailsService{
         this.personaRepository = personaRepository;
     }
 
-    //INICIAR SESION
+    /*
     public Usuario autenticar(LoginUsuarioDto datos){
-        loadUserByUsername(datos.getUsername()); 
-
         return usuarioRepository.findByUsername(datos.getUsername())
                 .filter(e -> e.getPassword().equals(datos.getPassword()))
                 .orElseThrow(() -> new UsuarioNoRegistrado("El usuario ingresado no se encuentra registrado."));
-    }
+    }*/
 
     
     @Override
@@ -54,30 +52,15 @@ public class UsuarioService implements UserDetailsService{
         usuario.getRoles()
             .forEach( rol -> 
                 authorityList.add(
-                    new SimpleGrantedAuthority("ROLE_" .concat(rol.getRoleEnum().name()))));          //TOMAMOS LOS ROLES Y LOS CONVERTIMOS A SimpleGrantedAuthority - PREFIJO ROLE_ OBLIGATORIO
+                    new SimpleGrantedAuthority("ROLE_" .concat(rol.getRoleEnum().name()))));      //TOMAMOS LOS ROLES Y LOS CONVERTIMOS A SimpleGrantedAuthority - PREFIJO ROLE_ OBLIGATORIO
                                                                                                        
-        usuario.getRoles().stream()       //RECORRER CADA ROL
-            .flatMap(rol -> rol.getPermisosList().stream())  //ROL RECORRE CADA PERMISO
+        usuario.getRoles().stream()     
+            .flatMap(rol -> rol.getPermisosList().stream())  
             .forEach(permiso -> 
                 authorityList.add(new SimpleGrantedAuthority(permiso.getName())));  //AGREGAR CADA PERMISO A CADA ROL
 
         //CONSTRUCCION DEL OBJETO USERDETAILS DE SPRING SECURITY PARA AUTENTICAR
 
-
-         /*System.out.println("USUARIO CARGADO");
-        System.out.println("Username: " + usuario.getUsername());
-        System.out.println("Password: " + usuario.getPassword());
-        System.out.println("Roles: " + usuario.getRoles().stream()
-                            .map(r -> r.getRoleEnum().name())
-                            .toList());
-        System.out.println("Permisos: " + usuario.getRoles().stream()
-                            .flatMap(r -> r.getPermisosList().stream())
-                            .map(p -> p.getName())
-                            .toList());
-        System.out.println("Authorities finales: " + authorityList);
-        System.out.println("===========================");
-        System.out.println("Usuario: " + usuario.getUsername() + usuario.getRoles());*/
-        
             return new User(usuario.getUsername(), 
                 usuario.getPassword(), 
                 usuario.isEnabled(),
