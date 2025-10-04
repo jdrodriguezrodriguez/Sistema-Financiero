@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.config;
+package com.banco.sistemabancario.security.jwt;
 
 import java.security.Key;
 import java.util.Date;
@@ -69,7 +69,7 @@ public class JwtUtils {
     }
 
     //OBTENER EL USERNAME DEL TOKEN+
-    public String getUsername(String token){
+    public String getUsernameFromToken(String token){
         return getClaim(token, Claims::getSubject);
     }
 

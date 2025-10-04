@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.config;
+package com.banco.sistemabancario.security.filters;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.security.jwt.JwtUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.FilterChain;

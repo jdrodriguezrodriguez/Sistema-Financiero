@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.config;
+package com.banco.sistemabancario.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +13,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.banco.sistemabancario.security.filters.JwtAuthenticationFilter;
+import com.banco.sistemabancario.security.filters.JwtAuthorizationFilter;
+import com.banco.sistemabancario.security.jwt.JwtUtils;
 
 
 
@@ -23,13 +28,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity                       //PERMITE TRABAJAR CON ANOTACIONES
 public class SecurityConfig{
 
-    
     JwtUtils jwtUtils;
     UserDetailsService userDetailsService;
+    JwtAuthorizationFilter jwtAuthorizationFilter;
 
-    public SecurityConfig(JwtUtils jwtUtils, UserDetailsService userDetailsService) {
+    public SecurityConfig(JwtUtils jwtUtils, UserDetailsService userDetailsService, JwtAuthorizationFilter jwtAuthorizationFilter) {
         this.jwtUtils = jwtUtils;
         this.userDetailsService = userDetailsService;
+        this.jwtAuthorizationFilter = jwtAuthorizationFilter;
     }
 
     //FILTRO (CONDICIONES PERSONALIZADAS)
@@ -60,6 +66,7 @@ public class SecurityConfig{
             .sessionManagement(session -> //ADMINISTRADOR DE LA SESION
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //NO GUARDA LA SESSION EN MEMORIA
             .addFilter(jwtAuthenticationFilter) //AGREGA EL FILTRO DE AUTENTICACION
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
     }
 
