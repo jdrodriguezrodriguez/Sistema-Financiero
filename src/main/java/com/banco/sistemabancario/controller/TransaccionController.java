@@ -9,42 +9,42 @@ import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.TransferirDineroDto;
-import com.banco.sistemabancario.entity.Transaccion;
-import com.banco.sistemabancario.service.TransaccionService;
+import com.banco.sistemabancario.serviceImpl.TransaccionServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
-
-@Controller
+@RestController
+@RequestMapping("/api/sistema/transaccion")
 public class TransaccionController {
 
     private static final Logger logger =  LoggerFactory.getLogger(TransaccionController.class);
 
-    private TransaccionService transaccionService;
-    public TransaccionController(TransaccionService transaccionService) {
+    private TransaccionServiceImpl transaccionService;
+    public TransaccionController(TransaccionServiceImpl transaccionService) {
         this.transaccionService = transaccionService;
     }
 
-    //TRANSFERIR DINERO ENTRE USUARIOS
-    @PostMapping("/transaccion/transferir")
-    public ResponseEntity<?> transferirDinero(@Valid @RequestBody TransferirDineroDto datos, HttpSession session) {
+    //TRANSFERIR
+    @PostMapping("/transferir/{idPersona}")
+    public ResponseEntity<?> transferirDinero(@PathVariable int idPersona,@Valid @RequestBody TransferirDineroDto datos, HttpSession session) {
 
-        Integer idPersona = (Integer) session.getAttribute("idPersona");
+        /*Integer idPersona = (Integer) session.getAttribute("idPersona");
         if (idPersona == null) {
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesion no valida.");
-        }
+        }*/
 
         try {
             transaccionService.transferir(idPersona, datos);
@@ -57,8 +57,8 @@ public class TransaccionController {
         }
     }
 
-    //DEPOSITAR DINERO A UNA CUENTA
-    @PostMapping("/transaccion/depositar")
+    //DEPOSITAR
+    @PostMapping("/depositar/{idPersona}")
     public String depositarDinero(@RequestParam String valor, HttpSession session){
 
         try {
@@ -75,27 +75,26 @@ public class TransaccionController {
     }
 
     //CONSULTAR HISTORIAL
-    @GetMapping("/transaccion/historial")
-    @ResponseBody
-    public List<Transaccion> consultarTransacciones(HttpSession session) {
+    @GetMapping("/historial/{idPersona}")
+    public ResponseEntity<?> consultarTransacciones(@PathVariable int idPersona, HttpSession session) {
 
         try {
-            Integer idPersona = (Integer) session.getAttribute("idPersona");
-            return transaccionService.transacciones(idPersona);
+            //Integer idPersona = (Integer) session.getAttribute("idPersona");
+            return ResponseEntity.ok(transaccionService.transacciones(idPersona));
             
         } catch (NoSuchElementException e) {
             logger.error("Error al consultar el historial de transacciones", e);
-            return Collections.emptyList(); 
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
     
     //CONSULTAR DINERO
-    @GetMapping("/transaccion/consultar")
+    @GetMapping("/saldo/{idPersona}")
     @ResponseBody
-    public Map<String, Object> consultarDinero(HttpSession session) {
+    public Map<String, Object> consultarDinero(@PathVariable int idPersona,HttpSession session) {
 
         try {
-            Integer idPersona = (Integer) session.getAttribute("idPersona");
+            //Integer idPersona = (Integer) session.getAttribute("idPersona");
             BigDecimal saldo = transaccionService.consultar(idPersona);
 
             Map<String, Object> reponse = new HashMap<>();

@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.service;
+package com.banco.sistemabancario.serviceImpl;
 
 import java.math.BigDecimal;
 import java.util.Random;

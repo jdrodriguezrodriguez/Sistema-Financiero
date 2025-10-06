@@ -10,7 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.security.jwt.JwtUtils;
-import com.banco.sistemabancario.service.UsuarioService;
+import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,9 +22,9 @@ import jakarta.validation.constraints.NotNull;
 public class JwtAuthorizationFilter extends OncePerRequestFilter{
 
     JwtUtils jwtUtils;
-    private UsuarioService usuarioService;
+    private UsuarioServiceImpl usuarioService;
 
-    public JwtAuthorizationFilter(JwtUtils jwtUtils, UsuarioService usuarioService) {
+    public JwtAuthorizationFilter(JwtUtils jwtUtils, UsuarioServiceImpl usuarioService) {
         this.jwtUtils = jwtUtils;
         this.usuarioService = usuarioService;
     }

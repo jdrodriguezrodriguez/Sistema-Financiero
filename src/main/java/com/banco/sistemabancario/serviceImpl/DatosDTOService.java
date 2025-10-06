@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.service;
+package com.banco.sistemabancario.serviceImpl;
 
 import org.springframework.stereotype.Service;
 

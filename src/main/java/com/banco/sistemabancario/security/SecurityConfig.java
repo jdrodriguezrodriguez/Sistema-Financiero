@@ -23,9 +23,9 @@ import com.banco.sistemabancario.security.jwt.JwtUtils;
 
 
 
-@Configuration(proxyBeanMethods = false)
-@EnableWebSecurity
-@EnableMethodSecurity                       //PERMITE TRABAJAR CON ANOTACIONES
+//@Configuration(proxyBeanMethods = false)
+//@EnableWebSecurity
+//@EnableMethodSecurity                       //PERMITE TRABAJAR CON ANOTACIONES
 public class SecurityConfig{
 
     JwtUtils jwtUtils;
