@@ -14,9 +14,10 @@ import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
+import com.banco.sistemabancario.service.CuentaService;
 
 @Service
-public class CuentaService {
+public class CuentaServiceImpl implements CuentaService{
 
     private static final String ESTADO_CUENTA = "ACTIVA";
     private final Random random = new Random();
@@ -25,7 +26,7 @@ public class CuentaService {
     private UsuarioRepository usuarioRepository;
     private CuentaRepository cuentaRepository;
 
-    public CuentaService(PersonaRepository personaRepository, UsuarioRepository usuarioRepository,
+    public CuentaServiceImpl(PersonaRepository personaRepository, UsuarioRepository usuarioRepository,
             CuentaRepository cuentaRepository) {
         this.personaRepository = personaRepository;
         this.usuarioRepository = usuarioRepository;
@@ -33,6 +34,7 @@ public class CuentaService {
     }
 
     // REGISTRAR CUENTA
+    @Override
     public Cuenta registrarCuenta(Usuario usuario) {
 
         Cuenta cuenta = new Cuenta();
@@ -46,7 +48,8 @@ public class CuentaService {
     }
 
     // GENERAR NUMERO DE CUENTA
-    public String generarNumeroCuenta() {
+    @Override
+    public String generarNumeroCuenta(){
 
         String numeroCuenta;
 
@@ -59,6 +62,7 @@ public class CuentaService {
     }
 
     // BUSCAR CUENTA
+    @Override
     public Cuenta buscarCuenta(int idPersona) {
 
         Persona persona = personaRepository.findById(idPersona)

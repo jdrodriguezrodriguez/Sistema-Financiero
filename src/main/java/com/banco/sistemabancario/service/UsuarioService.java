@@ -1,6 +1,7 @@
 package com.banco.sistemabancario.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.dto.LoginUsuarioDto;
@@ -12,6 +13,6 @@ public interface UsuarioService {
     List<Usuario> obtenerUsuarios();
     Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona);
     Usuario autenticar(LoginUsuarioDto datos);
-    
+    Optional<Usuario> obtenerUsuarioPorId(int idUsuario);
     void validarUsuario(String username, int idActual);
 } 

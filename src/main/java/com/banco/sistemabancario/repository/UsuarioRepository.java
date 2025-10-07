@@ -9,6 +9,5 @@ import com.banco.sistemabancario.entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByUsername(String username);
-    Usuario findById(int idUsuario);
     Usuario findByPersona(Persona persona);
 } 

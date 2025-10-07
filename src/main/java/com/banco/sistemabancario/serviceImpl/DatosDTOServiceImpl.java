@@ -10,21 +10,23 @@ import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
 import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
+import com.banco.sistemabancario.service.DatosDTOService;
 
 @Service
-public class DatosDTOService {
+public class DatosDTOServiceImpl implements DatosDTOService{
     
     private PersonaRepository personaRepository;
     private UsuarioRepository usuarioRepository;
     private CuentaRepository cuentaRepository;
 
-    public DatosDTOService(PersonaRepository personaRepository, UsuarioRepository usuarioRepository, CuentaRepository cuentaRepository) {
+    public DatosDTOServiceImpl(PersonaRepository personaRepository, UsuarioRepository usuarioRepository, CuentaRepository cuentaRepository) {
         this.personaRepository = personaRepository;
         this.usuarioRepository = usuarioRepository;
         this.cuentaRepository = cuentaRepository;
     }
 
     //BUSCAR DATOS DEL USUARIO
+    @Override
     public DatosDto datosUsuario(int idPersona){
 
         Persona persona = personaRepository.findById(idPersona)

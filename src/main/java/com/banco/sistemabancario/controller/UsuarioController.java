@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.dto.LoginUsuarioDto;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.serviceImpl.DatosDTOService;
+import com.banco.sistemabancario.serviceImpl.DatosDTOServiceImpl;
 import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
@@ -31,9 +31,9 @@ public class UsuarioController {
     private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
     private UsuarioServiceImpl usuarioService;
-    private DatosDTOService datosDTOService;
+    private DatosDTOServiceImpl datosDTOService;
 
-    public UsuarioController(UsuarioServiceImpl usuarioService, DatosDTOService datosDTOService) {
+    public UsuarioController(UsuarioServiceImpl usuarioService, DatosDTOServiceImpl datosDTOService) {
         this.usuarioService = usuarioService;
         this.datosDTOService = datosDTOService;
     }
@@ -44,7 +44,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.obtenerUsuarios());
     }
 
-    //CREAR
+    //AUTENTICAR
     @PostMapping("/autenticar")
     public ResponseEntity<?> login(@RequestBody LoginUsuarioDto datos, HttpSession session) {
         
@@ -56,7 +56,7 @@ public class UsuarioController {
     }
 
     //ACTUALIZAR
-    @PutMapping("/usuarios/{idPersona}")
+    @PutMapping("/{idPersona}")
     public ResponseEntity<?> actualizarUsuario(@PathVariable int idPersona ,@Valid @RequestBody ActualizarUsuarioDto datos, HttpSession session){
         
         /*Integer idPersona = (Integer) session.getAttribute("idPersona");

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
+
 @RestController
 @RequestMapping("/api/sistema/personas")
 public class PersonaController {
@@ -33,6 +34,14 @@ public class PersonaController {
     public PersonaController(PersonaServiceImpl personaService) {
         this.personaService = personaService;
     }
+
+    @GetMapping("/{idPersona}")
+    public ResponseEntity<?> buscarPersonaPorId(@PathVariable int idPersona) {
+        return personaService.obtenerPersonaPorId(idPersona)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+    
 
     @GetMapping
     public ResponseEntity<?> listarPersonas() {

@@ -3,6 +3,7 @@ package com.banco.sistemabancario.serviceImpl;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -22,12 +23,17 @@ public class PersonaServiceImpl implements PersonaService{
     
     private PersonaRepository personaRepository;
     private UsuarioServiceImpl usuarioService;
-    private CuentaService cuentaService;
+    private CuentaServiceImpl cuentaService;
 
-    public PersonaServiceImpl(PersonaRepository personaRepository, UsuarioServiceImpl usuarioService, CuentaService cuentaService) {
+    public PersonaServiceImpl(PersonaRepository personaRepository, UsuarioServiceImpl usuarioService, CuentaServiceImpl cuentaService) {
         this.personaRepository = personaRepository;
         this.usuarioService = usuarioService;
         this.cuentaService = cuentaService;
+    }
+
+    @Override
+    public Optional<Persona> obtenerPersonaPorId(int idPersona){
+        return personaRepository.findById(idPersona);
     }
 
     @Override
@@ -38,16 +44,26 @@ public class PersonaServiceImpl implements PersonaService{
     //ACTUALIZAR PERSONA EXISTENTE
     @Override
     public Persona actualizarDatosPersona(ActualizarPersonaDto actualizarPersonaDto, int idPersona){
+        return obtenerPersonaPorId(idPersona)
+            .map(p->{
+                p.setNombre(actualizarPersonaDto.getNombre());
+                p.setApellido(actualizarPersonaDto.getApellido());
+                p.setCorreo(actualizarPersonaDto.getCorreo());
+                p.setNacimiento(Date.valueOf(LocalDate.parse(actualizarPersonaDto.getNacimiento())));
 
-        Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
-                
-        persona.setNombre(actualizarPersonaDto.getNombre());
-        persona.setApellido(actualizarPersonaDto.getApellido());
-        persona.setCorreo(actualizarPersonaDto.getCorreo());
-        persona.setNacimiento(Date.valueOf(LocalDate.parse(actualizarPersonaDto.getNacimiento())));
+                return personaRepository.save(p);
+            }).orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
 
-        return personaRepository.save(persona);
+            /*Persona persona = personaRepository.findById(idPersona)
+                    .orElseThrow(() -> new PersonaNoEncontradaException("No se encontró a la persona con el ID: " + idPersona));
+
+            persona.setNombre(...);
+            persona.setApellido(...);
+            persona.setCorreo(...);
+            persona.setNacimiento(...);
+
+            return personaRepository.save(persona);
+            */
     }
 
     //REGISTRAR PERSONA

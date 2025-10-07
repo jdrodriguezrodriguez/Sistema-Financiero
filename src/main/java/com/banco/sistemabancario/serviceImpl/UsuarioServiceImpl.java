@@ -19,6 +19,7 @@ import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
 import com.banco.sistemabancario.exception.UsuarioNoRegistrado;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
+import com.banco.sistemabancario.service.PersonaService;
 import com.banco.sistemabancario.service.UsuarioService;
 
 @Service
@@ -75,8 +76,8 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     public Usuario actualizarDatosUsuario(ActualizarUsuarioDto datos, int idPersona){
         Persona persona = personaRepository.findById(idPersona)
                 .orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
-        Usuario usuario = usuarioRepository.findByPersona(persona);
 
+        Usuario usuario = usuarioRepository.findByPersona(persona);
         validarUsuario(datos.getUsername(), usuario.getIdUsuario());
 
         usuario.setUsername(datos.getUsername());
@@ -89,6 +90,11 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Override
     public List<Usuario> obtenerUsuarios(){
         return usuarioRepository.findAll();
+    }
+
+    @Override
+    public Optional<Usuario> obtenerUsuarioPorId(int idUsuario){
+        return usuarioRepository.findById(idUsuario);
     }
 
     //REGISTRAR USUARIO

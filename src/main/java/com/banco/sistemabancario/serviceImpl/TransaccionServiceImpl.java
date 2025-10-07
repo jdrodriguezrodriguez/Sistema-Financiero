@@ -27,9 +27,9 @@ public class TransaccionServiceImpl implements TransaccionService{
 
     private TransaccionRepository transaccionRepository;
     private CuentaRepository cuentaRepository;
-    private CuentaService cuentaService;
+    private CuentaServiceImpl cuentaService;
 
-    public TransaccionServiceImpl(TransaccionRepository transaccionRepository, CuentaRepository cuentaRepository, CuentaService cuentaService) {
+    public TransaccionServiceImpl(TransaccionRepository transaccionRepository, CuentaRepository cuentaRepository, CuentaServiceImpl cuentaService) {
         this.transaccionRepository = transaccionRepository;
         this.cuentaRepository = cuentaRepository;
         this.cuentaService = cuentaService;
