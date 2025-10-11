@@ -13,7 +13,7 @@ public interface PersonaService {
     Persona actualizarDatosPersona(ActualizarPersonaDto actualizarPersonaDto, int idPersona);
     Persona registrarPersona(RegistroPersonaDto datos);
     Persona convertirAObjeto(RegistroPersonaDto datos);
-    //Persona eliminarPersona(int Persona);
+    boolean eliminarPersona(int idPersona);
 
     boolean documentoYaRegistrado(String documento);
     boolean correoYaRegistrado(String correo);

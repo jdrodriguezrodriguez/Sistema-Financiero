@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -35,6 +36,7 @@ public class PersonaController {
         this.personaService = personaService;
     }
 
+    //CONSULTAS
     @GetMapping("/{idPersona}")
     public ResponseEntity<?> buscarPersonaPorId(@PathVariable int idPersona) {
         return personaService.obtenerPersonaPorId(idPersona)
@@ -42,13 +44,11 @@ public class PersonaController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
     
-
     @GetMapping
     public ResponseEntity<?> listarPersonas() {
         return ResponseEntity.ok(personaService.obtenerPersonas());
     }
     
-
     //CREAR
     @PostMapping
     public ResponseEntity<?> registroPersona(@Valid @RequestBody RegistroPersonaDto datos) {
@@ -82,5 +82,13 @@ public class PersonaController {
             logger.error("Error en actualizar los datos personales:", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    //ELIMINAR
+    @DeleteMapping("/{idPersona}")
+    public ResponseEntity<?> eliminarPersona(@PathVariable int idPersona){
+
+        personaService.eliminarPersona(idPersona);
+        return ResponseEntity.ok(Map.of("Mensaje","Persona eliminada"));
     }
 }

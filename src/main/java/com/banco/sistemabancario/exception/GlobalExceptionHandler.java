@@ -68,6 +68,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errores);
     }
 
+    //Persona no CuentaNoEncontradaException
+    @ExceptionHandler(PersonaNoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> handlePersonaNoEncontradaException(PersonaNoEncontradaException ex){
+        Map<String, String> errores = new HashMap<>();
+        
+        errores.put("error", "ID no valido");
+        errores.put("detalle", ex.getMessage());
+
+        return ResponseEntity.badRequest().body(errores);
+    }
+
     //Documento ya registrado
     @ExceptionHandler(DocumentoYaRegistradoException.class)
     public ResponseEntity<Map<String, String>> handleDocumentoYaRegistrado(DocumentoYaRegistradoException ex) {

@@ -5,35 +5,41 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.dto.ActualizarPersonaDto;
 import com.banco.sistemabancario.dto.RegistroPersonaDto;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.exception.CorreoYaRegistradoException;
-import com.banco.sistemabancario.exception.DocumentoYaRegistradoException;
-import com.banco.sistemabancario.exception.PasswordInvalidaException;
-import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
+import com.banco.sistemabancario.exception.*;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.service.PersonaService;
 
 @Service
 public class PersonaServiceImpl implements PersonaService{
+
+    private final GlobalExceptionHandler globalExceptionHandler;
     
     private PersonaRepository personaRepository;
     private UsuarioServiceImpl usuarioService;
     private CuentaServiceImpl cuentaService;
 
-    public PersonaServiceImpl(PersonaRepository personaRepository, UsuarioServiceImpl usuarioService, CuentaServiceImpl cuentaService) {
+    public PersonaServiceImpl(PersonaRepository personaRepository, UsuarioServiceImpl usuarioService, CuentaServiceImpl cuentaService, GlobalExceptionHandler globalExceptionHandler) {
         this.personaRepository = personaRepository;
         this.usuarioService = usuarioService;
         this.cuentaService = cuentaService;
+        this.globalExceptionHandler = globalExceptionHandler;
     }
 
     @Override
     public Optional<Persona> obtenerPersonaPorId(int idPersona){
-        return personaRepository.findById(idPersona);
+        Optional<Persona> persona =  personaRepository.findById(idPersona);
+
+        if (!persona.isPresent()) {
+            throw new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona);
+        }
+        return persona;
     }
 
     @Override
@@ -78,6 +84,21 @@ public class PersonaServiceImpl implements PersonaService{
         cuentaService.registrarCuenta(usuarioRegistro);
 
         return personaRegistro;
+    }
+
+    //ELIMINAR PERSONA
+    public boolean eliminarPersona(int idPersona){
+        try {
+
+            if (!personaRepository.existsById(idPersona)) {
+            throw new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona);
+            } 
+            personaRepository.deleteById(idPersona);
+            return true;
+            
+        } catch (Exception e) {
+            throw new IllegalStateException("No se pudo eliminar la persona.", e);
+        }
     }
 
     //DTO A PERSONA

@@ -2,6 +2,7 @@ package com.banco.sistemabancario.entity;
 
 import java.sql.Date;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +19,7 @@ public class Persona {
     @Column(name = "idPersona")
     private Integer idPersona;
 
-    @OneToOne(mappedBy = "persona")
+    @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL, orphanRemoval = true)
     private Usuario usuario;
 
     
