@@ -65,7 +65,7 @@ public class CuentaServiceImpl implements CuentaService{
     @Override
     public Cuenta buscarCuenta(int idPersona) {
 
-        Persona persona = personaRepository.findById(idPersona)
+        /*Persona persona = personaRepository.findById(idPersona)
                 .orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
 
         Usuario usuario = usuarioRepository.findByPersona(persona);
@@ -76,7 +76,9 @@ public class CuentaServiceImpl implements CuentaService{
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
         if (cuenta == null) {
             throw new CuentaNoEncontradaException("No se encontró la cuenta para el usuario con ID: " + usuario.getIdUsuario());
-        }
+        }*/
+
+        Cuenta cuenta = cuentaRepository.findByUsuario_Persona_IdPersona(idPersona);
 
         return cuenta;
     }

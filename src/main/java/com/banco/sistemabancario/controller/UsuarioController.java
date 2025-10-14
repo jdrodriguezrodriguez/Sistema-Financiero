@@ -22,6 +22,8 @@ import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -38,7 +40,14 @@ public class UsuarioController {
         this.datosDTOService = datosDTOService;
     }
 
-    //LISTAR
+    //CONSULTAS
+    @GetMapping("/{idPersona}")
+    public ResponseEntity<?> getMethodName(@PathVariable int idPersona) {
+        return usuarioService.obtenerUsuarioPorId(idPersona)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+    
     @GetMapping
     public ResponseEntity<?> listarUsuarios(){
         return ResponseEntity.ok(usuarioService.obtenerUsuarios());

@@ -17,9 +17,9 @@ import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
 import com.banco.sistemabancario.exception.UsuarioNoRegistrado;
+import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
-import com.banco.sistemabancario.service.PersonaService;
 import com.banco.sistemabancario.service.UsuarioService;
 
 @Service
@@ -74,27 +74,32 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public Usuario actualizarDatosUsuario(ActualizarUsuarioDto datos, int idPersona){
-        Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
+        Usuario usuario = obtenerUsuarioPorId(idPersona)
+            .orElseThrow(() -> new UsuarioNoencontradoException("No se encontró el usuario con el ID"));
 
-        Usuario usuario = usuarioRepository.findByPersona(persona);
-        validarUsuario(datos.getUsername(), usuario.getIdUsuario());
+        validarNombreUsuario(datos.getUsername(), usuario.getIdUsuario());
 
         usuario.setUsername(datos.getUsername());
         usuario.setPassword(datos.getPassword());
 
-        return usuarioRepository.save(usuario);
+        return usuario;
     }
 
-    //LISTAR USUARIOS
+    //CONSULTAS
     @Override
     public List<Usuario> obtenerUsuarios(){
         return usuarioRepository.findAll();
     }
 
     @Override
-    public Optional<Usuario> obtenerUsuarioPorId(int idUsuario){
-        return usuarioRepository.findById(idUsuario);
+    public Optional<Usuario> obtenerUsuarioPorId(int idPersona){
+        Optional<Usuario> usuario = usuarioRepository.findByPersona_IdPersona(idPersona);
+
+        if (!usuario.isPresent()) {
+            throw new UsuarioNoencontradoException("No se encontro a la persona con el ID" + idPersona);
+        }
+
+        return usuario;
     }
 
     //REGISTRAR USUARIO
@@ -117,7 +122,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     //VALIDAR QUE EL USERNAME NO EXISTA
     @Override
-    public void validarUsuario(String username, int idActual){
+    public void validarNombreUsuario(String username, int idActual){
 
         Optional<Usuario> existente = usuarioRepository.findByUsername(username);
 

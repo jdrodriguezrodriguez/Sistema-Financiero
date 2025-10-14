@@ -13,6 +13,6 @@ public interface UsuarioService {
     List<Usuario> obtenerUsuarios();
     Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona);
     Usuario autenticar(LoginUsuarioDto datos);
-    Optional<Usuario> obtenerUsuarioPorId(int idUsuario);
-    void validarUsuario(String username, int idActual);
+    Optional<Usuario> obtenerUsuarioPorId(int idPersona);
+    void validarNombreUsuario(String username, int idActual);
 } 
