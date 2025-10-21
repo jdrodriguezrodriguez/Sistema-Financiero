@@ -2,6 +2,7 @@ package com.banco.sistemabancario.security.filters;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,13 +22,11 @@ import jakarta.validation.constraints.NotNull;
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter{
 
+    @Autowired
     JwtUtils jwtUtils;
-    private UsuarioServiceImpl usuarioService;
 
-    public JwtAuthorizationFilter(JwtUtils jwtUtils, UsuarioServiceImpl usuarioService) {
-        this.jwtUtils = jwtUtils;
-        this.usuarioService = usuarioService;
-    }
+    @Autowired
+    private UsuarioServiceImpl usuarioService;
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, 
@@ -38,13 +37,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter{
 
         if(tokenheader != null && tokenheader.startsWith("Bearer ")){
             
-            String token = tokenheader.substring(7, tokenheader.length());
+            String token = tokenheader.substring(7);
 
             if (jwtUtils.isTokenValid(token)) {
                 String username = jwtUtils.getUsernameFromToken(token);
-                UserDetails usuario = usuarioService.loadUserByUsername(username);
+                UserDetails userDetails = usuarioService.loadUserByUsername(username);
 
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, usuario.getAuthorities());
+                UsernamePasswordAuthenticationToken authenticationToken = 
+                            new UsernamePasswordAuthenticationToken(username, null ,userDetails.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             } 

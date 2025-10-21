@@ -1,10 +1,12 @@
 package com.banco.sistemabancario.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,20 +25,20 @@ import com.banco.sistemabancario.security.jwt.JwtUtils;
 
 
 
-//@Configuration(proxyBeanMethods = false)
-//@EnableWebSecurity
-//@EnableMethodSecurity                       //PERMITE TRABAJAR CON ANOTACIONES
+@Configuration(proxyBeanMethods = false)
+@EnableWebSecurity
+@EnableMethodSecurity                       //PERMITE TRABAJAR CON ANOTACIONES
+@EnableGlobalMethodSecurity(prePostEnabled = true)  //PERMITIR ANOTACIONES PARA LOS CONTROLADORES (@PreAuthorize)
 public class SecurityConfig{
 
+    @Autowired
     JwtUtils jwtUtils;
-    UserDetailsService userDetailsService;
-    JwtAuthorizationFilter jwtAuthorizationFilter;
 
-    public SecurityConfig(JwtUtils jwtUtils, UserDetailsService userDetailsService, JwtAuthorizationFilter jwtAuthorizationFilter) {
-        this.jwtUtils = jwtUtils;
-        this.userDetailsService = userDetailsService;
-        this.jwtAuthorizationFilter = jwtAuthorizationFilter;
-    }
+    @Autowired
+    UserDetailsService userDetailsService;
+
+    @Autowired
+    JwtAuthorizationFilter jwtAuthorizationFilter;
 
     //FILTRO (CONDICIONES PERSONALIZADAS)
     @Bean
@@ -44,7 +46,9 @@ public class SecurityConfig{
         
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
-        jwtAuthenticationFilter.setFilterProcessesUrl("/autenticar"); //CAMBIAR LA RUTA DE LOGIN
+        jwtAuthenticationFilter.setFilterProcessesUrl("/autenticar");
+
+        //JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(jwtUtils, null);
 
         return httpSecurity
             .csrf(csrf -> csrf.disable()) //VULNERABILIDAD EN LOS FORM WEB
@@ -52,21 +56,20 @@ public class SecurityConfig{
 
                 //CONFIGURAR LOS ENDPOINTS PUBLICOS
                 auth.requestMatchers(HttpMethod.GET, "/", "/login.html", "/register.html", "/css/**", "/js/**").permitAll();   
-                auth.requestMatchers(HttpMethod.POST, "/autenticar").permitAll();                 
-                auth.requestMatchers(HttpMethod.POST, "/registro").permitAll();
-
+                auth.requestMatchers(HttpMethod.POST, "/autenticar").permitAll();
+                auth.requestMatchers("/api/sistema/usuarios/**").permitAll();
 
                 //CONFIGURAR LOS ENDPOINTS PRIVADOS
-                auth.requestMatchers(HttpMethod.GET, "/index.html", "/index").hasRole("ADMIN");
-                auth.requestMatchers(HttpMethod.GET, "/admin.html", "/admin").hasRole("ADMIN");    
+                auth.requestMatchers("/api/sistema/personas/**").hasRole("ADMIN");
 
                 //CONFIGURAR LOS ENDPOINTS NO ESPECIFICADOS
                 auth.anyRequest().authenticated();                                     
             })
-            .sessionManagement(session -> //ADMINISTRADOR DE LA SESION
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //NO GUARDA LA SESSION EN MEMORIA
-            .addFilter(jwtAuthenticationFilter) //AGREGA EL FILTRO DE AUTENTICACION
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .sessionManagement(session ->                                                   //ADMINISTRADOR DE LA SESION
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))             //NO GUARDA LA SESSION EN MEMORIA
+
+            .addFilter(jwtAuthenticationFilter)                                                   //GENERA TOKEN
+            .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class) //VALIDA TOKEN
             .build();
     }
 

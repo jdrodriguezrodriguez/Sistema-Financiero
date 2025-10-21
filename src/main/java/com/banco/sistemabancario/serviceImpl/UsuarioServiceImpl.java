@@ -15,7 +15,6 @@ import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.dto.LoginUsuarioDto;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
 import com.banco.sistemabancario.exception.UsuarioNoRegistrado;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
@@ -33,12 +32,12 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         this.personaRepository = personaRepository;
     }
 
-    @Override
+    /*@Override
     public Usuario autenticar(LoginUsuarioDto datos){
         return usuarioRepository.findByUsername(datos.getUsername())
                 .filter(e -> e.getPassword().equals(datos.getPassword()))
                 .orElseThrow(() -> new UsuarioNoRegistrado("El usuario ingresado no se encuentra registrado."));
-    }
+    }*/
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{

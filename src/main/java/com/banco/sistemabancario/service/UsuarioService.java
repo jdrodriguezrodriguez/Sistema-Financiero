@@ -12,7 +12,7 @@ public interface UsuarioService {
     Usuario actualizarDatosUsuario (ActualizarUsuarioDto datos, int idPersona);
     List<Usuario> obtenerUsuarios();
     Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona);
-    Usuario autenticar(LoginUsuarioDto datos);
+    //Usuario autenticar(LoginUsuarioDto datos);
     Optional<Usuario> obtenerUsuarioPorId(int idPersona);
     void validarNombreUsuario(String username, int idActual);
 } 

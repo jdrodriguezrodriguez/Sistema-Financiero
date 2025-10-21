@@ -24,11 +24,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
-    private final AuthenticationManager authenticationManager;
     private JwtUtils jwtUtils;
 
     public JwtAuthenticationFilter(JwtUtils jwtUtils) {
-        this.authenticationManager = null;
         this.jwtUtils = jwtUtils;
     }
 
@@ -86,6 +84,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         System.out.println("TOKEN: " + token);
         System.out.println("Usuario: " + user.getUsername());
+        String roles = user.getAuthorities()
+                   .stream()
+                   .map(a -> a.getAuthority())
+                   .reduce((a, b) -> a + ", " + b)
+                   .orElse("Sin roles");
+
+        System.out.println("Usuario: " + user.getUsername() + " | Roles: " + roles);
+
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(httpresponse));
         response.setStatus(HttpStatus.OK.value());

@@ -8,21 +8,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
-import com.banco.sistemabancario.dto.LoginUsuarioDto;
-import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.serviceImpl.DatosDTOServiceImpl;
 import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -53,17 +49,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.obtenerUsuarios());
     }
 
-    //AUTENTICAR
-    @PostMapping("/autenticar")
-    public ResponseEntity<?> login(@RequestBody LoginUsuarioDto datos, HttpSession session) {
-        
-        Usuario usuario = usuarioService.autenticar(datos);
-
-        session.setAttribute("idPersona", usuario.getPersona().getIdPersona());
-        
-        return ResponseEntity.ok(Map.of("Mensaje", "Acceso correcto"));
-    }
-
+    
     //ACTUALIZAR
     @PutMapping("/{idPersona}")
     public ResponseEntity<?> actualizarUsuario(@PathVariable int idPersona ,@Valid @RequestBody ActualizarUsuarioDto datos, HttpSession session){
@@ -88,6 +74,17 @@ public class UsuarioController {
     }
 
     /* 
+    //AUTENTICAR
+    @PostMapping("/autenticar")
+    public ResponseEntity<?> login(@RequestBody LoginUsuarioDto datos, HttpSession session) {
+        
+        Usuario usuario = usuarioService.autenticar(datos);
+
+        session.setAttribute("idPersona", usuario.getPersona().getIdPersona());
+        
+        return ResponseEntity.ok(Map.of("Mensaje", "Acceso correcto"));
+    }
+
     //REDIRIGIR AL LOGIN
     @GetMapping("/")
     public String redirigirAlLogin() {
