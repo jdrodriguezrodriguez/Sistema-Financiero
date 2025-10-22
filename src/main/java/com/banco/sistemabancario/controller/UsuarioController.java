@@ -1,11 +1,15 @@
 package com.banco.sistemabancario.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,12 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
+import com.banco.sistemabancario.security.controller.CustomUserDetails;
 import com.banco.sistemabancario.serviceImpl.DatosDTOServiceImpl;
 import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -36,6 +43,19 @@ public class UsuarioController {
         this.datosDTOService = datosDTOService;
     }
 
+    //SESION AUTENTICADA
+    @GetMapping("/profile")
+    public ResponseEntity<?> CurrentUser(@AuthenticationPrincipal CustomUserDetails user) {
+
+        Map<String, Object> userInfo = new HashMap<>();
+
+        userInfo.put("id", user.getId());
+        userInfo.put("username", user.getUsername());
+
+        return ResponseEntity.ok(userInfo);
+    }
+    
+
     //CONSULTAS
     @GetMapping("/{idPersona}")
     public ResponseEntity<?> getMethodName(@PathVariable int idPersona) {
@@ -49,7 +69,6 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.obtenerUsuarios());
     }
 
-    
     //ACTUALIZAR
     @PutMapping("/{idPersona}")
     public ResponseEntity<?> actualizarUsuario(@PathVariable int idPersona ,@Valid @RequestBody ActualizarUsuarioDto datos, HttpSession session){
