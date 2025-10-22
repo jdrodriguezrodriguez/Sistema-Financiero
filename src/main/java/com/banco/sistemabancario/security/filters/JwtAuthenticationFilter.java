@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -14,6 +13,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.security.controller.CustomUserDetails;
 import com.banco.sistemabancario.security.jwt.JwtUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -67,7 +67,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
         
-        User user = (User) authResult.getPrincipal();           //OBTENER EL DETALLES DEL USUARIO AUTENTICADO  
+        CustomUserDetails user = (CustomUserDetails) authResult.getPrincipal();           //OBTENER EL DETALLES DEL USUARIO AUTENTICADO  
         if (user == null) {
             throw new RuntimeException("Error al autenticar el usuario");
         }

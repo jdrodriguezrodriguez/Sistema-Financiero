@@ -73,6 +73,11 @@ public class JwtUtils {
         return getClaim(token, Claims::getSubject);
     }
 
+    /*OBTENER EL IDUSUARIO DEL TOKEN
+    public String getIdUsuarioFromToken(String token){
+        return getClaim(token, Claims::getId);
+    }*/
+
     //OBTENER UN SOLO CLAIM
     public <T> T getClaim(String token, Function<Claims, T> claimsTFunction){
         Claims claims = extractAllClaims(token);

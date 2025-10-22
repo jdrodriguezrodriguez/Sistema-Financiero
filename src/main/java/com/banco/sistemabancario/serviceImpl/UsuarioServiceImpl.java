@@ -1,5 +1,10 @@
 package com.banco.sistemabancario.serviceImpl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,37 +12,38 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
-import com.banco.sistemabancario.dto.LoginUsuarioDto;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.exception.UsuarioNoRegistrado;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
+import com.banco.sistemabancario.security.controller.CustomUserDetails;
 import com.banco.sistemabancario.service.UsuarioService;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     
+    //GENERAR NOMBRE DE USUARIO
+    public static String generarUsername(String nombre, String apellido){
+        return nombre.substring(0, Math.min(4, nombre.length())) + apellido.substring(0, Math.min(2, apellido.length()));
+    }
+    //VALIDAR CONTRASEÑA
+    public static boolean validarPassword(String password){
+        if (password.length() != 4) {
+            return false;
+        }
+        return true;
+    }
+
     private UsuarioRepository usuarioRepository;
+
     private PersonaRepository personaRepository;
 
     public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PersonaRepository personaRepository) {
         this.usuarioRepository = usuarioRepository;
         this.personaRepository = personaRepository;
-    }
-
-    /*@Override
-    public Usuario autenticar(LoginUsuarioDto datos){
-        return usuarioRepository.findByUsername(datos.getUsername())
-                .filter(e -> e.getPassword().equals(datos.getPassword()))
-                .orElseThrow(() -> new UsuarioNoRegistrado("El usuario ingresado no se encuentra registrado."));
-    }*/
+    }       
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
@@ -61,7 +67,8 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
         //CONSTRUCCION DEL OBJETO USERDETAILS DE SPRING SECURITY PARA AUTENTICAR
 
-            return new User(usuario.getUsername(), 
+            return new CustomUserDetails(usuario.getIdUsuario(),
+                usuario.getUsername(), 
                 usuario.getPassword(), 
                 usuario.isEnabled(),
                 usuario.isAccountNoExpired(),
@@ -69,7 +76,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
                 usuario.isAccountNoLocked(),
                 authorityList
                 );
-        }       
+        }
 
     @Override
     public Usuario actualizarDatosUsuario(ActualizarUsuarioDto datos, int idPersona){
@@ -128,18 +135,5 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         if (existente.isPresent() && !existente.get().getIdUsuario().equals(Integer.valueOf(idActual))) {
             throw new IllegalArgumentException("El usuario ya existe, cambiar username " + username);
         }
-    }
-
-    //GENERAR NOMBRE DE USUARIO
-    public static String generarUsername(String nombre, String apellido){
-        return nombre.substring(0, Math.min(4, nombre.length())) + apellido.substring(0, Math.min(2, apellido.length()));
-    }
-
-    //VALIDAR CONTRASEÑA
-    public static boolean validarPassword(String password){
-        if (password.length() != 4) {
-            return false;
-        }
-        return true;
     }
 }

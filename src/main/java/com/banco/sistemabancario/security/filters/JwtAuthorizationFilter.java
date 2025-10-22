@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.security.jwt.JwtUtils;
 import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
@@ -27,6 +26,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter{
 
     @Autowired
     private UsuarioServiceImpl usuarioService;
+
+    private UsuarioServiceImpl usuarioServiceImpl;
+    
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, 

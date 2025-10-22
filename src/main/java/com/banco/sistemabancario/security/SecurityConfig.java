@@ -21,13 +21,9 @@ import com.banco.sistemabancario.security.filters.JwtAuthenticationFilter;
 import com.banco.sistemabancario.security.filters.JwtAuthorizationFilter;
 import com.banco.sistemabancario.security.jwt.JwtUtils;
 
-
-
-
-
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
-@EnableMethodSecurity                       //PERMITE TRABAJAR CON ANOTACIONES
+@EnableMethodSecurity                               //PERMITE TRABAJAR CON ANOTACIONES
 @EnableGlobalMethodSecurity(prePostEnabled = true)  //PERMITIR ANOTACIONES PARA LOS CONTROLADORES (@PreAuthorize)
 public class SecurityConfig{
 
@@ -48,21 +44,15 @@ public class SecurityConfig{
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
         jwtAuthenticationFilter.setFilterProcessesUrl("/autenticar");
 
-        //JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter(jwtUtils, null);
-
         return httpSecurity
             .csrf(csrf -> csrf.disable()) //VULNERABILIDAD EN LOS FORM WEB
             .authorizeHttpRequests(auth -> {
 
-                //CONFIGURAR LOS ENDPOINTS PUBLICOS
-                auth.requestMatchers(HttpMethod.GET, "/", "/login.html", "/register.html", "/css/**", "/js/**").permitAll();   
-                auth.requestMatchers(HttpMethod.POST, "/autenticar").permitAll();
-                auth.requestMatchers("/api/sistema/usuarios/**").permitAll();
-
-                //CONFIGURAR LOS ENDPOINTS PRIVADOS
+                auth.requestMatchers(HttpMethod.GET, "/Images/**", "/login.html", "/index.html", "/consultar.html", "/depositar.html", "/historial.html", "/transferir.html", "/update.html", "/perfil.html", "/register.html", "/css/**", "/js/**").permitAll();
+                
                 auth.requestMatchers("/api/sistema/personas/**").hasRole("ADMIN");
-
-                //CONFIGURAR LOS ENDPOINTS NO ESPECIFICADOS
+                auth.requestMatchers("/api/sistema/usuarios/**").hasRole("ADMIN");
+                
                 auth.anyRequest().authenticated();                                     
             })
             .sessionManagement(session ->                                                   //ADMINISTRADOR DE LA SESION
