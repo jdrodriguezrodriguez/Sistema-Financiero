@@ -18,16 +18,7 @@
             </ul>
             <ul class="menu-perfil">
                 <li><a href="perfil.html" class="enlace-perfil" id="inicio">
-                    <span id="h1"></span>
-                    <script> 
-                        fetch('/api/datos')
-                            .then(response => response.json())
-                            .then(usuario => {
-                                const perfil = document.getElementById('h1');
-                                perfil.textContent = usuario.nombre;
-                            })
-                            .catch(error => console.error("Error", error))
-                    </script>
+                    <span id="sesion"></span>
                 </a></li>
             </ul>
         </nav>
@@ -68,7 +59,8 @@
         <p>© 2025 Sistema Financiero</p>
     </footer>
 
-    <script src="js/script.js"></script>  
-    <script src="js/index.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/index.js"></script>
+    <script type="module" src="js/main.js"></script> 
 </body>
 </html>

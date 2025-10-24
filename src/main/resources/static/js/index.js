@@ -1,23 +1,13 @@
-const token = localStorage.getItem("token");
+import { fetchWithAuth, saveUserInfo } from "./auth";
 
-if (!token || token.trim() === "") {
-    console.log("⚠️ No hay token en el localStorage");
-    window.location.replace("/login.html");
-} else {
-    console.log("USUARIO AUTENTICADO: ", token);
-}
+document.addEventListener("DOMContentLoaded", async () =>{
+    try {
+        const respose = await fetchWithAuth("/api/sistema/usuarios/profile");
+        const data = await respose.json();
 
-
-fetch("/api/sistema/personas/4",{
-    method: "GET",
-    headers: {
-        "Authorization": "Bearer " + token,
-        "Content-Type": "application/json"
+        console.log("Usuario autenticado: ", data);
+        saveUserInfo(data);
+    } catch (error) {
+        console.log("Error con el usuario autenticado.")
     }
 })
-
-.then(r => r.json())
-.then(data => console.log("Datos:", data))
-.catch(err => alert("Error: " + err));
-
-
