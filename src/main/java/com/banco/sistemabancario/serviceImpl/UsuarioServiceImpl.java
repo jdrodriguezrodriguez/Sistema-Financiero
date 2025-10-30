@@ -1,12 +1,10 @@
 package com.banco.sistemabancario.serviceImpl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -106,6 +104,13 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         }
 
         return usuario;
+    }
+
+    @Override
+    public Persona obtenerPersonaPorUsuarioId(int idUsuario) {
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsuarioNoencontradoException("No se encontro el usuario con ID: " + idUsuario));
+
+        return personaRepository.findByUsuario(usuario);
     }
 
     //REGISTRAR USUARIO

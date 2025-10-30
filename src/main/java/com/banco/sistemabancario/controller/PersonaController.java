@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.ActualizarPersonaDto;
 import com.banco.sistemabancario.dto.RegistroPersonaDto;
+import com.banco.sistemabancario.entity.Persona;
+import com.banco.sistemabancario.security.controller.CustomUserDetails;
 import com.banco.sistemabancario.serviceImpl.PersonaServiceImpl;
+import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,8 +36,11 @@ public class PersonaController {
     private static final Logger logger =  LoggerFactory.getLogger(PersonaController.class);
 
     private PersonaServiceImpl personaService;
-    public PersonaController(PersonaServiceImpl personaService) {
+    private UsuarioServiceImpl usuarioService;
+
+    public PersonaController(PersonaServiceImpl personaService, UsuarioServiceImpl usuarioService) {
         this.personaService = personaService;
+        this.usuarioService = usuarioService;
     }
 
     //CONSULTAS
@@ -68,15 +74,11 @@ public class PersonaController {
 
     //ACTUALIZAR
     @PutMapping("/{idPersona}")
-    public ResponseEntity<?> actualizarPersona(@PathVariable int idPersona, @Valid @RequestBody ActualizarPersonaDto actualizarPersonaDto,  HttpSession session){
-      
-        /*Integer idPersona = (Integer) session.getAttribute("idPersona");
-        if (idPersona == null) {
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesion no valida");
-        }*/
-
+    public ResponseEntity<?> actualizarPersona(@AuthenticationPrincipal CustomUserDetails user, @Valid @RequestBody ActualizarPersonaDto actualizarPersonaDto){  
         try{
-            personaService.actualizarDatosPersona(actualizarPersonaDto, idPersona);
+            Persona persona = usuarioService.obtenerPersonaPorUsuarioId(user.getId());
+
+            personaService.actualizarDatosPersona(actualizarPersonaDto, persona.getIdPersona());
             logger.info("Los datos personales fueron actualizados correctamente");
             return ResponseEntity.ok(Map.of("Mensaje", "Actualizacion exitosa"));
             

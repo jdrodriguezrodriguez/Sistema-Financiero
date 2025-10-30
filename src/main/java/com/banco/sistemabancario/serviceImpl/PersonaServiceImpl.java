@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.dto.ActualizarPersonaDto;
@@ -59,17 +58,6 @@ public class PersonaServiceImpl implements PersonaService{
 
                 return personaRepository.save(p);
             }).orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
-
-            /*Persona persona = personaRepository.findById(idPersona)
-                    .orElseThrow(() -> new PersonaNoEncontradaException("No se encontró a la persona con el ID: " + idPersona));
-
-            persona.setNombre(...);
-            persona.setApellido(...);
-            persona.setCorreo(...);
-            persona.setNacimiento(...);
-
-            return personaRepository.save(persona);
-            */
     }
 
     //REGISTRAR PERSONA

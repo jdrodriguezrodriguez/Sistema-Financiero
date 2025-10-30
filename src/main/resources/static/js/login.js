@@ -5,7 +5,8 @@ document.getElementById("loginForm").addEventListener("submit", function (e){
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
     
-
+    
+    
     fetch("/autenticar", {
         method: "POST",
         headers:{
@@ -22,7 +23,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e){
 
     .then(data =>{
         localStorage.setItem("token", data.token);
-        window.location.replace("/index.html");
+        window.location.replace("../html/index.html");
     })
 
     .catch(async error =>{
@@ -30,6 +31,14 @@ document.getElementById("loginForm").addEventListener("submit", function (e){
         document.getElementById("resultado").innerText = errores.detalle
     })    
 })
+
+//PRUEBA
+    const token = localStorage.getItem("token");
+    if(!token){
+        console.log("NO HAY TOKEN");
+    }else{
+        console.log("TOKEN: ", token);
+    }
 /*
 document.addEventListener("DOMContentLoaded", () =>{
     const form = document.getElementById("loginForm");

@@ -48,7 +48,7 @@ public class SecurityConfig{
             .csrf(csrf -> csrf.disable()) //VULNERABILIDAD EN LOS FORM WEB
             .authorizeHttpRequests(auth -> {
 
-                auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/login.html", "/index.html", "/consultar.html", "/depositar.html", "/historial.html", "/transferir.html", "/update.html", "/perfil.html", "/register.html", "/css/**", "/js/**").permitAll();
+                auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/html/**", "/css/**", "/js/**").permitAll();
                 
                 auth.requestMatchers("/api/sistema/personas/**").hasRole("ADMIN");
                 auth.requestMatchers("/api/sistema/usuarios/**").hasRole("ADMIN");

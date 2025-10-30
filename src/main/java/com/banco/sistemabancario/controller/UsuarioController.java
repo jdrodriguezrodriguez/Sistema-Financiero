@@ -46,11 +46,18 @@ public class UsuarioController {
 
         Map<String, Object> userInfo = new HashMap<>();
 
-        userInfo.put("id", user.getId());
+        userInfo.put("idUsuario", user.getId());
         userInfo.put("username", user.getUsername());
 
         return ResponseEntity.ok(userInfo);
     }
+
+    //DATOS DEL USUARIO EN LINEA
+    @GetMapping("/profile/datos")
+    public ResponseEntity<?> datosSesionAutenticada(@AuthenticationPrincipal CustomUserDetails user){
+        return ResponseEntity.ok(datosDTOService.datosUsuario(user.getId()));
+    }
+        
     
 
     //CONSULTAS
@@ -88,49 +95,4 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-    /* 
-    //AUTENTICAR
-    @PostMapping("/autenticar")
-    public ResponseEntity<?> login(@RequestBody LoginUsuarioDto datos, HttpSession session) {
-        
-        Usuario usuario = usuarioService.autenticar(datos);
-
-        session.setAttribute("idPersona", usuario.getPersona().getIdPersona());
-        
-        return ResponseEntity.ok(Map.of("Mensaje", "Acceso correcto"));
-    }
-
-    //REDIRIGIR AL LOGIN
-    @GetMapping("/")
-    public String redirigirAlLogin() {
-        return "redirect:/login.html";
-    }
-
-    //REDIRIGIR AL LOGIN
-    @GetMapping("/index")
-    public String regirigirIndex() {
-        return "redirect:/index.html";
-    }
-
-    //REDIRIGIR AL ADMIN
-    @GetMapping("/admin")
-    public String regirigirAdmin() {
-        return "redirect:/admin.html";
-    }
-    
-    //LIMPIAR SESION
-    @GetMapping("/logout")
-    public String logout(HttpSession session){
-        session.invalidate();
-        return "redirect:/login.html";
-    }
-    
-    //DATOS DEL USUARIO EN LINEA
-    @GetMapping("/api/datos")
-    @ResponseBody
-    public DatosDto obtenerDatos(HttpSession session){
-        Integer idPersona = (Integer) session.getAttribute("idPersona");
-        return datosDTOService.datosUsuario(idPersona);
-    }*/
 }

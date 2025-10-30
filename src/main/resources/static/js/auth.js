@@ -1,3 +1,5 @@
+
+//TOKEN
 export function getToken(){
     return localStorage.getItem("token");
 }
@@ -10,6 +12,33 @@ export function removeToken(){
     return localStorage.removeItem("token");
 }
 
+export function statusToken(){
+    const token = getToken();
+    
+    if(!token){
+        window.location.replace("../html/login.html");
+        return
+    }
+
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const now = Math.floor(Date.now() / 1000);
+        
+        if (payload.exp && payload.exp < now) {
+            console.warn("Token expirado.");
+            localStorage.removeItem("token");
+            window.location.replace("../html/login.html");
+            return;
+        }
+    } catch (error) {
+        console.error("Token inválido:", error);
+        localStorage.removeItem("token");
+        window.location.replace("../html/login.html");
+        return;
+    }
+}
+
+//USER
 export function getUserInfo(){
     return JSON.parse(localStorage.getItem("userInfo"));
 }
@@ -18,6 +47,7 @@ export function saveUserInfo(user) {
   localStorage.setItem("userInfo", JSON.stringify(user));
 }
 
+//FETCH
 export async function fetchWithAuth(url, options = {}) {
     const token = getToken();
     if(!token) throw new Error("No se encontró ningún token.");
@@ -37,50 +67,3 @@ export async function fetchWithAuth(url, options = {}) {
 
     return response;
 }
-
-/*OBTENER DATOS DE SESION AUTENTICADA
-const token = localStorage.getItem("token");
-
-if (!token || token.trim() === "") {
-    console.log("No hay token en el localStorage");
-    window.location.replace("/login.html");
-} else {
-    console.log("USUARIO AUTENTICADO: ", token ,);
-}
-
-
-fetch("/api/sistema/usuarios/profile",{
-    method: "GET",
-    headers: {
-        "Authorization": "Bearer " + token,
-        "Content-Type": "application/json"
-    }
-})
-
-.then(response => response.json())
-.then(datos => {
-    console.log("Datos:", datos)
-
-    const perfil = document.getElementById("sesion");
-
-    if(perfil){
-        perfil.textContent = datos.username;
-    }
-})
-.catch(err => alert("Error: " + err));
-
-
-//CERRAR SESION
-const cerrarSesion = document.getElementById("cerrar-sesion");
-
-if (cerrarSesion) {
-    addEventListener("click", (e) =>{
-        if(localStorage.getItem("token")){
-            localStorage.removeItem("token");
-            console.log("Sesión cerrada correctamente.")
-        }else{
-            console.log("No hay sesión activa.");
-        }
-        window.location.replace("/login.html");
-    })
-}*/

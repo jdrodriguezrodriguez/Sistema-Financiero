@@ -6,7 +6,7 @@ import com.banco.sistemabancario.dto.DatosDto;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
+import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
@@ -27,11 +27,9 @@ public class DatosDTOServiceImpl implements DatosDTOService{
 
     //BUSCAR DATOS DEL USUARIO
     @Override
-    public DatosDto datosUsuario(int idPersona){
-
-        Persona persona = personaRepository.findById(idPersona)
-                .orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
-        Usuario usuario = usuarioRepository.findByPersona(persona);
+    public DatosDto datosUsuario(int idUsuario){
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsuarioNoencontradoException("No se encontro el usuario con ID: " + idUsuario));
+        Persona persona = personaRepository.findByUsuario(usuario);
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
 
         return new DatosDto(persona.getNombre(), persona.getApellido(), persona.getDocumento(),
