@@ -25,8 +25,7 @@ public class Usuario {
     private Integer idUsuario;
 
     @OneToOne           //Usuario//                         //Persona//
-    @JoinColumn(name = "idPersona", referencedColumnName = "idPersona")
-                        
+    @JoinColumn(name = "idPersona", referencedColumnName = "idPersona")      
     private Persona persona;
 
     @Column(nullable = false)

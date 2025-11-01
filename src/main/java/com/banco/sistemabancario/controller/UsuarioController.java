@@ -1,101 +1,86 @@
 package com.banco.sistemabancario.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
-import com.banco.sistemabancario.dto.DatosDto;
-import com.banco.sistemabancario.dto.LoginUsuarioDto;
-import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.service.DatosDTOService;
-import com.banco.sistemabancario.service.UsuarioService;
+import com.banco.sistemabancario.security.controller.CustomUserDetails;
+import com.banco.sistemabancario.serviceImpl.DatosDTOServiceImpl;
+import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
 
 
-@Controller
+
+
+@RestController
+@RequestMapping("/api/sistema/usuarios")
 public class UsuarioController {
     
     private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
-    private UsuarioService usuarioService;
-    private DatosDTOService datosDTOService;
+    private UsuarioServiceImpl usuarioService;
+    private DatosDTOServiceImpl datosDTOService;
 
-    public UsuarioController(UsuarioService usuarioService, DatosDTOService datosDTOService) {
+    public UsuarioController(UsuarioServiceImpl usuarioService, DatosDTOServiceImpl datosDTOService) {
         this.usuarioService = usuarioService;
         this.datosDTOService = datosDTOService;
     }
-    
 
-    //REDIRIGIR AL LOGIN
-    @GetMapping("/")
-    public String redirigirAlLogin() {
-        return "redirect:/login.html";
+    //SESION AUTENTICADA
+    @GetMapping("/profile")
+    public ResponseEntity<?> CurrentUser(@AuthenticationPrincipal CustomUserDetails user) {
+
+        Map<String, Object> userInfo = new HashMap<>();
+
+        userInfo.put("idUsuario", user.getId());
+        userInfo.put("username", user.getUsername());
+
+        return ResponseEntity.ok(userInfo);
     }
-
-    //REDIRIGIR AL LOGIN
-    @GetMapping("/index")
-    public String regirigirIndex() {
-        return "redirect:/index.html";
-    }
-
-    //REDIRIGIR AL ADMIN
-    @GetMapping("/admin")
-    public String regirigirAdmin() {
-        return "redirect:/admin.html";
-    }
-  
-    //LIMPIAR SESION
-    @GetMapping("/logout")
-    public String logout(HttpSession session){
-        session.invalidate();
-        return "redirect:/login.html";
-    }
-
-    /*
-    @PostMapping("/autenticar")
-    public ResponseEntity<?> login(@RequestBody LoginUsuarioDto datos, HttpSession session) {
-        
-        Usuario usuario = usuarioService.autenticar(datos);
-
-        session.setAttribute("idPersona", usuario.getPersona().getIdPersona());
-        
-        return ResponseEntity.ok(Map.of("Mensaje", "Acceso correcto"));
-    }*/
 
     //DATOS DEL USUARIO EN LINEA
-    @GetMapping("/api/datos")
-    @ResponseBody
-    public DatosDto obtenerDatos(HttpSession session){
-        Integer idPersona = (Integer) session.getAttribute("idPersona");
-        return datosDTOService.datosUsuario(idPersona);
+    @GetMapping("/profile/datos")
+    public ResponseEntity<?> datosSesionAutenticada(@AuthenticationPrincipal CustomUserDetails user){
+        return ResponseEntity.ok(datosDTOService.datosUsuario(user.getId()));
+    }
+        
+    
+
+    //CONSULTAS
+    @GetMapping("/{idPersona}")
+    public ResponseEntity<?> getMethodName(@PathVariable int idPersona) {
+        return usuarioService.obtenerUsuarioPorId(idPersona)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+    
+    @GetMapping
+    public ResponseEntity<?> listarUsuarios(){
+        return ResponseEntity.ok(usuarioService.obtenerUsuarios());
     }
 
-    //ACTUALIZAR USUARIO
-    @PutMapping("/actualizarUsuario")
-    public ResponseEntity<?> actualizarDatosUsuario(@Valid @RequestBody ActualizarUsuarioDto datos, HttpSession session){
+    //ACTUALIZAR
+    @PutMapping("/actualizar")
+    public ResponseEntity<?> actualizarUsuario(@AuthenticationPrincipal CustomUserDetails user, @Valid @RequestBody ActualizarUsuarioDto datos){
         
-        Integer idPersona = (Integer) session.getAttribute("idPersona");
-        if(idPersona == null){
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesion no valida.");
-        }
-
         try {
-            usuarioService.actualizarUsuario(datos, idPersona);
+            usuarioService.actualizarDatosUsuario(datos, user.getId());
             logger.info("Usuario actualizado correctamente");
-            return ResponseEntity.ok(Map.of("Mensaje", "Actualizacion exitosa."));
+            return ResponseEntity.ok(Map.of("Mensaje", "Actualizacion exitosa. Por favor, vuelve a iniciar sesión"));
 
         } catch (NoSuchElementException e) {
             logger.error("Error al actualizar al usuario", e);

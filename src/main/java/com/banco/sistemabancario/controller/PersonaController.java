@@ -5,33 +5,61 @@ import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.ActualizarPersonaDto;
 import com.banco.sistemabancario.dto.RegistroPersonaDto;
-import com.banco.sistemabancario.service.PersonaService;
+import com.banco.sistemabancario.entity.Persona;
+import com.banco.sistemabancario.security.controller.CustomUserDetails;
+import com.banco.sistemabancario.serviceImpl.PersonaServiceImpl;
+import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PutMapping;
 
-@Controller
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+
+
+
+@RestController
+@RequestMapping("/api/sistema/personas")
 public class PersonaController {
     
     private static final Logger logger =  LoggerFactory.getLogger(PersonaController.class);
 
-    private PersonaService personaService;
-    public PersonaController(PersonaService personaService) {
+    private PersonaServiceImpl personaService;
+    private UsuarioServiceImpl usuarioService;
+
+    public PersonaController(PersonaServiceImpl personaService, UsuarioServiceImpl usuarioService) {
         this.personaService = personaService;
+        this.usuarioService = usuarioService;
     }
 
-    //REGISTRAR UNA PERSONA
-    @PostMapping("/registro")
-    public ResponseEntity<?> registrar(@Valid @RequestBody RegistroPersonaDto datos) {
+    //CONSULTAS
+    @GetMapping("/{idPersona}")
+    public ResponseEntity<?> buscarPersonaPorId(@PathVariable int idPersona) {
+        return personaService.obtenerPersonaPorId(idPersona)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+    
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> listarPersonas() {
+        return ResponseEntity.ok(personaService.obtenerPersonas());
+    }
+    
+    //CREAR
+    @PostMapping
+    public ResponseEntity<?> registroPersona(@Valid @RequestBody RegistroPersonaDto datos) {
        
         try{
             personaService.registrarPersona(datos);
@@ -44,17 +72,13 @@ public class PersonaController {
         }       
     }
 
-    //ACTUALIZAR UNA PERSONA EXISTENTE
-    @PutMapping("/actualizarPersona")
-    public ResponseEntity<?> actualizarDatosPersona(@Valid @RequestBody ActualizarPersonaDto actualizarPersonaDto,  HttpSession session){
-      
-        Integer idPersona = (Integer) session.getAttribute("idPersona");
-        if (idPersona == null) {
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesion no valida");
-        }
-
+    //ACTUALIZAR
+    @PutMapping("/actualizar")
+    public ResponseEntity<?> actualizarPersona(@AuthenticationPrincipal CustomUserDetails user, @Valid @RequestBody ActualizarPersonaDto actualizarPersonaDto){  
         try{
-            personaService.actualizarPersona(actualizarPersonaDto, idPersona);
+            Persona persona = usuarioService.obtenerPersonaPorUsuarioId(user.getId());
+            personaService.actualizarDatosPersona(actualizarPersonaDto, persona.getIdPersona());
+            
             logger.info("Los datos personales fueron actualizados correctamente");
             return ResponseEntity.ok(Map.of("Mensaje", "Actualizacion exitosa"));
             
@@ -62,5 +86,13 @@ public class PersonaController {
             logger.error("Error en actualizar los datos personales:", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    //ELIMINAR
+    @DeleteMapping("/{idPersona}")
+    public ResponseEntity<?> eliminarPersona(@PathVariable int idPersona){
+
+        personaService.eliminarPersona(idPersona);
+        return ResponseEntity.ok(Map.of("Mensaje","Persona eliminada"));
     }
 }
