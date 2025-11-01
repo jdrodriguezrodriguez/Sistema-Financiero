@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (user) {
         document.getElementById("sesion").textContent = user.username;
-        
     } else {
         console.warn("Usuario no autenticado.");
     }

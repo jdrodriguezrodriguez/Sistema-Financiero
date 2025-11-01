@@ -9,7 +9,7 @@ import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
 
 public interface UsuarioService {
-    Usuario actualizarDatosUsuario (ActualizarUsuarioDto datos, int idPersona);
+    Usuario actualizarDatosUsuario (ActualizarUsuarioDto datos, int idUsuario);
     List<Usuario> obtenerUsuarios();
     Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona);
     Optional<Usuario> obtenerUsuarioPorId(int idPersona);

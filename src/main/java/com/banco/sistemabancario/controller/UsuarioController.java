@@ -74,18 +74,13 @@ public class UsuarioController {
     }
 
     //ACTUALIZAR
-    @PutMapping("/{idPersona}")
-    public ResponseEntity<?> actualizarUsuario(@PathVariable int idPersona ,@Valid @RequestBody ActualizarUsuarioDto datos, HttpSession session){
+    @PutMapping("/actualizar")
+    public ResponseEntity<?> actualizarUsuario(@AuthenticationPrincipal CustomUserDetails user, @Valid @RequestBody ActualizarUsuarioDto datos){
         
-        /*Integer idPersona = (Integer) session.getAttribute("idPersona");
-        if(idPersona == null){
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesion no valida.");
-        }*/
-
         try {
-            usuarioService.actualizarDatosUsuario(datos, idPersona);
+            usuarioService.actualizarDatosUsuario(datos, user.getId());
             logger.info("Usuario actualizado correctamente");
-            return ResponseEntity.ok(Map.of("Mensaje", "Actualizacion exitosa."));
+            return ResponseEntity.ok(Map.of("Mensaje", "Actualizacion exitosa. Por favor, vuelve a iniciar sesión"));
 
         } catch (NoSuchElementException e) {
             logger.error("Error al actualizar al usuario", e);

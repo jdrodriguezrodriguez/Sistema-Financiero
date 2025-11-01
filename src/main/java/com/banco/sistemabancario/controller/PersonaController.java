@@ -73,12 +73,12 @@ public class PersonaController {
     }
 
     //ACTUALIZAR
-    @PutMapping("/{idPersona}")
+    @PutMapping("/actualizar")
     public ResponseEntity<?> actualizarPersona(@AuthenticationPrincipal CustomUserDetails user, @Valid @RequestBody ActualizarPersonaDto actualizarPersonaDto){  
         try{
             Persona persona = usuarioService.obtenerPersonaPorUsuarioId(user.getId());
-
             personaService.actualizarDatosPersona(actualizarPersonaDto, persona.getIdPersona());
+            
             logger.info("Los datos personales fueron actualizados correctamente");
             return ResponseEntity.ok(Map.of("Mensaje", "Actualizacion exitosa"));
             

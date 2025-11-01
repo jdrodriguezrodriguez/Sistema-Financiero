@@ -77,16 +77,17 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         }
 
     @Override
-    public Usuario actualizarDatosUsuario(ActualizarUsuarioDto datos, int idPersona){
-        Usuario usuario = obtenerUsuarioPorId(idPersona)
-            .orElseThrow(() -> new UsuarioNoencontradoException("No se encontró el usuario con el ID"));
+    public Usuario actualizarDatosUsuario(ActualizarUsuarioDto datos, int idUsuario){
+        
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+            .orElseThrow(() -> new UsuarioNoencontradoException("No se encontro el usuario"));
 
         validarNombreUsuario(datos.getUsername(), usuario.getIdUsuario());
 
         usuario.setUsername(datos.getUsername());
         usuario.setPassword(datos.getPassword());
 
-        return usuario;
+        return usuarioRepository.save(usuario);
     }
 
     //CONSULTAS
