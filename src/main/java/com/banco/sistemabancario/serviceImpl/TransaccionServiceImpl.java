@@ -105,8 +105,8 @@ public class TransaccionServiceImpl implements TransaccionService{
     }
 
     //CONSULTAR
-    public BigDecimal consultar(int idPersona){
-        Cuenta cuenta = cuentaService.buscarCuenta(idPersona);
+    public BigDecimal consultar(int idUser){
+        Cuenta cuenta = cuentaService.buscarCuenta(idUser);
         return cuenta.getSaldo();
     }
 

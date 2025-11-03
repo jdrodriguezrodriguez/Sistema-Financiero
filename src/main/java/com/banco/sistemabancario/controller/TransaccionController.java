@@ -3,21 +3,21 @@ package com.banco.sistemabancario.controller;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.TransferirDineroDto;
+import com.banco.sistemabancario.security.controller.CustomUserDetails;
 import com.banco.sistemabancario.serviceImpl.TransaccionServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
@@ -75,12 +75,11 @@ public class TransaccionController {
     }
 
     //CONSULTAR HISTORIAL
-    @GetMapping("/historial/{idPersona}")
-    public ResponseEntity<?> consultarTransacciones(@PathVariable int idPersona, HttpSession session) {
+    @GetMapping("/historial")
+    public ResponseEntity<?> consultarTransacciones(@AuthenticationPrincipal CustomUserDetails user) {
 
         try {
-            //Integer idPersona = (Integer) session.getAttribute("idPersona");
-            return ResponseEntity.ok(transaccionService.transacciones(idPersona));
+            return ResponseEntity.ok(transaccionService.transacciones(user.getId()));
             
         } catch (NoSuchElementException e) {
             logger.error("Error al consultar el historial de transacciones", e);
@@ -89,22 +88,21 @@ public class TransaccionController {
     }
     
     //CONSULTAR DINERO
-    @GetMapping("/saldo/{idPersona}")
-    @ResponseBody
-    public Map<String, Object> consultarDinero(@PathVariable int idPersona,HttpSession session) {
+    @GetMapping("/saldo")
+    public ResponseEntity<?> consultarDinero(@AuthenticationPrincipal CustomUserDetails user) {
 
         try {
-            //Integer idPersona = (Integer) session.getAttribute("idPersona");
-            BigDecimal saldo = transaccionService.consultar(idPersona);
 
-            Map<String, Object> reponse = new HashMap<>();
-            reponse.put("saldo", saldo);
+            BigDecimal saldo = transaccionService.consultar(user.getId());
 
-            return reponse;
+            Map<String, Object> response = new HashMap<>();
+            response.put("saldo", saldo);
+
+            return ResponseEntity.ok(response);
 
         } catch (NoSuchElementException e) {
             logger.error("Error al consultar el dinero actual del usuario", e); 
-            return Collections.emptyMap();
+            return ResponseEntity.badRequest().body("Error" + e);
         }
     }
 }

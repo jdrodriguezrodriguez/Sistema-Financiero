@@ -1,28 +1,32 @@
 import { statusToken, getUserInfo, getToken, removeToken } from "./auth.js";
 
 document.getElementById("cerrar-sesion").addEventListener("click", (e) => {
+    e.preventDefault();
     if (getToken()) {
         removeToken();
     } else {
-        alert("NO HAY SESION ACTIVA.")
+        alert("NO HAY SESIÓN ACTIVA.");
     }
     window.location.replace("../html/login.html");
-})
+});
+
 
 document.addEventListener("DOMContentLoaded", () => {
+    try {
+        statusToken();
+        console.log("Página segura cargada correctamente.");
+        
+        const user = getUserInfo();
+        if (user) {
+            document.getElementById("sesion").textContent = user.username;
+        } else {
+            console.warn("Usuario no autenticado.");
+        }
 
-    statusToken();
-    console.log("Página segura cargada correctamente.");
-
-    const user = getUserInfo();
-
-    if (user) {
-        document.getElementById("sesion").textContent = user.username;
-    } else {
-        console.warn("Usuario no autenticado.");
+        cargarDatosPerfil();
+    } catch (err) {
+        console.error("Error al cargar la página segura:", err);
     }
-
-    cargarDatosPerfil();
 });
 
 
@@ -60,7 +64,7 @@ function cargarDatosPerfil() {
                     lista.appendChild(item);
                 });
             }else{
-                console.log("No hay lista para mostrar datos.")
+                console.log("No hay lista para mostrar datos del usuario.")
             }
         })
         .catch(error => {
