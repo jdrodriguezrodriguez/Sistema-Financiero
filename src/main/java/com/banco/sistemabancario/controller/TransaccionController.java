@@ -1,7 +1,6 @@
 package com.banco.sistemabancario.controller;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -40,11 +39,6 @@ public class TransaccionController {
     //TRANSFERIR
     @PostMapping("/transferir/{idPersona}")
     public ResponseEntity<?> transferirDinero(@PathVariable int idPersona,@Valid @RequestBody TransferirDineroDto datos, HttpSession session) {
-
-        /*Integer idPersona = (Integer) session.getAttribute("idPersona");
-        if (idPersona == null) {
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesion no valida.");
-        }*/
 
         try {
             transaccionService.transferir(idPersona, datos);
