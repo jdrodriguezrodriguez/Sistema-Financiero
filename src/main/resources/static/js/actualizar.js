@@ -49,7 +49,7 @@ function actualizarDatosPersona() {
 
                 .catch(async error => {
                     let errData = await error.json();
-                    document.getElementById("resultadoPersona").innerText = "Actualizacion fallida. " + JSON.stringify(errData);
+                    document.getElementById("resultadoUsuario").innerText = "Actualizacion fallida. " + JSON.stringify(errData);
                     console.log(JSON.stringify(errData));
                 })
         })

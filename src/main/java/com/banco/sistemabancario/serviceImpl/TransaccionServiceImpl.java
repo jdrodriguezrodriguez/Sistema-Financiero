@@ -83,7 +83,7 @@ public class TransaccionServiceImpl implements TransaccionService{
     }
 
     //DEPOSITAR
-    public Transaccion depositar(int idPersona, String valor){
+    public Transaccion depositar(int idUser, String valor){
         try {
 
             BigDecimal monto = new BigDecimal(valor.trim());
@@ -92,7 +92,7 @@ public class TransaccionServiceImpl implements TransaccionService{
                 throw new ValorInvalidoException("El valor a depositar debe ser mayor o igual a $2.000");
             }
 
-            Cuenta cuenta = cuentaService.buscarCuenta(idPersona);
+            Cuenta cuenta = cuentaService.buscarCuenta(idUser);
             cuenta.setSaldo(cuenta.getSaldo().add(monto));
             cuentaRepository.save(cuenta);
 

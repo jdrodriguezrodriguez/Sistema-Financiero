@@ -7,7 +7,7 @@ document.getElementById("cerrar-sesion").addEventListener("click", (e) => {
     } else {
         alert("NO HAY SESIÓN ACTIVA.");
     }
-    window.location.replace("../html/login.html");
+    window.location.replace("/html/login.html");
 });
 
 

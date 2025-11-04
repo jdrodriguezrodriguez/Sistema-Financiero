@@ -52,26 +52,20 @@ public class TransaccionController {
     }
 
     //DEPOSITAR
-    @PostMapping("/depositar/{idPersona}")
-    public String depositarDinero(@RequestParam String valor, HttpSession session){
-
+    @PostMapping("/depositar")
+    public ResponseEntity<?> depositarDinero(@RequestBody String valor, @AuthenticationPrincipal CustomUserDetails user){
         try {
-            
-            Integer idPersona = (Integer) session.getAttribute("idPersona");
-            transaccionService.depositar(idPersona, valor);
-
-            return "redirect:/index.html";
-
+            transaccionService.depositar(user.getId(), valor);
+            return ResponseEntity.ok(Map.of("Mensaje", "Se ha depositado correctamente."));
         } catch (NoSuchElementException e) {
             logger.error("Error al depositar el dinero", e);
-            return "redirect:/index.html?error";
+            return ResponseEntity.badRequest().body("Error al depositar el dinero: " + e);
         }
     }
 
     //CONSULTAR HISTORIAL
     @GetMapping("/historial")
     public ResponseEntity<?> consultarTransacciones(@AuthenticationPrincipal CustomUserDetails user) {
-
         try {
             return ResponseEntity.ok(transaccionService.transacciones(user.getId()));
             
@@ -84,7 +78,6 @@ public class TransaccionController {
     //CONSULTAR DINERO
     @GetMapping("/saldo")
     public ResponseEntity<?> consultarDinero(@AuthenticationPrincipal CustomUserDetails user) {
-
         try {
 
             BigDecimal saldo = transaccionService.consultar(user.getId());
