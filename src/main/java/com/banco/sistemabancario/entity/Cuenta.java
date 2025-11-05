@@ -3,8 +3,12 @@ package com.banco.sistemabancario.entity;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.banco.sistemabancario.entity.enums.CuentaEnum;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -23,19 +27,19 @@ public class Cuenta {
     @JoinColumn(name = "idUsuario", referencedColumnName = "idUsuario")
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "cuenta")     //Atributo en la clase Transaccion//
+    @OneToMany(mappedBy = "cuenta")
     private List<Transaccion> transacciones;
 
     @Column(nullable = false)
     private BigDecimal saldo;
 
-    @Column(nullable = false)
-    private String estado;
+    @Enumerated(EnumType.STRING)
+    private CuentaEnum estado;
 
     public Cuenta(){
     }
     
-    public Cuenta(String numCuenta, Usuario usuario, BigDecimal saldo, String estado) {
+    public Cuenta(String numCuenta, Usuario usuario, BigDecimal saldo, CuentaEnum estado) {
         this.numCuenta = numCuenta;
         this.usuario = usuario;
         this.saldo = saldo;
@@ -63,10 +67,10 @@ public class Cuenta {
         this.saldo = saldo;
     }
 
-    public String getEstado() {
+    public CuentaEnum getEstado() {
         return estado;
     }
-    public void setEstado(String estado) {
+    public void setEstado(CuentaEnum estado) {
         this.estado = estado;
     }
 }

@@ -22,9 +22,6 @@ import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
-
 @RestController
 @RequestMapping("/api/sistema/usuarios")
 public class UsuarioController {
@@ -57,8 +54,6 @@ public class UsuarioController {
         return ResponseEntity.ok(datosDTOService.datosUsuario(user.getId()));
     }
         
-    
-
     //CONSULTAS
     @GetMapping("/{idPersona}")
     public ResponseEntity<?> getMethodName(@PathVariable int idPersona) {

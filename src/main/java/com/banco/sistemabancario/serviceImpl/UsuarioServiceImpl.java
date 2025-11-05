@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.entity.enums.RoleEnum;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
@@ -22,20 +23,7 @@ import com.banco.sistemabancario.service.UsuarioService;
 @Service
 public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     
-    //GENERAR NOMBRE DE USUARIO
-    public static String generarUsername(String nombre, String apellido){
-        return nombre.substring(0, Math.min(4, nombre.length())) + apellido.substring(0, Math.min(2, apellido.length()));
-    }
-    //VALIDAR CONTRASEÑA
-    public static boolean validarPassword(String password){
-        if (password.length() != 4) {
-            return false;
-        }
-        return true;
-    }
-
     private UsuarioRepository usuarioRepository;
-
     private PersonaRepository personaRepository;
 
     public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PersonaRepository personaRepository) {
@@ -124,10 +112,13 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuario.setUsername(username);
         usuario.setPassword(password);
         usuario.setPersona(persona);
+        usuario.setRol(RoleEnum.CLIENTE);
 
-        if (usuario.getRol() == null) {
-            usuario.setRol("CLIENTE");
-        }
+        //SECURITY
+        usuario.setAccountNoExpired(true);
+        usuario.setAccountNoLocked(true);
+        usuario.setCredentialNoExpired(true);
+        usuario.setEnabled(true);
 
         return usuarioRepository.save(usuario);
     }
@@ -141,5 +132,17 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         if (existente.isPresent() && !existente.get().getIdUsuario().equals(Integer.valueOf(idActual))) {
             throw new IllegalArgumentException("El usuario ya existe, cambiar username " + username);
         }
+    }
+
+    //GENERAR NOMBRE DE USUARIO
+    public static String generarUsername(String nombre, String apellido){
+        return nombre.substring(0, Math.min(4, nombre.length())) + apellido.substring(0, Math.min(2, apellido.length()));
+    }
+    //VALIDAR CONTRASEÑA
+    public static boolean validarPassword(String password){
+        if (password.length() != 4) {
+            return false;
+        }
+        return true;
     }
 }

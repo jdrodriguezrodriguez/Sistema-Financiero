@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.entity.enums.CuentaEnum;
 import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.service.CuentaService;
 
@@ -30,7 +31,7 @@ public class CuentaServiceImpl implements CuentaService{
 
         cuenta.setNum_cuenta(generarNumeroCuenta());
         cuenta.setUsuario(usuario);
-        cuenta.setEstado(ESTADO_CUENTA);
+        cuenta.setEstado(CuentaEnum.ACTIVA);
         cuenta.setSaldo((new BigDecimal("0.00")));
 
         return cuentaRepository.save(cuenta);
