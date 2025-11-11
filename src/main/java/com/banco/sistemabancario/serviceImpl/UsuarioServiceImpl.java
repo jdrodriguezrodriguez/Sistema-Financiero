@@ -1,9 +1,12 @@
 package com.banco.sistemabancario.serviceImpl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import org.springframework.context.support.BeanDefinitionDsl.Role;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,7 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
+import com.banco.sistemabancario.entity.Permisos;
 import com.banco.sistemabancario.entity.Persona;
+import com.banco.sistemabancario.entity.Roles;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
@@ -25,10 +30,12 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     
     private UsuarioRepository usuarioRepository;
     private PersonaRepository personaRepository;
+    private RolesServiceImpl rolesServiceImpl;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PersonaRepository personaRepository) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PersonaRepository personaRepository, RolesServiceImpl rolesServiceImpl) {
         this.usuarioRepository = usuarioRepository;
         this.personaRepository = personaRepository;
+        this.rolesServiceImpl = rolesServiceImpl;
     }       
 
     @Override
@@ -119,6 +126,10 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuario.setAccountNoLocked(true);
         usuario.setCredentialNoExpired(true);
         usuario.setEnabled(true);
+
+        //ROLES/PERMISOS
+        Roles rol = rolesServiceImpl.buscarRoles(RoleEnum.CLIENTE);
+        usuario.setRoles(Set.of(rol));
 
         return usuarioRepository.save(usuario);
     }

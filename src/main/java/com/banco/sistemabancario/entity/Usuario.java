@@ -56,7 +56,7 @@ public class Usuario {
     private boolean credentialNoExpired;
 
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)        //CARGAR TODOS LOS ROLES DEL USUARIO
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)        //CARGAR TODOS LOS ROLES DEL USUARIO
     @JoinTable(name = "user_roles", joinColumns =  @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Roles> roles = new HashSet<>();
 

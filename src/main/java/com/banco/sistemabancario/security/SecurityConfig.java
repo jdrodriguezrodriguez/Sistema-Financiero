@@ -49,9 +49,14 @@ public class SecurityConfig{
             .authorizeHttpRequests(auth -> {
 
                 auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/html/**", "/css/**", "/js/**").permitAll();
+                auth.requestMatchers(HttpMethod.POST, "/api/sistema/personas/registrar").permitAll();
                 
-                auth.requestMatchers("/api/sistema/personas/**").hasRole("ADMIN");
-                auth.requestMatchers("/api/sistema/usuarios/**").hasRole("ADMIN");
+                auth.requestMatchers("/api/sistema/**").hasRole("ADMIN");
+
+                auth.requestMatchers("/api/sistema/usuarios/profile/**").hasRole("CLIENTE");
+                auth.requestMatchers("/api/sistema/usuarios/actualizar").hasRole("CLIENTE"); 
+                auth.requestMatchers("/api/sistema/personas/actualizar").hasRole("CLIENTE");
+                auth.requestMatchers("/api/sistema/transaccion/**").hasRole("CLIENTE");
                 
                 auth.anyRequest().authenticated();                                     
             })

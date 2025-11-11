@@ -47,7 +47,6 @@ public class JwtUtils {
             return token;
             
         } catch (Exception e) {
-            logger.error("Error al generar el token", e);
             throw new RuntimeException("Error al generar el token JWT");
         }
     }

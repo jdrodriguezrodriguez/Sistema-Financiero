@@ -14,9 +14,7 @@ import com.banco.sistemabancario.service.CuentaService;
 @Service
 public class CuentaServiceImpl implements CuentaService{
 
-    private static final String ESTADO_CUENTA = "ACTIVA";
     private final Random random = new Random();
-
     private CuentaRepository cuentaRepository;
 
     public CuentaServiceImpl(CuentaRepository cuentaRepository) {

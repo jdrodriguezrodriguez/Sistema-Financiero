@@ -67,6 +67,7 @@ public class PersonaServiceImpl implements PersonaService{
         Persona personaRegistro = personaRepository.save(persona);
         Usuario usuarioRegistro = usuarioService.registrarUsuario(datos.getNombre(), datos.getApellido(), datos.getPassword(), persona);
         cuentaService.registrarCuenta(usuarioRegistro);
+        
 
         return personaRegistro;
     }
