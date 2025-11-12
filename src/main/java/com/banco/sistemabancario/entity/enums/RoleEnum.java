@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.entity;
+package com.banco.sistemabancario.entity.enums;
 
 public enum RoleEnum {
     ADMIN,

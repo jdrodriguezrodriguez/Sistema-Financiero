@@ -4,31 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>transferencia</title>
-    <link rel="stylesheet" href="./css/index.css"> 
-    <link rel="stylesheet" href="./css/operaciones.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/operaciones.css">
 </head>
 <body>
     <header>
         <nav class="nav">
             <div class="logo">Sistema financiero</div> 
             <ul class="menu">
-                <li><a href="index.html" class="enlace" id="inicio">Inicio</a></li>
+                <li><a href="/html/index.html" class="enlace" id="inicio">Inicio</a></li>
                 <li><a href="#" class="enlace" id="actualizar">Servicios</a></li> 
                 <li><a href="#" class="enlace" id="contacto">Contáctanos</a></li> 
-                <li><a href="/logout" class="enlace" id="contacto">Cerrar sesión</a></li> 
+                <li><a href="/html/login.html" class="enlace" id="cerrar-sesion">Cerrar sesión</a></li> 
             </ul>
             <ul class="menu-perfil">
-                <li><a href="perfil.html" class="enlace-perfil" id="inicio">
-                    <span id="h1"></span>
-                    <script> 
-                        fetch('/api/datos')
-                            .then(response => response.json())
-                            .then(usuario => {
-                                const perfil = document.getElementById('h1');
-                                perfil.textContent = usuario.nombre;
-                            })
-                            .catch(error => console.error("Error", error))
-                    </script>
+                <li><a href="/html/perfil.html" class="enlace-perfil" id="inicio">
+                    <span id="sesion"></span>
                 </a></li>
             </ul>
         </nav>
@@ -60,7 +51,8 @@
         <p>© 2025 Sistema Financiero</p>
     </footer>
 
-    <script src="./js/script.js"></script>  
-    <script src="./js/transacciones.js"></script>  
+    <script type="module" src="/js/perfil.js"></script>
+    <script type="module" src="/js/operaciones/transferir.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>

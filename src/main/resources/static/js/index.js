@@ -1,4 +1,4 @@
-import { fetchWithAuth, saveUserInfo, getToken } from "./auth.js";
+/*import { fetchWithAuth, saveUserInfo, getToken } from "./auth.js";
 
 document.addEventListener("DOMContentLoaded", async () =>{
     try {
@@ -11,4 +11,4 @@ document.addEventListener("DOMContentLoaded", async () =>{
     } catch (error) {
         console.log("Error con el usuario autenticado.")
     }
-})
+})*/

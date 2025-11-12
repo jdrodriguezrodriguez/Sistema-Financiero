@@ -18,17 +18,14 @@ import com.banco.sistemabancario.service.PersonaService;
 @Service
 public class PersonaServiceImpl implements PersonaService{
 
-    private final GlobalExceptionHandler globalExceptionHandler;
-    
     private PersonaRepository personaRepository;
     private UsuarioServiceImpl usuarioService;
     private CuentaServiceImpl cuentaService;
 
-    public PersonaServiceImpl(PersonaRepository personaRepository, UsuarioServiceImpl usuarioService, CuentaServiceImpl cuentaService, GlobalExceptionHandler globalExceptionHandler) {
+    public PersonaServiceImpl(PersonaRepository personaRepository, UsuarioServiceImpl usuarioService, CuentaServiceImpl cuentaService) {
         this.personaRepository = personaRepository;
         this.usuarioService = usuarioService;
         this.cuentaService = cuentaService;
-        this.globalExceptionHandler = globalExceptionHandler;
     }
 
     @Override
@@ -70,6 +67,7 @@ public class PersonaServiceImpl implements PersonaService{
         Persona personaRegistro = personaRepository.save(persona);
         Usuario usuarioRegistro = usuarioService.registrarUsuario(datos.getNombre(), datos.getApellido(), datos.getPassword(), persona);
         cuentaService.registrarCuenta(usuarioRegistro);
+        
 
         return personaRegistro;
     }

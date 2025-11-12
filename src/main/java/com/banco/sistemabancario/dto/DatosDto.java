@@ -2,16 +2,21 @@ package com.banco.sistemabancario.dto;
 
 import java.sql.Date;
 
+import com.banco.sistemabancario.entity.enums.CuentaEnum;
+import com.banco.sistemabancario.entity.enums.RoleEnum;
+
 public class DatosDto {
 
-    private String nombre, apellido, documento, correo, username, rol, numCuenta, estado;
+    private String nombre, apellido, documento, correo, username, numCuenta;
+    private CuentaEnum estado;
+    private RoleEnum rol;
     private Date nacimiento;
 
     public DatosDto(){
     }
 
-    public DatosDto(String nombre, String apellido, String documento, String correo, String username, String rol,
-            String numCuenta, String estado, Date nacimiento) {
+    public DatosDto(String nombre, String apellido, String documento, String correo, String username, RoleEnum rol,
+            String numCuenta, CuentaEnum estado, Date nacimiento) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.documento = documento;
@@ -58,10 +63,10 @@ public class DatosDto {
         this.username = username;
     }
 
-    public String getRol() {
+    public RoleEnum getRol() {
         return rol;
     }
-    public void setRol(String rol) {
+    public void setRol(RoleEnum rol) {
         this.rol = rol;
     }
 
@@ -72,10 +77,10 @@ public class DatosDto {
         this.numCuenta = numCuenta;
     }
 
-    public String getEstado() {
+    public CuentaEnum getEstado() {
         return estado;
     }
-    public void setEstado(String estado) {
+    public void setEstado(CuentaEnum estado) {
         this.estado = estado;
     }
 

@@ -36,7 +36,6 @@ public class SecurityConfig{
     @Autowired
     JwtAuthorizationFilter jwtAuthorizationFilter;
 
-    //FILTRO (CONDICIONES PERSONALIZADAS)
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception{
         
@@ -49,9 +48,14 @@ public class SecurityConfig{
             .authorizeHttpRequests(auth -> {
 
                 auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/html/**", "/css/**", "/js/**").permitAll();
+                auth.requestMatchers(HttpMethod.POST, "/api/sistema/personas/registrar").permitAll();
                 
-                auth.requestMatchers("/api/sistema/personas/**").hasRole("ADMIN");
-                auth.requestMatchers("/api/sistema/usuarios/**").hasRole("ADMIN");
+                auth.requestMatchers("/api/sistema/usuarios/profile/**").hasAnyRole("CLIENTE", "ADMIN");
+                auth.requestMatchers("/api/sistema/usuarios/actualizar").hasAnyRole("CLIENTE", "ADMIN");
+                auth.requestMatchers("/api/sistema/personas/actualizar").hasAnyRole("CLIENTE", "ADMIN");
+                auth.requestMatchers("/api/sistema/transaccion/**").hasAnyRole("CLIENTE", "ADMIN");
+
+                auth.requestMatchers("/api/sistema/**").hasRole("ADMIN");
                 
                 auth.anyRequest().authenticated();                                     
             })

@@ -1,28 +1,13 @@
-import { statusToken, getUserInfo, getToken, removeToken } from "./auth.js";
-
-document.getElementById("cerrar-sesion").addEventListener("click", (e) => {
-    if (getToken()) {
-        removeToken();
-    } else {
-        alert("NO HAY SESION ACTIVA.")
-    }
-    window.location.replace("../html/login.html");
-})
+import { getToken, removeToken } from "./auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    statusToken();
-    console.log("Página segura cargada correctamente.");
-
-    const user = getUserInfo();
-
-    if (user) {
-        document.getElementById("sesion").textContent = user.username;
-    } else {
-        console.warn("Usuario no autenticado.");
+    try {
+        actualizarDatosPersona();
+    } catch (error) {
+        console.error("Error al cargar la página segura:", error);
     }
-
-    actualizarDatosPersona();
+    
 });
 
 function actualizarDatosPersona() {
@@ -64,7 +49,7 @@ function actualizarDatosPersona() {
 
                 .catch(async error => {
                     let errData = await error.json();
-                    document.getElementById("resultadoPersona").innerText = "Actualizacion fallida. " + JSON.stringify(errData);
+                    document.getElementById("resultadoUsuario").innerText = "Actualizacion fallida. " + JSON.stringify(errData);
                     console.log(JSON.stringify(errData));
                 })
         })

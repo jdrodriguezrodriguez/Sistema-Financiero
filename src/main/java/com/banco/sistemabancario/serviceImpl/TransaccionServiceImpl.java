@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.banco.sistemabancario.dto.TransferirDineroDto;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Transaccion;
+import com.banco.sistemabancario.entity.enums.CuentaEnum;
 import com.banco.sistemabancario.exception.CuentaDeshabilitadaException;
 import com.banco.sistemabancario.exception.CuentaNoEncontradaException;
 import com.banco.sistemabancario.exception.SaldoInsuficienteException;
@@ -38,7 +39,7 @@ public class TransaccionServiceImpl implements TransaccionService{
     //TRANSFERIR
     @Override
     @Transactional
-    public Transaccion transferir(int idPersona, TransferirDineroDto datos){
+    public Transaccion transferir(int idUser, TransferirDineroDto datos){
 
         
         try {
@@ -47,11 +48,11 @@ public class TransaccionServiceImpl implements TransaccionService{
                 throw new ValorInvalidoException("El valor debe ser mayor $0.");
             }
 
-            Cuenta cuentaEntrada = cuentaService.buscarCuenta(idPersona);
+            Cuenta cuentaEntrada = cuentaService.buscarCuenta(idUser);
             Cuenta cuentaSalida = cuentaRepository.findById(datos.getCuentaDestino())
                     .orElseThrow(() -> new CuentaNoEncontradaException("No se encontro a la cuenta con el ID: " + datos.getCuentaDestino()));
 
-            if (!cuentaSalida.getEstado().equals("ACTIVA")) {
+            if (!cuentaSalida.getEstado().equals(CuentaEnum.ACTIVA)) {
                 throw new CuentaDeshabilitadaException("La cuenta destino se encuentra deshabilitada.");
             }
 
@@ -83,7 +84,7 @@ public class TransaccionServiceImpl implements TransaccionService{
     }
 
     //DEPOSITAR
-    public Transaccion depositar(int idPersona, String valor){
+    public Transaccion depositar(int idUser, String valor){
         try {
 
             BigDecimal monto = new BigDecimal(valor.trim());
@@ -92,7 +93,7 @@ public class TransaccionServiceImpl implements TransaccionService{
                 throw new ValorInvalidoException("El valor a depositar debe ser mayor o igual a $2.000");
             }
 
-            Cuenta cuenta = cuentaService.buscarCuenta(idPersona);
+            Cuenta cuenta = cuentaService.buscarCuenta(idUser);
             cuenta.setSaldo(cuenta.getSaldo().add(monto));
             cuentaRepository.save(cuenta);
 
@@ -105,8 +106,8 @@ public class TransaccionServiceImpl implements TransaccionService{
     }
 
     //CONSULTAR
-    public BigDecimal consultar(int idPersona){
-        Cuenta cuenta = cuentaService.buscarCuenta(idPersona);
+    public BigDecimal consultar(int idUser){
+        Cuenta cuenta = cuentaService.buscarCuenta(idUser);
         return cuenta.getSaldo();
     }
 

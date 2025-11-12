@@ -58,7 +58,7 @@ public class PersonaController {
     }
     
     //CREAR
-    @PostMapping
+    @PostMapping("/registrar")
     public ResponseEntity<?> registroPersona(@Valid @RequestBody RegistroPersonaDto datos) {
        
         try{

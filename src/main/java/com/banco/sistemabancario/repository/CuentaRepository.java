@@ -8,5 +8,6 @@ import com.banco.sistemabancario.entity.Usuario;
 public interface CuentaRepository extends JpaRepository<Cuenta, String>{
     boolean existsByNumCuenta(String numCuenta);
     Cuenta findByUsuario(Usuario usuario);
+    Cuenta findByUsuario_IdUsuario(int idUser);
     Cuenta findByUsuario_Persona_IdPersona(int idPersona);
 }

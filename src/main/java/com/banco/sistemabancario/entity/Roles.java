@@ -3,6 +3,7 @@ package com.banco.sistemabancario.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.banco.sistemabancario.entity.enums.RoleEnum;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -30,7 +31,7 @@ public class Roles {
     @Enumerated(EnumType.STRING)
     private RoleEnum roleEnum;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "roles_permisos", joinColumns =  @JoinColumn(name = "roles_id"), inverseJoinColumns = @JoinColumn(name = "permisos_id"))
     private Set<Permisos> permisosList = new HashSet<>();
 

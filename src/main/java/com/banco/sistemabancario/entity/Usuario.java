@@ -3,9 +3,13 @@ package com.banco.sistemabancario.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.banco.sistemabancario.entity.enums.RoleEnum;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +28,7 @@ public class Usuario {
     @Column(name = "idUsuario")
     private Integer idUsuario;
 
-    @OneToOne           //Usuario//                         //Persona//
+    @OneToOne
     @JoinColumn(name = "idPersona", referencedColumnName = "idPersona")      
     private Persona persona;
 
@@ -34,18 +38,11 @@ public class Usuario {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String rol;
+    @Enumerated(EnumType.STRING)
+    private RoleEnum rol;
     
 
-    /* */
-    /* */
-    /* */
-    //NUEVA IMPLEMENTACION, AGREGAR A LA BASE DE DATOS:
-    /* */
-    /* */
-    /* */
-
+    //CAMPOS SECURITY
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
@@ -59,18 +56,14 @@ public class Usuario {
     private boolean credentialNoExpired;
 
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)        //CARGAR TODOS LOS ROLES DEL USUARIO
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)        //CARGAR TODOS LOS ROLES DEL USUARIO
     @JoinTable(name = "user_roles", joinColumns =  @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Roles> roles = new HashSet<>();
 
-    /* */
-    /* */
-    /* */
-    
     public Usuario(){
     }
 
-    public Usuario(int idUsuario, String username, String password, String rol, Persona persona, boolean isEnabled, boolean accountNoExpired, boolean accountNoLocked, boolean credentialNoExpired, Set<Roles> roles){
+    public Usuario(int idUsuario, String username, String password, RoleEnum rol, Persona persona, boolean isEnabled, boolean accountNoExpired, boolean accountNoLocked, boolean credentialNoExpired, Set<Roles> roles){
         this.idUsuario = idUsuario;
         this.username = username;
         this.password = password;
@@ -104,10 +97,10 @@ public class Usuario {
         this.password = password;
     }
 
-    public String getRol() {
+    public RoleEnum getRol() {
         return rol;
     }
-    public void setRol(String rol) {
+    public void setRol(RoleEnum rol) {
         this.rol = rol;
     }
 

@@ -1,3 +1,5 @@
+import { fetchWithAuth, saveUserInfo, getToken } from "./auth.js";
+
 document.getElementById("loginForm").addEventListener("submit", function (e){
     e.preventDefault()
 
@@ -21,9 +23,15 @@ document.getElementById("loginForm").addEventListener("submit", function (e){
         return response.json();
     })
 
-    .then(data =>{
+    .then(async data =>{
         localStorage.setItem("token", data.token);
-        window.location.replace("../html/index.html");
+
+        const respose = await fetchWithAuth("/api/sistema/usuarios/profile");
+        const userData = await respose.json();
+
+        saveUserInfo(userData);
+
+        window.location.replace("/html/index.html");
     })
 
     .catch(async error =>{
@@ -31,39 +39,3 @@ document.getElementById("loginForm").addEventListener("submit", function (e){
         document.getElementById("resultado").innerText = errores.detalle
     })    
 })
-
-//PRUEBA
-    const token = localStorage.getItem("token");
-    if(!token){
-        console.log("NO HAY TOKEN");
-    }else{
-        console.log("TOKEN: ", token);
-    }
-/*
-document.addEventListener("DOMContentLoaded", () =>{
-    const form = document.getElementById("loginForm");
-
-    form.addEventListener("submit", async (e) =>{
-        e.preventDefault()
-
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-        
-
-        const response = await fetch("/autenticar", {
-            method: "POST",
-            headers:{
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({username, password})
-        });
-
-        if (response.ok){
-            const data = await response.json();
-            alert('Inicio de sesión exitoso');
-            console.log('Token:', data.token);
-        }else {
-            alert('Credenciales incorrectas');
-        }
-    })
-});*/

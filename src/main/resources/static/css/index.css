@@ -194,7 +194,7 @@ h1, h2 {
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 footer {
-    text-align: left;
+    text-align: center;
     padding: 15px;
     background-color: #1f1f1f;
     color: white;

@@ -3,6 +3,7 @@ package com.banco.sistemabancario.serviceImpl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.entity.Persona;
+import com.banco.sistemabancario.entity.Roles;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.entity.enums.RoleEnum;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
@@ -22,25 +25,14 @@ import com.banco.sistemabancario.service.UsuarioService;
 @Service
 public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     
-    //GENERAR NOMBRE DE USUARIO
-    public static String generarUsername(String nombre, String apellido){
-        return nombre.substring(0, Math.min(4, nombre.length())) + apellido.substring(0, Math.min(2, apellido.length()));
-    }
-    //VALIDAR CONTRASEÑA
-    public static boolean validarPassword(String password){
-        if (password.length() != 4) {
-            return false;
-        }
-        return true;
-    }
-
     private UsuarioRepository usuarioRepository;
-
     private PersonaRepository personaRepository;
+    private RolesServiceImpl rolesServiceImpl;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PersonaRepository personaRepository) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PersonaRepository personaRepository, RolesServiceImpl rolesServiceImpl) {
         this.usuarioRepository = usuarioRepository;
         this.personaRepository = personaRepository;
+        this.rolesServiceImpl = rolesServiceImpl;
     }       
 
     @Override
@@ -124,10 +116,17 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuario.setUsername(username);
         usuario.setPassword(password);
         usuario.setPersona(persona);
+        usuario.setRol(RoleEnum.CLIENTE);
 
-        if (usuario.getRol() == null) {
-            usuario.setRol("CLIENTE");
-        }
+        //SECURITY
+        usuario.setAccountNoExpired(true);
+        usuario.setAccountNoLocked(true);
+        usuario.setCredentialNoExpired(true);
+        usuario.setEnabled(true);
+
+        //ROLES/PERMISOS
+        Roles rol = rolesServiceImpl.buscarRoles(RoleEnum.CLIENTE);
+        usuario.setRoles(Set.of(rol));
 
         return usuarioRepository.save(usuario);
     }
@@ -141,5 +140,17 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         if (existente.isPresent() && !existente.get().getIdUsuario().equals(Integer.valueOf(idActual))) {
             throw new IllegalArgumentException("El usuario ya existe, cambiar username " + username);
         }
+    }
+
+    //GENERAR NOMBRE DE USUARIO
+    public static String generarUsername(String nombre, String apellido){
+        return nombre.substring(0, Math.min(4, nombre.length())) + apellido.substring(0, Math.min(2, apellido.length()));
+    }
+    //VALIDAR CONTRASEÑA
+    public static boolean validarPassword(String password){
+        if (password.length() != 4) {
+            return false;
+        }
+        return true;
     }
 }

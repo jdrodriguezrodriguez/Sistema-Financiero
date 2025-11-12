@@ -16,7 +16,7 @@ export function statusToken(){
     const token = getToken();
     
     if(!token){
-        window.location.replace("../html/login.html");
+        window.location.replace("/html/login.html");
         return
     }
 
@@ -27,13 +27,13 @@ export function statusToken(){
         if (payload.exp && payload.exp < now) {
             console.warn("Token expirado.");
             localStorage.removeItem("token");
-            window.location.replace("../html/login.html");
+            window.location.replace("/html/login.html");
             return;
         }
     } catch (error) {
         console.error("Token inválido:", error);
         localStorage.removeItem("token");
-        window.location.replace("../html/login.html");
+        window.location.replace("/html/login.html");
         return;
     }
 }
@@ -62,7 +62,7 @@ export async function fetchWithAuth(url, options = {}) {
 
     if(response.status == 403 || response.status == 401){
         removeToken();
-        window.location.href = "/login.html";
+        window.location.href = "/html/login.html";
     }
 
     return response;
