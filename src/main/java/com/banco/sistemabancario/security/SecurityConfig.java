@@ -51,12 +51,12 @@ public class SecurityConfig{
                 auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/html/**", "/css/**", "/js/**").permitAll();
                 auth.requestMatchers(HttpMethod.POST, "/api/sistema/personas/registrar").permitAll();
                 
-                auth.requestMatchers("/api/sistema/**").hasRole("ADMIN");
+                auth.requestMatchers("/api/sistema/usuarios/profile/**").hasAnyRole("CLIENTE", "ADMIN");
+                auth.requestMatchers("/api/sistema/usuarios/actualizar").hasAnyRole("CLIENTE", "ADMIN");
+                auth.requestMatchers("/api/sistema/personas/actualizar").hasAnyRole("CLIENTE", "ADMIN");
+                auth.requestMatchers("/api/sistema/transaccion/**").hasAnyRole("CLIENTE", "ADMIN");
 
-                auth.requestMatchers("/api/sistema/usuarios/profile/**").hasRole("CLIENTE");
-                auth.requestMatchers("/api/sistema/usuarios/actualizar").hasRole("CLIENTE"); 
-                auth.requestMatchers("/api/sistema/personas/actualizar").hasRole("CLIENTE");
-                auth.requestMatchers("/api/sistema/transaccion/**").hasRole("CLIENTE");
+                auth.requestMatchers("/api/sistema/**").hasRole("ADMIN");
                 
                 auth.anyRequest().authenticated();                                     
             })

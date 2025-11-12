@@ -10,25 +10,19 @@ document.getElementById("cerrar-sesion").addEventListener("click", (e) => {
     window.location.replace("/html/login.html");
 });
 
-
 document.addEventListener("DOMContentLoaded", () => {
     try {
-        statusToken();
-        console.log("Página segura cargada correctamente.");
-        
-        const user = getUserInfo();
-        if (user) {
-            document.getElementById("sesion").textContent = user.username;
-        } else {
-            console.warn("Usuario no autenticado.");
-        }
+            statusToken();
+            console.log("Página segura cargada correctamente.");
 
-        cargarDatosPerfil();
+            const user = getUserInfo();
+            document.getElementById("sesion").textContent = user.username;
+            cargarDatosPerfil();
+
     } catch (err) {
         console.error("Error al cargar la página segura:", err);
     }
 });
-
 
 function cargarDatosPerfil() {
     fetch("https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/usuarios/profile/datos", {
@@ -63,13 +57,13 @@ function cargarDatosPerfil() {
                     item.innerHTML = `<span class="label">${campo.Label}:</span> <span class="value">${campo.value}</span>`;
                     lista.appendChild(item);
                 });
-            }else{
+            } else {
                 console.log("No hay lista para mostrar datos del usuario.")
             }
         })
         .catch(error => {
             console.error("Error cargando datos:", error);
-            document.getElementById("lista").innerHTML = 
+            document.getElementById("lista").innerHTML =
                 "<li>Error al cargar datos del perfil.</li>";
         });
 }
