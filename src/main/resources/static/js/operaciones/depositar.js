@@ -37,6 +37,10 @@ function DepositarDinero() {
 
                 .then(data => {
                     document.getElementById("resultadoUsuario").innerText = data.Mensaje
+
+                    setTimeout(() => {
+                        window.location.href = "/html/index.html";
+                    }, 800);
                 })
                 .catch(async error => {
                     let errorData = await error.json()

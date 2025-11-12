@@ -12,18 +12,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.TransferirDineroDto;
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
 import com.banco.sistemabancario.serviceImpl.TransaccionServiceImpl;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/sistema/transaccion")
@@ -37,11 +34,11 @@ public class TransaccionController {
     }
 
     //TRANSFERIR
-    @PostMapping("/transferir/{idPersona}")
-    public ResponseEntity<?> transferirDinero(@PathVariable int idPersona,@Valid @RequestBody TransferirDineroDto datos, HttpSession session) {
+    @PostMapping("/transferir")
+    public ResponseEntity<?> transferirDinero(@AuthenticationPrincipal CustomUserDetails user,@Valid @RequestBody TransferirDineroDto datos) {
 
         try {
-            transaccionService.transferir(idPersona, datos);
+            transaccionService.transferir(user.getId(), datos);
 
             return ResponseEntity.ok(Map.of("Mensaje", "Transaccion realizada con exito."));
 
