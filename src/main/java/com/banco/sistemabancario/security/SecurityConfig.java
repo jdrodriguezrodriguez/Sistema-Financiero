@@ -36,7 +36,6 @@ public class SecurityConfig{
     @Autowired
     JwtAuthorizationFilter jwtAuthorizationFilter;
 
-    //FILTRO (CONDICIONES PERSONALIZADAS)
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception{
         

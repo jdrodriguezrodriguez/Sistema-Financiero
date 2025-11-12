@@ -1,12 +1,10 @@
 package com.banco.sistemabancario.serviceImpl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.context.support.BeanDefinitionDsl.Role;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,7 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
-import com.banco.sistemabancario.entity.Permisos;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Roles;
 import com.banco.sistemabancario.entity.Usuario;
