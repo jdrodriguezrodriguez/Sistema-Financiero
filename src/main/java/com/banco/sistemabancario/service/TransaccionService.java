@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.banco.sistemabancario.dto.TransferirDineroDto;
-import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Transaccion;
 
 public interface TransaccionService {
@@ -13,5 +12,4 @@ public interface TransaccionService {
     Transaccion depositar(int idPersona, String valor);
 
     BigDecimal consultar(int idPersona);
-    Transaccion crearTransaccion(Cuenta cuenta, String cuentaDestino, String tipo, BigDecimal monto, String descripcion);
 }

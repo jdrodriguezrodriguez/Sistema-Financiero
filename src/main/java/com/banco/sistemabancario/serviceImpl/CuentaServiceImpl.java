@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Usuario;
@@ -22,6 +23,7 @@ public class CuentaServiceImpl implements CuentaService{
     }
 
     // REGISTRAR CUENTA
+    @Transactional
     @Override
     public Cuenta registrarCuenta(Usuario usuario) {
 

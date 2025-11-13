@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.entity.Persona;
@@ -21,6 +22,7 @@ import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
 import com.banco.sistemabancario.service.UsuarioService;
+import com.banco.sistemabancario.util.UsuarioUtils;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
@@ -28,6 +30,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     private UsuarioRepository usuarioRepository;
     private PersonaRepository personaRepository;
     private RolesServiceImpl rolesServiceImpl;
+    private UsuarioUtils usuarioUtils;
 
     public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PersonaRepository personaRepository, RolesServiceImpl rolesServiceImpl) {
         this.usuarioRepository = usuarioRepository;
@@ -68,6 +71,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
                 );
         }
 
+    @Transactional
     @Override
     public Usuario actualizarDatosUsuario(ActualizarUsuarioDto datos, int idUsuario){
         
@@ -106,11 +110,11 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         return personaRepository.findByUsuario(usuario);
     }
 
-    //REGISTRAR USUARIO
+    @Transactional
     @Override
     public Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona){
 
-        String username = UsuarioServiceImpl.generarUsername(nombre, apellido);
+        String username = usuarioUtils.generarUsername(nombre, apellido);
         Usuario usuario = new Usuario();
 
         usuario.setUsername(username);
@@ -140,17 +144,5 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         if (existente.isPresent() && !existente.get().getIdUsuario().equals(Integer.valueOf(idActual))) {
             throw new IllegalArgumentException("El usuario ya existe, cambiar username " + username);
         }
-    }
-
-    //GENERAR NOMBRE DE USUARIO
-    public static String generarUsername(String nombre, String apellido){
-        return nombre.substring(0, Math.min(4, nombre.length())) + apellido.substring(0, Math.min(2, apellido.length()));
-    }
-    //VALIDAR CONTRASEÑA
-    public static boolean validarPassword(String password){
-        if (password.length() != 4) {
-            return false;
-        }
-        return true;
     }
 }

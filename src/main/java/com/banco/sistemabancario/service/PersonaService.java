@@ -12,7 +12,6 @@ public interface PersonaService {
     Optional<Persona> obtenerPersonaPorId(int idPersona);
     Persona actualizarDatosPersona(ActualizarPersonaDto actualizarPersonaDto, int idPersona);
     Persona registrarPersona(RegistroPersonaDto datos);
-    Persona convertirAObjeto(RegistroPersonaDto datos);
     boolean eliminarPersona(int idPersona);
 
     boolean documentoYaRegistrado(String documento);

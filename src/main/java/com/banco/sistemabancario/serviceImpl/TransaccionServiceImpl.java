@@ -20,6 +20,7 @@ import com.banco.sistemabancario.exception.ValorInvalidoException;
 import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.repository.TransaccionRepository;
 import com.banco.sistemabancario.service.TransaccionService;
+import com.banco.sistemabancario.util.TransaccionUtils;
 
 @Service
 public class TransaccionServiceImpl implements TransaccionService{
@@ -29,6 +30,7 @@ public class TransaccionServiceImpl implements TransaccionService{
     private TransaccionRepository transaccionRepository;
     private CuentaRepository cuentaRepository;
     private CuentaServiceImpl cuentaService;
+    private TransaccionUtils transaccionUtils;
 
     public TransaccionServiceImpl(TransaccionRepository transaccionRepository, CuentaRepository cuentaRepository, CuentaServiceImpl cuentaService) {
         this.transaccionRepository = transaccionRepository;
@@ -63,8 +65,19 @@ public class TransaccionServiceImpl implements TransaccionService{
             cuentaEntrada.setSaldo(cuentaEntrada.getSaldo().subtract(monto));
             cuentaSalida.setSaldo(cuentaSalida.getSaldo().add(monto));
 
-           Transaccion historialEntrada = crearTransaccion(cuentaEntrada, datos.getCuentaDestino(), "TRANSFERENCIA", monto.negate(), datos.getDescripcion());
-           Transaccion historialSalida = crearTransaccion(cuentaSalida, datos.getCuentaDestino(), "TRANSFERENCIA", monto, datos.getDescripcion());
+           Transaccion historialEntrada = transaccionUtils.crearTransaccion(
+                                        cuentaEntrada, 
+                                        datos.getCuentaDestino(), 
+                                        "TRANSFERENCIA", 
+                                        monto.negate(), 
+                                        datos.getDescripcion()
+                                        );
+           Transaccion historialSalida = transaccionUtils.crearTransaccion(
+                                        cuentaSalida, 
+                                        datos.getCuentaDestino(), 
+                                        "TRANSFERENCIA", 
+                                        monto, 
+                                        datos.getDescripcion());
             
             cuentaRepository.save(cuentaEntrada);
             cuentaRepository.save(cuentaSalida);
@@ -84,6 +97,8 @@ public class TransaccionServiceImpl implements TransaccionService{
     }
 
     //DEPOSITAR
+    @Transactional
+    @Override
     public Transaccion depositar(int idUser, String valor){
         try {
 
@@ -97,7 +112,7 @@ public class TransaccionServiceImpl implements TransaccionService{
             cuenta.setSaldo(cuenta.getSaldo().add(monto));
             cuentaRepository.save(cuenta);
 
-            Transaccion transaccion = new Transaccion(cuenta, cuenta.getNum_cuenta(), "DEPOSITO", monto, generarFechaActual(), "Deposito de $" + valor);
+            Transaccion transaccion = new Transaccion(cuenta, cuenta.getNum_cuenta(), "DEPOSITO", monto, transaccionUtils.generarFechaActual(), "Deposito de $" + valor);
 
             return transaccionRepository.save(transaccion);
         } catch (NumberFormatException e) {
@@ -109,24 +124,5 @@ public class TransaccionServiceImpl implements TransaccionService{
     public BigDecimal consultar(int idUser){
         Cuenta cuenta = cuentaService.buscarCuenta(idUser);
         return cuenta.getSaldo();
-    }
-
-    //CREAR TRANSACCION
-    public Transaccion crearTransaccion(Cuenta cuenta, String cuentaDestino, String tipo, BigDecimal monto, String descripcion){
-        Transaccion t = new Transaccion();
-        t.setCuenta(cuenta);
-        t.setCuenta_destino(cuentaDestino);
-        t.setTipo(tipo);
-        t.setFecha(generarFechaActual());
-        t.setMonto(monto);
-        t.setDescripcion(descripcion);
-        return t;
-    }
-
-    //GENERAR FECHA ACTUAL
-    public static String generarFechaActual(){
-        LocalDateTime ahora = LocalDateTime.now();
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return ahora.format(formato);
     }
 }

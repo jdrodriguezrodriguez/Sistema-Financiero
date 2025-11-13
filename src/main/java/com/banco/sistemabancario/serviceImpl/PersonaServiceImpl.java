@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.banco.sistemabancario.dto.ActualizarPersonaDto;
 import com.banco.sistemabancario.dto.RegistroPersonaDto;
@@ -14,6 +15,8 @@ import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.exception.*;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.service.PersonaService;
+import com.banco.sistemabancario.util.PersonaUtils;
+import com.banco.sistemabancario.util.UsuarioUtils;
 
 @Service
 public class PersonaServiceImpl implements PersonaService{
@@ -21,6 +24,8 @@ public class PersonaServiceImpl implements PersonaService{
     private PersonaRepository personaRepository;
     private UsuarioServiceImpl usuarioService;
     private CuentaServiceImpl cuentaService;
+    private UsuarioUtils usuarioUtils;
+    private PersonaUtils personaUtils;
 
     public PersonaServiceImpl(PersonaRepository personaRepository, UsuarioServiceImpl usuarioService, CuentaServiceImpl cuentaService) {
         this.personaRepository = personaRepository;
@@ -44,6 +49,7 @@ public class PersonaServiceImpl implements PersonaService{
     }
 
     //ACTUALIZAR PERSONA EXISTENTE
+    @Transactional
     @Override
     public Persona actualizarDatosPersona(ActualizarPersonaDto actualizarPersonaDto, int idPersona){
         return obtenerPersonaPorId(idPersona)
@@ -58,11 +64,12 @@ public class PersonaServiceImpl implements PersonaService{
     }
 
     //REGISTRAR PERSONA
+    @Transactional
     @Override
     public Persona registrarPersona(RegistroPersonaDto datos){
     
         validarDatosRegistro(datos);
-        Persona persona = convertirAObjeto(datos);
+        Persona persona =  personaUtils.convertirAObjeto(datos);
       
         Persona personaRegistro = personaRepository.save(persona);
         Usuario usuarioRegistro = usuarioService.registrarUsuario(datos.getNombre(), datos.getApellido(), datos.getPassword(), persona);
@@ -73,6 +80,7 @@ public class PersonaServiceImpl implements PersonaService{
     }
 
     //ELIMINAR PERSONA
+    @Transactional
     public boolean eliminarPersona(int idPersona){
         try {
 
@@ -87,18 +95,6 @@ public class PersonaServiceImpl implements PersonaService{
         }
     }
 
-    //DTO A PERSONA
-    @Override
-    public Persona convertirAObjeto(RegistroPersonaDto datos){
-        Persona persona = new Persona();
-        persona.setNombre(datos.getNombre());
-        persona.setApellido(datos.getApellido());
-        persona.setDocumento(datos.getDocumento());
-        persona.setNacimiento(Date.valueOf(LocalDate.parse(datos.getNacimiento())));
-        persona.setCorreo(datos.getCorreo());
-        return persona;
-    }
-
     //VALIDAR REGISTRO DEL DOCUMENTO
     @Override
     public boolean documentoYaRegistrado(String documento){
@@ -109,19 +105,6 @@ public class PersonaServiceImpl implements PersonaService{
     @Override
     public boolean correoYaRegistrado(String correo){
         return personaRepository.existsByCorreo(correo);
-    }
-
-    //VALIDAR CAMPOS REGISTRO
-    public static boolean camposRegistroValidos(RegistroPersonaDto datos){
-        if (datos.getNombre().isEmpty() 
-        || datos.getApellido().isEmpty() 
-        || datos.getDocumento().isEmpty() 
-        || datos.getNacimiento().isEmpty() 
-        || datos.getCorreo().isEmpty() 
-        || datos.getPassword().isEmpty()) {
-            return false;
-        }
-        return true;
     }
 
     //VALIDAR DATOS REGISTRO
@@ -135,7 +118,7 @@ public class PersonaServiceImpl implements PersonaService{
             throw new CorreoYaRegistradoException("Ya existe una persona registrada con el correo electronico: " + datos.getCorreo());
         }
 
-        if (!UsuarioServiceImpl.validarPassword(datos.getPassword())) {
+        if (!usuarioUtils.validarPassword(datos.getPassword())) {
             throw new PasswordInvalidaException("La contraseña debe tener exactamente cuatro digitos.");
         }
     }
