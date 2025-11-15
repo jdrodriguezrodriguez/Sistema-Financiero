@@ -16,10 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.ActualizarPersonaDto;
 import com.banco.sistemabancario.dto.RegistroPersonaDto;
+import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Persona;
+import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
-import com.banco.sistemabancario.serviceImpl.PersonaServiceImpl;
-import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
+import com.banco.sistemabancario.service.CuentaService;
+import com.banco.sistemabancario.service.PersonaService;
+import com.banco.sistemabancario.service.UsuarioService;
 
 import jakarta.validation.Valid;
 
@@ -35,20 +38,23 @@ public class PersonaController {
     
     private static final Logger logger =  LoggerFactory.getLogger(PersonaController.class);
 
-    private PersonaServiceImpl personaService;
-    private UsuarioServiceImpl usuarioService;
+    private PersonaService personaService;
+    private UsuarioService usuarioService;
+    private CuentaService cuentaService;
 
-    public PersonaController(PersonaServiceImpl personaService, UsuarioServiceImpl usuarioService) {
+    public PersonaController(PersonaService personaService, 
+                            UsuarioService usuarioService,
+                            CuentaService cuentaService) {
         this.personaService = personaService;
         this.usuarioService = usuarioService;
+        this.cuentaService = cuentaService;
     }
 
     //CONSULTAS
     @GetMapping("/{idPersona}")
     public ResponseEntity<?> buscarPersonaPorId(@PathVariable int idPersona) {
-        return personaService.obtenerPersonaPorId(idPersona)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Persona persona = personaService.obtenerPersonaPorId(idPersona);
+        return ResponseEntity.ok(persona);
     }
     
     @GetMapping
@@ -62,7 +68,10 @@ public class PersonaController {
     public ResponseEntity<?> registroPersona(@Valid @RequestBody RegistroPersonaDto datos) {
        
         try{
-            personaService.registrarPersona(datos);
+            Persona persona = personaService.registrarPersona(datos);
+            Usuario usuario = usuarioService.registrarUsuario(datos.getNombre(), datos.getApellido(), datos.getPassword(), persona);
+            cuentaService.registrarCuenta(usuario);
+
             logger.info("El registro se realizo correctamente");
             return ResponseEntity.ok(Map.of("Mensaje", "Registro exitoso"));
             

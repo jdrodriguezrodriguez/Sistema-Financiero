@@ -111,4 +111,15 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity.badRequest().body(errores);
     }
+
+    //Valor Invalido
+    @ExceptionHandler(ValorInvalidoException.class)
+    public ResponseEntity<Map<String, String>> handleValorInvalidoException(ValorInvalidoException ex) {
+        Map<String, String> errores = new HashMap<>();
+
+        errores.put("error", "Mismo numero de cuenta.");
+        errores.put("detalle", ex.getMessage());
+        
+        return ResponseEntity.badRequest().body(errores);
+    }
 }

@@ -22,20 +22,22 @@ public final class PersonaUtils {
         return true;
     }
 
-    //DTO A PERSONA
+    // DTO A PERSONA
     public Persona convertirAObjeto(RegistroPersonaDto datos) {
 
+        Persona persona = new Persona();
+        persona.setNombre(datos.getNombre());
+        persona.setApellido(datos.getApellido());
+        persona.setDocumento(datos.getDocumento());
+
         try {
-            Persona persona = new Persona();
-            persona.setNombre(datos.getNombre());
-            persona.setApellido(datos.getApellido());
-            persona.setDocumento(datos.getDocumento());
             persona.setNacimiento(Date.valueOf(LocalDate.parse(datos.getNacimiento())));
-            persona.setCorreo(datos.getCorreo());
-            return persona;
         } catch (Exception e) {
             throw new IllegalArgumentException("Formato de fecha inválido. Se esperaba yyyy-MM-dd");
         }
 
+        persona.setCorreo(datos.getCorreo());
+
+        return persona;
     }
 }

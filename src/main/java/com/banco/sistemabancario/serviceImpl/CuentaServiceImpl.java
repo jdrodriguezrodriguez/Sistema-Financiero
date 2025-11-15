@@ -22,7 +22,6 @@ public class CuentaServiceImpl implements CuentaService{
         this.cuentaRepository = cuentaRepository;
     }
 
-    // REGISTRAR CUENTA
     @Transactional
     @Override
     public Cuenta registrarCuenta(Usuario usuario) {
@@ -37,7 +36,6 @@ public class CuentaServiceImpl implements CuentaService{
         return cuentaRepository.save(cuenta);
     }
 
-    // GENERAR NUMERO DE CUENTA
     @Override
     public String generarNumeroCuenta(){
 
@@ -51,7 +49,6 @@ public class CuentaServiceImpl implements CuentaService{
         return numeroCuenta;
     }
 
-    // BUSCAR CUENTA
     @Override
     public Cuenta buscarCuenta(int idUser) {
         Cuenta cuenta = cuentaRepository.findByUsuario_IdUsuario(idUser);
