@@ -10,10 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.banco.sistemabancario.dto.TransferirDineroDto;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Transaccion;
-import com.banco.sistemabancario.entity.enums.CuentaEnum;
-import com.banco.sistemabancario.exception.CuentaDeshabilitadaException;
-import com.banco.sistemabancario.exception.CuentaNoEncontradaException;
-import com.banco.sistemabancario.exception.SaldoInsuficienteException;
 import com.banco.sistemabancario.exception.ValorInvalidoException;
 import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.repository.TransaccionRepository;
@@ -27,17 +23,14 @@ public class TransaccionServiceImpl implements TransaccionService {
     private static final BigDecimal MONTO_MINIMO = new BigDecimal("2000.00");
 
     private TransaccionRepository transaccionRepository;
-    private CuentaRepository cuentaRepository;
     private CuentaService cuentaService;
     private TransaccionUtils transaccionUtils;
 
     public TransaccionServiceImpl(
             TransaccionRepository transaccionRepository,
-            CuentaRepository cuentaRepository,
             CuentaService cuentaService,
             TransaccionUtils transaccionUtils) {
         this.transaccionRepository = transaccionRepository;
-        this.cuentaRepository = cuentaRepository;
         this.cuentaService = cuentaService;
         this.transaccionUtils = transaccionUtils;
     }
@@ -59,51 +52,36 @@ public class TransaccionServiceImpl implements TransaccionService {
             throw new ValorInvalidoException("El valor debe ser mayor a $0.");
         }
 
-        Cuenta cuentaEntrada = cuentaService.buscarCuenta(idUser);
-        Cuenta cuentaSalida = cuentaRepository.findById(datos.getCuentaDestino())
-                .orElseThrow(() -> new CuentaNoEncontradaException(
-                        "No se encontro a la cuenta con el ID: " + datos.getCuentaDestino()));
+        Cuenta cuentaEntrada = cuentaService.buscarCuentaPorIdUser(idUser);
+        Cuenta cuentaSalida = cuentaService.buscarCuentaPorNumeroCuenta(datos.getCuentaDestino());
 
-        if (!cuentaSalida.getEstado().equals(CuentaEnum.ACTIVA)) {
-            throw new CuentaDeshabilitadaException("La cuenta destino se encuentra deshabilitada.");
-        }
+        cuentaService.validarValoresTransferencia(cuentaEntrada, cuentaSalida, monto);
 
-        if (cuentaEntrada.getSaldo().compareTo(monto) < 0) { // 0 ==, 1 >, -1 <
-            throw new SaldoInsuficienteException("Saldo insuficiente para realizar la transaccion.");
-        }
+        cuentaService.descontarSaldo(cuentaEntrada, monto);
+        cuentaService.aumentarSaldo(cuentaSalida, monto);
 
-        if (cuentaEntrada.getNum_cuenta().equals(cuentaSalida.getNum_cuenta())) {
-            throw new ValorInvalidoException("No puedes transferirte dinero a tu propia cuenta.");
-        }
-
-        cuentaEntrada.setSaldo(cuentaEntrada.getSaldo().subtract(monto));
-        cuentaSalida.setSaldo(cuentaSalida.getSaldo().add(monto));
-
-        cuentaRepository.save(cuentaEntrada);
-        cuentaRepository.save(cuentaSalida);
-
-        Transaccion historialEntrada = transaccionUtils.crearTransaccion(
+        Transaccion historialRetiro = transaccionUtils.crearTransaccion(
                 cuentaEntrada,
                 datos.getCuentaDestino(),
                 "TRANSFERENCIA",
                 monto.negate(),
                 datos.getDescripcion());
-        Transaccion historialSalida = transaccionUtils.crearTransaccion(
+        Transaccion historialDeposito = transaccionUtils.crearTransaccion(
                 cuentaSalida,
                 datos.getCuentaDestino(),
                 "TRANSFERENCIA",
                 monto,
                 datos.getDescripcion());
 
-        transaccionRepository.save(historialEntrada);
+        transaccionRepository.saveAll(List.of(historialRetiro, historialDeposito));
 
-        return transaccionRepository.save(historialSalida);
+        return historialRetiro;
     }
 
     // TRANSFERENCIAS
     @Override
-    public List<Transaccion> transacciones(int idPersona) {
-        Cuenta cuenta = cuentaService.buscarCuenta(idPersona);
+    public List<Transaccion> transacciones(int idUser) {
+        Cuenta cuenta = cuentaService.buscarCuentaPorIdUser(idUser);
         return transaccionRepository.findByCuenta(cuenta);
     }
 
@@ -124,10 +102,9 @@ public class TransaccionServiceImpl implements TransaccionService {
             throw new ValorInvalidoException("El depósito debe ser de al menos $2.000.");
         }
 
-        Cuenta cuenta = cuentaService.buscarCuenta(idUser);
+        Cuenta cuenta = cuentaService.buscarCuentaPorIdUser(idUser);
 
-        cuenta.setSaldo(cuenta.getSaldo().add(monto));
-        cuentaRepository.save(cuenta);
+        cuentaService.aumentarSaldo(cuenta, monto);
 
         Transaccion transaccion = new Transaccion(
             cuenta, 
@@ -142,7 +119,7 @@ public class TransaccionServiceImpl implements TransaccionService {
 
     // CONSULTAR
     public BigDecimal consultar(int idUser) {
-        Cuenta cuenta = cuentaService.buscarCuenta(idUser);
+        Cuenta cuenta = cuentaService.buscarCuentaPorIdUser(idUser);
         return cuenta.getSaldo();
     }
 }

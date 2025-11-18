@@ -9,6 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.enums.CuentaEnum;
+import com.banco.sistemabancario.exception.CuentaDeshabilitadaException;
+import com.banco.sistemabancario.exception.CuentaNoEncontradaException;
+import com.banco.sistemabancario.exception.SaldoInsuficienteException;
+import com.banco.sistemabancario.exception.ValorInvalidoException;
 import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.service.CuentaService;
 
@@ -50,8 +54,42 @@ public class CuentaServiceImpl implements CuentaService{
     }
 
     @Override
-    public Cuenta buscarCuenta(int idUser) {
+    public Cuenta buscarCuentaPorIdUser(int idUser) {
         Cuenta cuenta = cuentaRepository.findByUsuario_IdUsuario(idUser);
         return cuenta;
+    }
+
+    @Override
+    public Cuenta buscarCuentaPorNumeroCuenta(String idCuenta){
+        return cuentaRepository.findById(idCuenta)
+                .orElseThrow(() -> new CuentaNoEncontradaException(
+                        "No se encontro a la cuenta con el ID: " + idCuenta));
+    }
+
+    @Override
+    public void aumentarSaldo(Cuenta depositoCuenta, BigDecimal monto){
+        depositoCuenta.setSaldo(depositoCuenta.getSaldo().add(monto));
+    }
+
+    @Override
+    public void descontarSaldo(Cuenta retiroCuenta, BigDecimal monto){
+        retiroCuenta.setSaldo(retiroCuenta.getSaldo().subtract(monto));
+    }
+    
+
+    @Override
+    public void validarValoresTransferencia(Cuenta cuentaEntrada, Cuenta cuentaSalida, BigDecimal monto){
+        
+        if (!cuentaSalida.getEstado().equals(CuentaEnum.ACTIVA)) {
+            throw new CuentaDeshabilitadaException("La cuenta destino se encuentra deshabilitada.");
+        }
+
+        if (cuentaEntrada.getSaldo().compareTo(monto) < 0) { // 0 ==, 1 >, -1 <
+            throw new SaldoInsuficienteException("Saldo insuficiente para realizar la transaccion.");
+        }
+
+        if (cuentaEntrada.getNum_cuenta().equals(cuentaSalida.getNum_cuenta())) {
+            throw new ValorInvalidoException("No puedes transferirte dinero a tu propia cuenta.");
+        }
     }
 }
