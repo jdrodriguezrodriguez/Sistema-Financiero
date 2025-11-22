@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel administrativo</title>
+    <link rel="stylesheet" href="/css/administrativo/gestionUsuarios.css">
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+    <header>
+        <nav class="nav">
+            <div class="logo">Administrador</div>
+            <ul class="menu">
+                <li><a href="/html/vistas/index.html" class="enlace" id="inicio">Inicio</a></li>
+                <li><a href="#" class="enlace" id="actualizar">Servicios</a></li>
+                <li><a href="#" class="enlace" id="contacto">Contáctanos</a></li>
+                <li><a href="/html/login.html" class="enlace" id="cerrar-sesion">Cerrar sesión</a></li>
+            </ul>
+            <ul class="menu-perfil">
+                <li class="submenu">
+                    <a href="/html/perfil.html" class="enlace-perfil" id="inicio">
+                        <span id="sesion"></span>
+                    </a>
+                    <ul class="submenu-items">
+                        <li><a href="#">Gestionar usuarios</a></li>
+                        <li><a href="#">Facturas</a></li>
+                        <li><a href="#">Otras opciones</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+        </nav>
+    </header>
+
+    <main class="contenedor">
+        <h1>Operaciones disponibles</h1>
+
+        <div class="buscar">
+                <h3>Consultar por documento</h3>
+                <form id="consultar">
+                    <label for="id" id="documento">Documento: </label>
+                    <input type="number" id="id" placeholder="Ingrese el numero">
+                    <button class="btn">Buscar</button>
+                </form>
+            </div>
+
+        <div class="tabla-contenedor">
+            <table>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Correo</th>
+                    <th>Usuario</th>
+                    <th>Rol</th>
+                    <th>Número de cuenta</th>
+                    <th>Estado</th>
+                    <th>Fecha de nacimiento</th>
+                </tr>
+                <tr id="registros">
+                    
+                </tr>
+            </table>
+        </div>
+
+        <div class="acciones">
+            <div class="card">
+                <a href="#" class="btn">Crear</a>
+                <a href="#" class="btn">Editar</a>
+                <a href="#" class="btn">Bloquear</a>
+                <a href="#" class="btn">Eliminar</a>
+            </div>
+        </div>
+
+         <div id="resultado" class="resultado"></div>
+    </main>
+
+
+
+    <footer>
+        <p>© 2025 Sistema Financiero</p>
+    </footer>
+
+    <script type="module" src="/js/perfil.js"></script>
+    <script src="/js/main.js"></script>
+    <script type="module" src="/js/administrador/gestionUsuarios.js"></script>
+
+</body>
+
+</html>

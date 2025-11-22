@@ -11,7 +11,6 @@ import com.banco.sistemabancario.dto.TransferirDineroDto;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Transaccion;
 import com.banco.sistemabancario.exception.ValorInvalidoException;
-import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.repository.TransaccionRepository;
 import com.banco.sistemabancario.service.CuentaService;
 import com.banco.sistemabancario.service.TransaccionService;
@@ -27,12 +26,9 @@ public class TransaccionServiceImpl implements TransaccionService {
     private TransaccionUtils transaccionUtils;
 
     public TransaccionServiceImpl(
-            TransaccionRepository transaccionRepository,
-            CuentaService cuentaService,
-            TransaccionUtils transaccionUtils) {
+            TransaccionRepository transaccionRepository, CuentaService cuentaService) {
         this.transaccionRepository = transaccionRepository;
         this.cuentaService = cuentaService;
-        this.transaccionUtils = transaccionUtils;
     }
 
     // TRANSFERIR

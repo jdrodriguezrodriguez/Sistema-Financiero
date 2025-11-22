@@ -39,7 +39,7 @@ function DepositarDinero() {
                     document.getElementById("resultadoUsuario").innerText = data.Mensaje
 
                     setTimeout(() => {
-                        window.location.href = "/html/index.html";
+                        window.location.href = "/html/vistas/index.html";
                     }, 800);
                 })
                 .catch(async error => {

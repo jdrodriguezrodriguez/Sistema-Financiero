@@ -30,7 +30,7 @@ if (idRegistrar) {
                 document.getElementById("resultado").innerText = data.Mensaje
 
                 setTimeout(() => {
-                    window.location.href = "/html/login.html";
+                    window.location.href = "/html/vistas/login.html";
                 }, 800);
             })
 

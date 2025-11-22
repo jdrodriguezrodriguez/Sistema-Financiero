@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+    <header>
+        <nav class="nav">
+            <div class="logo">Sistema financiero</div>
+            <ul class="menu">
+                <li><a href="index.html" class="enlace" id="inicio">Inicio</a></li>
+                <li><a href="#" class="enlace" id="actualizar">Servicios</a></li>
+                <li><a href="#" class="enlace" id="contacto">Contáctanos</a></li>
+                <li><a href="login.html" class="enlace" id="cerrar-sesion">Cerrar sesión</a></li>
+            </ul>
+            <ul class="menu-perfil">
+                <li class="submenu">
+                    <a href="/html/vistas/perfil.html" class="enlace-perfil" id="inicio">
+                        <span id="sesion"></span>
+                    </a>
+                    <ul class="submenu-items">
+                        <li><a id="administrador" href="/html/administrador/panelGestion.html">Gestionar usuarios</a></li>
+                        <li><a href="#">Facturas</a></li>
+                        <li><a href="#">Otras opciones</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+        </nav>
+    </header>
+
+    <section class="introduccion">
+        <div class="texto-portada">
+            <h1>Bienvenido</h1>
+            <p>¡Bienvenido al Sistema Financiero! Nos alegra tenerte aquí. Desde esta plataforma podrás gestionar de
+                forma segura y sencilla todas tus operaciones bancarias. Deposita fondos, realiza transferencias,
+                consulta tus datos y lleva el control de tu historial de movimientos en un solo lugar. Diseñado pensando
+                en ti, nuestro sistema te brinda una experiencia rápida, intuitiva y confiable para que tomes el control
+                de tus finanzas personales en cualquier momento. ¡Comienza ahora y aprovecha todas las funcionalidades
+                que tenemos para ofrecerte!</p>
+        </div>
+
+        <div class="portada"><img src="/Images/Portada.png" alt="Sistema financiero"></div>
+    </section>
+
+    <section class="categoria">
+        <h1>¿Que operacion deseas realizar?</h1>
+        <div class="fila">
+            <div class="operaciones">
+                <a href="/html/operaciones/depositar.html">
+                    <h1>Depositar</h1>
+                </a>
+            </div>
+            <div class="operaciones">
+                <a href="/html/operaciones/transferir.html">
+                    <h1>Transferir</h1>
+                </a>
+            </div>
+        </div>
+
+        <div class="fila">
+            <div class="operaciones">
+                <a href="/html/operaciones/consultar.html">
+                    <h1>Consultar saldo</h1>
+                </a>
+            </div>
+            <div class="operaciones">
+                <a href="/html/operaciones/historial.html">
+                    <h1>Transacciones</h1>
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <footer>
+        <p>© 2025 Sistema Financiero</p>
+    </footer>
+
+    <script type="module" src="/js/perfil.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

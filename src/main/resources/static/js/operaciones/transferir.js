@@ -40,7 +40,7 @@ function transferir() {
                     document.getElementById("resultado").innerText = data.Mensaje
 
                     setTimeout(() => {
-                        window.location.href = "/html/index.html";
+                        window.location.href = "/html/vistas/index.html";
                     }, 800);
                 })
 

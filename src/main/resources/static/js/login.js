@@ -31,7 +31,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e){
 
         saveUserInfo(userData);
 
-        window.location.replace("/html/index.html");
+        window.location.replace("/html/vistas/index.html");
     })
 
     .catch(async error =>{

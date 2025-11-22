@@ -3,7 +3,6 @@ package com.banco.sistemabancario.serviceImpl;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +23,8 @@ public class PersonaServiceImpl implements PersonaService {
     private UsuarioUtils usuarioUtils;
     private PersonaUtils personaUtils;
 
-    public PersonaServiceImpl(PersonaRepository personaRepository,
-            UsuarioUtils usuarioUtils,
-            PersonaUtils personaUtils) {
-
+    public PersonaServiceImpl(PersonaRepository personaRepository) {
         this.personaRepository = personaRepository;
-        this.usuarioUtils = usuarioUtils;
-        this.personaUtils = personaUtils;
     }
 
     @Override

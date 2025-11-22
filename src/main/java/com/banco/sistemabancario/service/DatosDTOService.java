@@ -3,5 +3,6 @@ package com.banco.sistemabancario.service;
 import com.banco.sistemabancario.dto.DatosDto;
 
 public interface DatosDTOService {
-    DatosDto datosUsuario(int idPersona);
+    DatosDto datosUsuario(int idUsuario);
+    DatosDto adminBuscarUsuario(String documento);
 }

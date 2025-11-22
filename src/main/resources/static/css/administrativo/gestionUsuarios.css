@@ -1,0 +1,79 @@
+.contenedor {
+    width: 80%;
+    margin: 0 auto;
+    display: grid;
+    background-color: #2e2b2b;
+    color: white;
+    padding-top: 5rem;
+}
+
+/* Consultar por ID */
+.buscar {
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.buscar h2{
+    text-align: left;
+}
+
+.buscar input {
+    padding: 8px;
+    width: 200px;
+    border: none;
+    border-radius: 4px;
+}
+
+.tabla-contenedor {
+    background: #3a3636;
+    padding: 3rem 2rem;
+    margin-top: 2rem;
+    border-radius: 6px;
+}
+
+table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    color: white;
+}
+
+th {
+    background: #8B0000;
+    padding: 10px;
+}
+
+td, th {
+    border: 1px solid #555;
+    padding: 10px;
+    text-align: center;
+}
+
+.acciones .card {
+    justify-content: center;
+    text-align: center;
+    background: #3a3636;
+    padding: 20px;
+    border-radius: 6px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    background: #8B0000;
+    width: 70px;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    background: #a30000;
+}
+
+.btn.eliminar {
+    background: #b30000;
+}

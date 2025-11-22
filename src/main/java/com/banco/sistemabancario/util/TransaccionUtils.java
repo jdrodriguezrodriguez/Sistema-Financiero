@@ -18,7 +18,7 @@ public class TransaccionUtils {
     }
 
     //CREAR TRANSACCION
-    public Transaccion crearTransaccion(Cuenta cuenta, String cuentaDestino, String tipo, BigDecimal monto, String descripcion){
+    public static Transaccion crearTransaccion(Cuenta cuenta, String cuentaDestino, String tipo, BigDecimal monto, String descripcion){
         Transaccion t = new Transaccion();
         t.setCuenta(cuenta);
         t.setCuenta_destino(cuentaDestino);

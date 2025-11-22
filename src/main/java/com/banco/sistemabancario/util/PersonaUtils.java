@@ -23,7 +23,7 @@ public final class PersonaUtils {
     }
 
     // DTO A PERSONA
-    public Persona convertirAObjeto(RegistroPersonaDto datos) {
+    public static Persona convertirAObjeto(RegistroPersonaDto datos) {
 
         Persona persona = new Persona();
         persona.setNombre(datos.getNombre());
