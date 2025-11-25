@@ -25,3 +25,23 @@ if (overlayBlock && overlayNone && menuUpdate) {
 } else {
   console.log("Algunos elementos del overlay no existen en el DOM.");
 }
+
+/*OVERLAY - POST*/
+const overlayBlockPost = document.getElementById("link-trigger-post");
+const overlayNonePost = document.getElementById("overlay-post");
+const menuUpdatePost = document.getElementById("menu-post");
+
+if (overlayBlockPost && overlayNonePost && menuUpdatePost) {
+  overlayBlockPost.addEventListener("click", function (event) {
+    event.preventDefault();
+    overlayNonePost.style.display = "block";
+    menuUpdatePost.style.display = "block";
+  });
+
+  overlayNonePost.addEventListener("click", function () {
+    overlayNonePost.style.display = "none";
+    menuUpdatePost.style.display = "none";
+  });
+} else {
+  console.log("Algunos elementos del overlay no existen en el DOM.");
+}

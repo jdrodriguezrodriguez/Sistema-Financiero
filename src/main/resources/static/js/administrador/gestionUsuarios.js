@@ -1,90 +1,111 @@
 import { getToken } from "/js/auth.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-    try {
-        cargarDatosUsuario();
-    } catch (error) {
-        console.error("Error al cargar la página segura:", error);
-    }
-})
+async function obtenerDatosUsuario(documento) {
+    const url = `https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/admin/userdatos?documento=${encodeURIComponent(documento)}`;
 
-function cargarDatosUsuario() {
+    const response = await fetch(url, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${getToken()}`,
+            "Content-Type": "application/json"
+        }
+    });
 
-    const consultar = document.getElementById("consultar");
-
-    if (consultar) {
-        consultar.addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            const documento = document.getElementById("documento").value;
-
-            const url = `https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/admin/userdatos?documento=${encodeURIComponent(documento)}`;
-
-            fetch(url, {
-
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${getToken()}`,
-                    "Content-Type": "application/json"
-                }
-            })
-
-                .then(response => {
-                    if (!response.ok) throw response
-                    return response.json();
-                })
-                .then(data => {
-
-                    const registroId = document.getElementById("registros");
-
-                    if (registroId) {
-
-                        const campos = [
-                            { Label: "Nombre", value: data.nombre + " " + data.apellido },
-                            { Label: "Documento", value: data.documento },
-                            { Label: "Correo", value: data.correo },
-                            { Label: "Usuario", value: data.username },
-                            { Label: "Rol", value: data.rol },
-                            { Label: "Número de cuenta", value: data.numCuenta },
-                            { Label: "Estado", value: data.estado },
-                        ];
-
-                        console.log(campos);
-
-                        registroId.innerHTML = "";
-
-                        campos.forEach(campo => {
-
-                            const td = document.createElement("td");
-
-                            td.innerHTML = `
-                                <span class="label">${campo.Label}:</span> 
-                                <span class="value">${campo.value}</span>
-                            `;
-
-                            registroId.appendChild(td);
-                        });
-                        document.getElementById("resultado").innerText = "Datos cargados correctamente.";
-
-                    }
-
-                })
-                .catch(async error => {
-                    try {
-                        if (error instanceof Response) {
-                            const errorData = await error.json();
-                            document.getElementById("resultado").innerText =errorData.detalle;
-                        } else {
-
-                            document.getElementById("resultado").innerText = error.message || "Error inesperado";
-                        }
-                    } catch (e) {
-                        document.getElementById("resultado").innerText = "Error procesando la respuesta del servidor";
-                    }
-                })
-
-        })
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detalle || "Error al obtener datos");
     }
 
+    const data = await response.json();
 
+    const campos = [
+        { Label: "Nombre", value: data.nombre },
+        { Label: "Apellido", value: data.apellido },
+        { Label: "Documento", value: data.documento },
+        { Label: "Correo", value: data.correo },
+        { Label: "Usuario", value: data.username },
+        { Label: "Rol", value: data.rol },
+        { Label: "Número de cuenta", value: data.numCuenta },
+        { Label: "Estado", value: data.estado },
+        { Label: "Nacimiento", value: data.nacimiento },
+    ];
+
+    return campos;
 }
+
+
+function llenarTabla(campos) {
+    const registroId = document.getElementById("registros");
+    if (!registroId) return;
+
+    registroId.innerHTML = "";
+    campos.forEach(campo => {
+        const td = document.createElement("td");
+        td.innerHTML = `<span class="value">${campo.value}</span>`;
+        registroId.appendChild(td);
+    });
+
+    document.getElementById("resultado").innerText = "Datos cargados correctamente.";
+}
+
+function validarDocumento(identidad) {
+    const resultado = document.getElementById("resultado");
+
+    if (!identidad || identidad.trim() === "") {
+        resultado.innerText = "No ha ingresado el documento.";
+        identidad.value = "";
+        return;
+    }
+}
+
+const mapIds = {
+    "Nombre": "nombre",
+    "Apellido": "apellido",
+    "Documento": "documento",
+    "Correo": "email",
+    "Usuario": "username",
+    "Rol": "rol",
+    "Número de cuenta": "cuenta",
+    "Estado": "estado",
+    "Nacimiento": "nacimiento"
+};
+
+function llenarFormulario(campos) {
+    campos.forEach(campo => {
+        const idInput = mapIds[campo.Label];
+        if (idInput) {
+            document.getElementById(idInput).value = campo.value;
+        }
+    });
+}
+
+document.getElementById("consultar")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const identidad = document.getElementById("identidad").value;
+
+    if(validarDocumento(identidad)){
+        return
+    }
+
+    try {
+        const campos = await obtenerDatosUsuario(identidad);
+        llenarTabla(campos);
+    } catch (error) {
+        document.getElementById("resultado").innerText = error.message;
+    }
+});
+
+document.getElementById("link-trigger-update")?.addEventListener("click", async () => {
+    const identidad = document.getElementById("identidad").value;
+
+    if(validarDocumento(identidad)){
+        return
+    }
+
+    try {
+        const campos = await obtenerDatosUsuario(identidad);
+        llenarFormulario(campos);
+    } catch (error) {
+        document.getElementById("resultado").innerText = error.message;
+    }
+});

@@ -1,30 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio</title>
-    <link rel="stylesheet" href="/css/update.css"> 
-    <link rel="stylesheet" href="/css/index.css"> 
+    <link rel="stylesheet" href="/css/update.css">
+    <link rel="stylesheet" href="/css/index.css">
 </head>
+
 <body>
     <header>
         <nav class="nav">
-            <div class="logo">Sistema financiero</div> 
+            <div class="logo">Sistema financiero</div>
             <ul class="menu">
                 <li><a href="index.html" class="enlace" id="inicio">Inicio</a></li>
-                <li><a href="#" class="enlace" id="actualizar">Servicios</a></li> 
-                <li><a href="#" class="enlace" id="contacto">Contáctanos</a></li> 
-                <li><a href="login.html" class="enlace" id="cerrar-sesion">Cerrar sesión</a></li> 
+                <li><a href="#" class="enlace" id="actualizar">Servicios</a></li>
+                <li><a href="#" class="enlace" id="contacto">Contáctanos</a></li>
+                <li><a href="login.html" class="enlace" id="cerrar-sesion">Cerrar sesión</a></li>
             </ul>
             <ul class="menu-perfil">
                 <li><a href="perfil.html" class="enlace-perfil" id="inicio">
-                    <span id="sesion"></span>
-                </a></li>
+                        <span id="sesion"></span>
+                    </a></li>
             </ul>
         </nav>
     </header>
-    
+
     <section class="formulario-actualizar">
         <h2>Actualizar Datos</h2>
         <form id="ActualizarPersona">
@@ -40,7 +42,7 @@
 
                 <label for="nacimiento">Fecha de nacimiento:</label>
                 <input type="date" id="nacimiento" name="nacimiento" required>
-                
+
             </div>
 
             <div class="boton-container">
@@ -57,30 +59,31 @@
 
     <div id="overlay-update"></div>
     <div id="menu-update" class="hidden-update">
-            <h2>Actualizar usuario</h2>
-            <form id="ActualizarUsuario">
-                <div class="grupo-campos-usuario">
-                    <label for="usuario">Usuario:</label>
-                    <input type="text" id="username" name="username" required>
+        <h2>Actualizar usuario</h2>
+        <form id="ActualizarUsuario">
+            <div class="grupo-campos-usuario">
+                <label for="usuario">Usuario:</label>
+                <input type="text" id="username" name="username" required>
 
-                    <label for="correo">Contraseña:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
+                <label for="correo">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
 
-                <div class="boton-update">
-                    <button type="submit">Actualizar usuario</button>
-                </div>
-                <div id="resultadoUsuario" class="resultado"></div>
-            </form>
-        </div>
+            <div class="boton-update">
+                <button type="submit">Actualizar usuario</button>
+            </div>
+            <div id="resultadoUsuario" class="resultado"></div>
+        </form>
+    </div>
 
     <footer>
         <p>© 2025 Sistema Financiero</p>
     </footer>
 
-    <script type="module" src="/js/perfil.js"></script>  
+    <script type="module" src="/js/perfil.js"></script>
     <script type="module" src="/js/actualizar.js"></script>
-    <script src="/js/main.js"></script>  
+    <script src="/js/main.js"></script>
 
 </body>
+
 </html>

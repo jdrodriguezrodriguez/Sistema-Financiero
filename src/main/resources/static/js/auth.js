@@ -16,7 +16,7 @@ export function statusToken(){
     const token = getToken();
     
     if(!token){
-        window.location.replace("/html/login.html");
+        window.location.replace("/html/vistas/login.html");
         return
     }
 
