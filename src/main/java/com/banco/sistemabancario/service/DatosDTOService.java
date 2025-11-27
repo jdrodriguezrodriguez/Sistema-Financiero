@@ -4,5 +4,4 @@ import com.banco.sistemabancario.dto.DatosDto;
 
 public interface DatosDTOService {
     DatosDto datosUsuario(int idUsuario);
-    DatosDto adminBuscarUsuario(String documento);
 }

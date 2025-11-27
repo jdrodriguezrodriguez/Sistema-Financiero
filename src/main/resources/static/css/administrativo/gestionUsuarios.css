@@ -64,6 +64,7 @@ td, th {
     background: #8B0000;
     width: 70px;
     color: white;
+    cursor: pointer;
     padding: 10px;
     border-radius: 4px;
     text-decoration: none;
@@ -76,4 +77,26 @@ td, th {
 
 .btn.eliminar {
     background: #b30000;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+.modal-content {
+    background: #3a3a3a;
+    padding: 20px;
+    border-radius: 8px;
+    width: 280px;
+    text-align: center;
+}
+.acciones-modal {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
 }

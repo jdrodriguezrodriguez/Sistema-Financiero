@@ -1,7 +1,7 @@
 import { getToken } from "/js/auth.js";
 
 async function obtenerDatosUsuario(documento) {
-    const url = `https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/admin/userdatos?documento=${encodeURIComponent(documento)}`;
+    const url = `https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/admin/usuario/datos?documento=${encodeURIComponent(documento)}`;
 
     const response = await fetch(url, {
         method: "GET",
@@ -59,15 +59,16 @@ function validarDocumento(identidad) {
 }
 
 const mapIds = {
-    "Nombre": "nombre",
-    "Apellido": "apellido",
-    "Documento": "documento",
-    "Correo": "email",
-    "Usuario": "username",
-    "Rol": "rol",
-    "Número de cuenta": "cuenta",
-    "Estado": "estado",
-    "Nacimiento": "nacimiento"
+    "Nombre": "nombreUpdate",
+    "Apellido": "apellidoUpdate",
+    "Documento": "documentoUpdate",
+    "Correo": "emailUpdate",
+    "Usuario": "usernameUpdate",
+    "Rol": "rolUpdate",
+    "Número de cuenta": "cuentaUpdate",
+    "Estado": "estadoUpdate",
+    "Nacimiento": "nacimientoUpdate",
+    "Contraseña": "passwordUpdate"
 };
 
 function llenarFormulario(campos) {

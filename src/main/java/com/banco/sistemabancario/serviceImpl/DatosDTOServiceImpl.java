@@ -6,7 +6,6 @@ import com.banco.sistemabancario.dto.DatosDto;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.repository.PersonaRepository;
@@ -38,26 +37,5 @@ public class DatosDTOServiceImpl implements DatosDTOService {
         return new DatosDto(persona.getNombre(), persona.getApellido(), persona.getDocumento(),
                 persona.getCorreo(), usuario.getUsername(), usuario.getRol(),
                 cuenta.getNum_cuenta(), cuenta.getEstado(), persona.getNacimiento());
-    }
-
-    // DATOS USUARIO PARA ADMINISTRADOR
-    @Override
-    public DatosDto adminBuscarUsuario(String documento) {
-        Persona persona = personaRepository.findByDocumento(documento)
-                .orElseThrow(() -> new PersonaNoEncontradaException("No existe persona con ese documento"));
-
-        Usuario usuario = usuarioRepository.findByPersona(persona);
-        Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
-
-        return new DatosDto(
-                persona.getNombre(),
-                persona.getApellido(),
-                persona.getDocumento(),
-                persona.getCorreo(),
-                usuario.getUsername(),
-                usuario.getRol(),
-                cuenta.getNum_cuenta(),
-                cuenta.getEstado(),
-                persona.getNacimiento());
     }
 }

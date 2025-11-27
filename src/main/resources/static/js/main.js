@@ -1,9 +1,9 @@
 /*NAV*/
 const nav = document.querySelector('.nav');
 
-    window.addEventListener('scroll', function(){
-        nav.classList.toggle('active', window.scrollY >0)
-    })
+window.addEventListener('scroll', function () {
+  nav.classList.toggle('active', window.scrollY > 0)
+})
 
 
 /*OVERLAY - UPDATE*/
@@ -26,6 +26,7 @@ if (overlayBlock && overlayNone && menuUpdate) {
   console.log("Algunos elementos del overlay no existen en el DOM.");
 }
 
+
 /*OVERLAY - POST*/
 const overlayBlockPost = document.getElementById("link-trigger-post");
 const overlayNonePost = document.getElementById("overlay-post");
@@ -45,3 +46,53 @@ if (overlayBlockPost && overlayNonePost && menuUpdatePost) {
 } else {
   console.log("Algunos elementos del overlay no existen en el DOM.");
 }
+
+
+/*OVERLAY - STATE*/
+const StateOverlayBlock = document.getElementById("link-trigger-state");
+const StateOverlayNonePost = document.getElementById("overlay-state");
+const StateMenuUpdatePost = document.getElementById("menu-state");
+
+if (StateOverlayBlock && StateOverlayNonePost && StateMenuUpdatePost) {
+  StateOverlayBlock.addEventListener("click", function (event) {
+    event.preventDefault();
+    StateOverlayNonePost.style.display = "block";
+    StateMenuUpdatePost.style.display = "block";
+  });
+
+  StateOverlayNonePost.addEventListener("click", function () {
+    StateOverlayNonePost.style.display = "none";
+    StateMenuUpdatePost.style.display = "none";
+  });
+} else {
+  console.log("Algunos elementos del overlay no existen en el DOM.");
+}
+
+/*VALIDAR ELIMINAR USUARIO*/
+const resultado = document.getElementById("resultado");
+const eliminar = document.getElementById("eliminar");
+const cancelar = document.getElementById("cancelarEliminar");
+const confirmar = document.getElementById("confirmarEliminar");
+
+if (eliminar && cancelar && confirmar) {
+  eliminar.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("modal-eliminar").style.display = "flex";
+  });
+
+  cancelar.addEventListener("click", () => {
+    document.getElementById("modal-eliminar").style.display = "none";
+  });
+
+  confirmar.addEventListener("click", () => {
+
+    if (resultado) {
+      resultado.innerText = "Usuario eliminado.";
+      document.getElementById("modal-eliminar").style.display = "none";
+    }
+  });
+} else {
+  console.log("Algunos elementos para Delete no existen en el DOM.");
+}
+
+
