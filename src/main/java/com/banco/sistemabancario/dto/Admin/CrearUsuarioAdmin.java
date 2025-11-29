@@ -1,20 +1,21 @@
 package com.banco.sistemabancario.dto.Admin;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CrearUsuarioAdmin {
     
-    private Long usuarioId;
-    private String username;
-    private String email;
-    private String rol;
+    private String nombre, apellido, documento, correo, username, rol, fechaNacimiento;
 
-    private Long personaId;
-    private String nombre;
-    private String apellido;
-    private String documento;
-    private LocalDate nacimiento;
+    private String contraseña;
 
-    private Boolean estado;
-    private String numeroCuenta;
+    private String permisos; //ROL SECURITY
 }

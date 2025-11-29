@@ -21,6 +21,7 @@ import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
+import com.banco.sistemabancario.service.RolesService;
 import com.banco.sistemabancario.service.UsuarioService;
 import com.banco.sistemabancario.util.UsuarioUtils;
 
@@ -29,13 +30,13 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     
     private UsuarioRepository usuarioRepository;
     private PersonaRepository personaRepository;
-    private RolesServiceImpl rolesServiceImpl;
+    private RolesService rolesService;
     private UsuarioUtils usuarioUtils;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PersonaRepository personaRepository, RolesServiceImpl rolesServiceImpl) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PersonaRepository personaRepository, RolesService rolesService) {
         this.usuarioRepository = usuarioRepository;
         this.personaRepository = personaRepository;
-        this.rolesServiceImpl = rolesServiceImpl;
+        this.rolesService = rolesService;
     }       
 
     @Override
@@ -129,8 +130,31 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuario.setEnabled(true);
 
         //ROLES/PERMISOS
-        Roles rol = rolesServiceImpl.buscarRoles(RoleEnum.CLIENTE);
+        Roles rol = rolesService.buscarRoles(RoleEnum.CLIENTE);
         usuario.setRoles(Set.of(rol));
+
+        return usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    @Override
+    public Usuario adminRegistrarUsuario(String username, String password, Persona persona, String rol, String permisos){
+
+        Usuario usuario = new Usuario();
+        
+        validarNombreUsuario(username, usuario.getIdUsuario());
+
+        usuario.setUsername(username);
+        usuario.setRol(RoleEnum.valueOf(rol));
+        usuario.setPassword(password);
+
+        usuario.setAccountNoExpired(true);
+        usuario.setAccountNoLocked(true);
+        usuario.setCredentialNoExpired(true);
+        usuario.setEnabled(true);
+
+        Roles roles = rolesService.buscarRoles(RoleEnum.valueOf(permisos));
+        usuario.setRoles(Set.of(roles));
 
         return usuarioRepository.save(usuario);
     }

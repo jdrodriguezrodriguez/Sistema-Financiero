@@ -105,8 +105,15 @@
 
                     <div class="columna derecha">
 
-                        <label for="rol">Rol:</label>
-                        <input type="text" id="rolUpdate" name="rol" required>
+                        <label for="permisos">Rol:</label>
+                        <select name="estado" id="rolPost">
+                            <option value="false" selected disabled></option>
+                            <!--<option value="ADMIN">ADMIN</option>
+                            <option value="CLIENTE">ESTANDAR</option>-->
+                            <option value="ADMIN">ADMIN</option>
+                            <option value="CLIENTE">CLIENTE</option>
+                            <option value="EMPLEADO">EMPLEADO</option>
+                        </select>
 
                         <label for="cuenta">Número de cuenta:</label>
                         <input type="text" id="cuentaUpdate" name="cuenta" disabled>
