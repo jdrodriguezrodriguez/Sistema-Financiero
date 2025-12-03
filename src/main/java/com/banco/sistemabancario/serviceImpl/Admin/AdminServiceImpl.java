@@ -1,7 +1,5 @@
 package com.banco.sistemabancario.serviceImpl.Admin;
 
-import java.util.Set;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +10,6 @@ import com.banco.sistemabancario.dto.Admin.ConsultarUsuarioAdmin;
 import com.banco.sistemabancario.dto.Admin.CrearUsuarioAdmin;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Persona;
-import com.banco.sistemabancario.entity.Roles;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
 import com.banco.sistemabancario.exception.CorreoYaRegistradoException;
@@ -24,7 +21,6 @@ import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
 import com.banco.sistemabancario.service.CuentaService;
 import com.banco.sistemabancario.service.PersonaService;
-import com.banco.sistemabancario.service.RolesService;
 import com.banco.sistemabancario.service.UsuarioService;
 import com.banco.sistemabancario.service.Admin.AdminService;
 
@@ -53,10 +49,11 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ConsultarUsuarioAdmin adminBuscarUsuario(String documento) {
-        Persona persona = personaRepository.findByDocumento(documento)
-                .orElseThrow(() -> new PersonaNoEncontradaException("No existe persona con ese documento"));
+        Persona persona = personaService.obtenerPersonaPorDocumento(documento);
 
-        Usuario usuario = usuarioRepository.findByPersona(persona);
+        Usuario usuario = usuarioService.obtenerUsuarioPorPersonaId(persona.getIdPersona())
+                .orElseThrow(() -> new UsuarioNoencontradoException("No existe usuario para esa persona"));
+
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
 
         return new ConsultarUsuarioAdmin(
@@ -68,19 +65,18 @@ public class AdminServiceImpl implements AdminService {
                 usuario.getRol(),
                 cuenta.getNum_cuenta(),
                 cuenta.getEstado(),
-                persona.getNacimiento());
+                persona.getNacimiento(),
+                usuario.isEnabled(),
+                usuario.isAccountNoLocked());
     }
 
     @Transactional
     @Override
     public void adminActualizarUsuario(ActualizarUsuarioAdmin datos) {
-        Persona persona = personaRepository.findByDocumento(datos.getDocumentoActual())
-                .orElseThrow(() -> new PersonaNoEncontradaException("No existe persona con ese documento"));
+        Persona persona = personaService.obtenerPersonaPorDocumento(datos.getDocumentoActual());
 
-        Usuario usuario = usuarioRepository.findByPersona(persona);
-        if (usuario == null) {
-            throw new UsuarioNoencontradoException("No existe un usuario asociado a esa persona");
-        }
+        Usuario usuario = usuarioService.obtenerUsuarioPorPersonaId(persona.getIdPersona())
+                .orElseThrow(() -> new UsuarioNoencontradoException("No existe usuario para esa persona"));
 
         if (!persona.getDocumento().equals(datos.getDocumentoNuevo())) {
             if (personaService.documentoYaRegistrado(datos.getDocumentoNuevo())) {
@@ -100,11 +96,11 @@ public class AdminServiceImpl implements AdminService {
 
         persona.setNombre(datos.getNombre());
         persona.setApellido(datos.getApellido());
-        persona.setNacimiento(datos.getNacimiento());;
+        persona.setNacimiento(datos.getNacimiento());
 
         usuarioService.validarNombreUsuario(datos.getUsername(), usuario.getIdUsuario());
         usuario.setUsername(datos.getUsername());
-    
+
         usuario.setRol(RoleEnum.valueOf(datos.getRol()));
     }
 
@@ -113,20 +109,21 @@ public class AdminServiceImpl implements AdminService {
     public void adminCrearUsuario(CrearUsuarioAdmin datos) {
 
         RegistroPersonaDto personaDto = new RegistroPersonaDto(
-            datos.getNombre(), 
-            datos.getApellido(), 
-            datos.getDocumento(), 
-            datos.getFechaNacimiento(),
-            datos.getCorreo(), datos.getContraseña());
-        
+                datos.getNombre(),
+                datos.getApellido(),
+                datos.getDocumento(),
+                datos.getNacimiento(),
+                datos.getCorreo(),
+                datos.getPassword());
+
         Persona persona = personaService.registrarPersona(personaDto);
 
         Usuario usuario = usuarioService.adminRegistrarUsuario(
-            datos.getUsername(), 
-            datos.getContraseña(), 
-            persona, 
-            datos.getRol(),
-            datos.getPermisos());
+                datos.getUsername(),
+                datos.getPassword(),
+                persona,
+                datos.getRol(),
+                datos.getPermisos());
 
         if (usuario.getRol() != RoleEnum.EMPLEADO && usuario.getRol() != RoleEnum.ADMIN) {
             cuentaService.registrarCuenta(usuario);
@@ -137,15 +134,12 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void adminActualizarEstado(ActualizarEstadoAdmin datos) {
 
-        Persona persona = personaRepository.findByDocumento(datos.getDocumento())
-                .orElseThrow(() -> new PersonaNoEncontradaException("No existe persona con ese documento"));
+        Persona persona = personaService.obtenerPersonaPorDocumento(datos.getDocumento());
 
-        Usuario usuario = usuarioRepository.findByPersona(persona);
-        if (usuario == null) {
-            throw new UsuarioNoencontradoException("No existe un usuario asociado a esa persona");
-        }
+        Usuario usuario = usuarioService.obtenerUsuarioPorPersonaId(persona.getIdPersona())
+                .orElseThrow(() -> new UsuarioNoencontradoException("No existe usuario para esa persona"));
 
-        usuario.setAccountNoLocked(datos.isEstado());
+        usuario.setAccountNoLocked(datos.isBloqueo());
         usuario.setEnabled(datos.isEstado());
 
         usuarioRepository.save(usuario);

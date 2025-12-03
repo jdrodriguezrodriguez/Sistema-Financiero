@@ -17,6 +17,7 @@ import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Roles;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
+import com.banco.sistemabancario.exception.PasswordInvalidaException;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
@@ -94,14 +95,8 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     @Override
-    public Optional<Usuario> obtenerUsuarioPorId(int idPersona){
-        Optional<Usuario> usuario = usuarioRepository.findByPersona_IdPersona(idPersona);
-
-        if (!usuario.isPresent()) {
-            throw new UsuarioNoencontradoException("No se encontro a la persona con el ID" + idPersona);
-        }
-
-        return usuario;
+    public Optional<Usuario> obtenerUsuarioPorPersonaId(int idPersona){
+        return usuarioRepository.findByPersona_IdPersona(idPersona);
     }
 
     @Override
@@ -116,6 +111,8 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     public Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona){
 
         String username = usuarioUtils.generarUsername(nombre, apellido);
+        validarContraseñaUsuario(password);
+        
         Usuario usuario = new Usuario();
 
         usuario.setUsername(username);
@@ -142,11 +139,16 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
         Usuario usuario = new Usuario();
         
-        validarNombreUsuario(username, usuario.getIdUsuario());
+        validarNombreUsuario(username, 0);
 
         usuario.setUsername(username);
-        usuario.setRol(RoleEnum.valueOf(rol));
+
+        validarContraseñaUsuario(password);
+        
         usuario.setPassword(password);
+        usuario.setPersona(persona);
+        usuario.setRol(RoleEnum.valueOf(rol));
+        
 
         usuario.setAccountNoExpired(true);
         usuario.setAccountNoLocked(true);
@@ -167,6 +169,12 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
         if (existente.isPresent() && !existente.get().getIdUsuario().equals(Integer.valueOf(idActual))) {
             throw new IllegalArgumentException("El usuario ya existe, cambiar username " + username);
+        }
+    }
+
+    public void validarContraseñaUsuario(String password){
+        if (!usuarioUtils.validarPassword(password)) {
+            throw new PasswordInvalidaException("La contraseña debe tener exactamente cuatro digitos.");
         }
     }
 }

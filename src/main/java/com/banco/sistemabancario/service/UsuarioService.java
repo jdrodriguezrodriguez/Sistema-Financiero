@@ -12,7 +12,7 @@ public interface UsuarioService {
     List<Usuario> obtenerUsuarios();
     Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona);
     Usuario adminRegistrarUsuario(String username, String password, Persona persona, String rol, String permisos);
-    Optional<Usuario> obtenerUsuarioPorId(int idPersona);
+    Optional<Usuario> obtenerUsuarioPorPersonaId(int idPersona);
     Persona obtenerPersonaPorUsuarioId(int idUsuario);
 
     void validarNombreUsuario(String username, int idActual);

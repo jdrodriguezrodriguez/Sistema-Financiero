@@ -57,7 +57,7 @@ public class UsuarioController {
     //CONSULTAS
     @GetMapping("/{idPersona}")
     public ResponseEntity<?> getMethodName(@PathVariable int idPersona) {
-        return usuarioService.obtenerUsuarioPorId(idPersona)
+        return usuarioService.obtenerUsuarioPorPersonaId(idPersona)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.notFound().build());
     }

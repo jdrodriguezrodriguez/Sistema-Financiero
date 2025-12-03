@@ -59,8 +59,10 @@
                     <th>Usuario</th>
                     <th>Rol</th>
                     <th>Número de cuenta</th>
-                    <th>Estado</th>
+                    <th>Cuenta</th>
                     <th>Fecha de nacimiento</th>
+                    <th>Estado</th>
+                    <th>Bloqueo</th>
                 </tr>
                 <tr id="registros">
 
@@ -81,7 +83,7 @@
         <div id="overlay-update"></div>
         <div id="menu-update" class="hidden-update">
             <h2>Actualizar datos</h2>
-            <form id="ActualizarUsuario">
+            <form id="actualizarDatosUsuario">
                 <div class="grupo-campos-usuario dos-columnas">
 
                     <div class="columna izquierda">
@@ -106,7 +108,7 @@
                     <div class="columna derecha">
 
                         <label for="permisos">Rol:</label>
-                        <select name="estado" id="rolPost">
+                        <select name="estado" id="rolUpdate">
                             <option value="false" selected disabled></option>
                             <!--<option value="ADMIN">ADMIN</option>
                             <option value="CLIENTE">ESTANDAR</option>-->
@@ -135,7 +137,7 @@
                     <button type="submit">Actualizar persona</button>
                 </div>
 
-                <div id="resultadoUsuario" class="resultado"></div>
+                <div id="resultadoUpdate" class="resultado"></div>
             </form>
 
         </div>
@@ -143,21 +145,23 @@
         <div id="overlay-state"></div>
         <div id="menu-state" class="hidden-update">
             <h2>Estado de usuario</h2>
-            <form id="ActualizarEstadoUsuario">
+            <form id="actualizarEstadoUsuario">
 
                 <div class="grupo-campos-usuario dos-columnas">
 
                     <div class="columna izquierda">
                         <label for="estado">Estado:</label>
-                        <select name="estado" id="estado">
+                        <select name="estado" id="estadoUsuario">
+                            <option  selected disabled></option>
                             <option value="false">False</option>
-                            <option value="true" selected>True</option>
+                            <option value="true">True</option>
                         </select>
 
                         <label for="bloqueoTemporal">Bloqueo temporal:</label>
-                        <select name="bloqueoTemporal" id="bloqueoTemporal">
+                        <select name="bloqueo" id="bloqueoUsuario">
+                            <option  selected disabled></option>
                             <option value="false">False</option>
-                            <option value="true" selected>True</option>
+                            <option value="true">True</option>
                         </select>
                     </div>
 
@@ -167,7 +171,7 @@
                     <button type="submit">Actualizar estado</button>
                 </div>
 
-                <div id="resultadoUsuario" class="resultado"></div>
+                <div id="resultadoEstado" class="resultado"></div>
             </form>
         </div>
 
@@ -189,13 +193,17 @@
                         <input type="text" id="documentoPost" name="documento" required>
 
                         <label for="email">Correo:</label>
-                        <input type="email" id="emailPost" name="email" required>
+                        <input type="email" id="emailPost" name="correo" required>
 
                         <label for="usuario">Usuario:</label>
                         <input type="text" id="usernamePost" name="username" required>
 
+                    </div>
+
+                    <div class="columna derecha">
+
                         <label for="permisos">Rol:</label>
-                        <select name="estado" id="rolPost">
+                        <select name="rol" id="rolPost">
                             <option value="false" selected disabled></option>
                             <!--<option value="ADMIN">ADMIN</option>
                             <option value="CLIENTE">ESTANDAR</option>-->
@@ -204,20 +212,16 @@
                             <option value="EMPLEADO">EMPLEADO</option>
                         </select>
 
-                    </div>
-
-                    <div class="columna derecha">
-
                         <label for="cuenta">Número de cuenta:</label>
                         <input type="text" id="cuentaPost" name="cuenta" disabled>
 
-                        <label for="estado">Estado:</label>
+                        <!--<label for="estado">Estado:</label>
                         <select name="estado" id="estadoPost">
                             <option value="false" selected disabled></option>
                             <option value="ACTIVA">ACTIVA</option>
                             <option value="CERRADA">CERRADA</option>
                             <option value="BLOQUEADA">BLOQUEADA</option>
-                        </select>
+                        </select>-->
 
                         <label for="nacimiento">Fecha de nacimiento:</label>
                         <input type="date" id="nacimientoPost" name="nacimiento" required>
@@ -226,7 +230,7 @@
                         <input type="password" id="passwordPost" name="password">
 
                         <label for="permisos">Permisos:</label>
-                        <select name="estado" id="permisoPost">
+                        <select name="permisos" id="permisoPost">
                             <option value="false" selected disabled></option>
                             <option value="ADMIN">ADMIN</option>
                             <option value="CLIENTE">CLIENTE</option>
@@ -243,7 +247,7 @@
 
 
 
-                <div id="resultadoUsuario" class="resultado"></div>
+                <div id="resultadoPost" class="resultado"></div>
             </form>
 
 

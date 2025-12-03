@@ -9,6 +9,7 @@ import com.banco.sistemabancario.entity.Persona;
 public interface PersonaService {
     List<Persona> obtenerPersonas();
     Persona obtenerPersonaPorId(int idPersona);
+    Persona obtenerPersonaPorDocumento(String documento);
     Persona actualizarDatosPersona(ActualizarPersonaDto actualizarPersonaDto, int idPersona);
     Persona registrarPersona(RegistroPersonaDto datos);
     void eliminarPersona(int idPersona);

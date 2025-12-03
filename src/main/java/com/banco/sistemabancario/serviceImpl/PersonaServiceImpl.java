@@ -14,13 +14,11 @@ import com.banco.sistemabancario.exception.*;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.service.PersonaService;
 import com.banco.sistemabancario.util.PersonaUtils;
-import com.banco.sistemabancario.util.UsuarioUtils;
 
 @Service
 public class PersonaServiceImpl implements PersonaService {
 
     private PersonaRepository personaRepository;
-    private UsuarioUtils usuarioUtils;
     private PersonaUtils personaUtils;
 
     public PersonaServiceImpl(PersonaRepository personaRepository) {
@@ -31,7 +29,14 @@ public class PersonaServiceImpl implements PersonaService {
     public Persona obtenerPersonaPorId(int idPersona) {
         return personaRepository.findById(idPersona)
                 .orElseThrow(
-                        () -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
+                    () -> new PersonaNoEncontradaException("No se encontro a la persona con el ID: " + idPersona));
+    }
+
+    @Override
+    public Persona obtenerPersonaPorDocumento(String documento) {
+        return personaRepository.findByDocumento(documento)
+                .orElseThrow(
+                    () -> new PersonaNoEncontradaException("No existe persona con ese documento"));
     }
 
     @Override
@@ -93,10 +98,6 @@ public class PersonaServiceImpl implements PersonaService {
         if (correoYaRegistrado(datos.getCorreo())) {
             throw new CorreoYaRegistradoException(
                     "Ya existe una persona registrada con el correo electronico: " + datos.getCorreo());
-        }
-
-        if (!usuarioUtils.validarPassword(datos.getPassword())) {
-            throw new PasswordInvalidaException("La contraseña debe tener exactamente cuatro digitos.");
         }
     }
 }

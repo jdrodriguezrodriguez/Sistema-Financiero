@@ -18,11 +18,12 @@ public class ConsultarUsuarioAdmin {
 
     private String nombre, apellido, documento, correo, username, numCuenta;
     private CuentaEnum estado;
+    private boolean estadoUsuario, bloqueoUsuario;
     private RoleEnum rol;
     private Date nacimiento;
 
     public ConsultarUsuarioAdmin(String nombre, String apellido, String documento, String correo, String username, RoleEnum rol,
-            String numCuenta, CuentaEnum estado, Date nacimiento) {
+            String numCuenta, CuentaEnum estado, Date nacimiento, boolean estadoUsuario, boolean bloqueoUsuario) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.documento = documento;
@@ -32,5 +33,7 @@ public class ConsultarUsuarioAdmin {
         this.numCuenta = numCuenta;
         this.estado = estado;
         this.nacimiento = nacimiento;
+        this.estadoUsuario = estadoUsuario;
+        this.bloqueoUsuario = bloqueoUsuario;
     }
 }
