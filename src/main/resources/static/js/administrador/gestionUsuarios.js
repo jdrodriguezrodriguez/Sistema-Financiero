@@ -1,6 +1,12 @@
+import { eventos } from "/js/administrador/adminUsuarioEventos.js";
 import { getToken } from "/js/auth.js";
 
-async function obtenerDatosUsuario(documento) {
+
+document.addEventListener("DOMContentLoaded", () => {
+    eventos();
+});
+
+/* async function obtenerDatosUsuario(documento) {
     const url = `https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/admin/usuario/datos?documento=${encodeURIComponent(documento)}`;
 
     const response = await fetch(url, {
@@ -33,9 +39,9 @@ async function obtenerDatosUsuario(documento) {
     ];
 
     return campos;
-}
+} */
 
-async function eliminarUsuario(documento) {
+/* async function eliminarUsuario(documento) {
     const url = `https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/admin/usuario/eliminar?documento=${encodeURIComponent(documento)}`;
 
     const response = await fetch(url, {
@@ -55,9 +61,9 @@ async function eliminarUsuario(documento) {
     setTimeout(() => {
         window.location.href = "/html/administrador/usuarios/gestionUsuarios.html";
     }, 800);
-}
+} */
 
-async function actualizarEstadoUsuario(datos) {
+/* async function actualizarEstadoUsuario(datos) {
     const url = "https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/admin/usuario/estado";
 
     const response = await fetch(url, {
@@ -78,9 +84,9 @@ async function actualizarEstadoUsuario(datos) {
     setTimeout(() => {
         window.location.href = "/html/administrador/usuarios/gestionUsuarios.html";
     }, 800);
-}
+} */
 
-async function actualizarDatosUsuario(datos) {
+/* async function actualizarDatosUsuario(datos) {
     const url = "https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/admin/usuario/actualizar";
 
     const response = await fetch(url, {
@@ -101,9 +107,9 @@ async function actualizarDatosUsuario(datos) {
     setTimeout(() => {
         window.location.href = "/html/administrador/usuarios/gestionUsuarios.html";
     }, 800);
-}
+} */
 
-async function crearUsuario(datos) {
+/* async function crearUsuario(datos) {
     const url = "https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/admin/usuario/crear";
 
     const response = await fetch(url, {
@@ -124,9 +130,9 @@ async function crearUsuario(datos) {
     setTimeout(() => {
         window.location.href = "/html/administrador/usuarios/gestionUsuarios.html";
     }, 800);
-}
+} */
 
-function llenarTabla(campos) {
+/* function llenarTabla(campos) {
     const registroId = document.getElementById("registros");
     if (!registroId) return;
 
@@ -138,9 +144,9 @@ function llenarTabla(campos) {
     });
 
     document.getElementById("resultado").innerText = "Datos cargados correctamente.";
-}
+} */
 
-function validarDocumento(identidad) {
+/* function validarDocumento(identidad) {
     const resultado = document.getElementById("resultado");
 
     if (!identidad || identidad.trim() === "") {
@@ -148,9 +154,9 @@ function validarDocumento(identidad) {
         identidad.value = "";
         return;
     }
-}
+} */
 
-const mapIds = {
+/* const mapIds = {
     "Nombre": "nombreUpdate",
     "Apellido": "apellidoUpdate",
     "Documento": "documentoUpdate",
@@ -172,9 +178,9 @@ function llenarFormulario(campos) {
             document.getElementById(idInput).value = campo.value;
         }
     });
-}
+} */
 
-document.getElementById("consultar")?.addEventListener("submit", async (e) => {
+/* document.getElementById("consultar")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const identidad = document.getElementById("identidad").value;
 
@@ -203,9 +209,9 @@ document.getElementById("link-trigger-update").addEventListener("click", async (
     } catch (error) {
         document.getElementById("resultado").innerText = error.message;
     }
-});
+}); */
 
-document.getElementById("link-trigger-state").addEventListener("click", async () => {
+/* document.getElementById("link-trigger-state").addEventListener("click", async () => {
     const identidad = document.getElementById("identidad").value;
 
     if (validarDocumento(identidad)) {
@@ -219,7 +225,7 @@ document.getElementById("link-trigger-state").addEventListener("click", async ()
         document.getElementById("resultado").innerText = error.message;
     }
 });
-
+ */
 
 document.getElementById("actualizarEstadoUsuario").addEventListener("submit", function (e) {
     e.preventDefault();
