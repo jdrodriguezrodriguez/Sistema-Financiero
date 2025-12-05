@@ -6,7 +6,6 @@ import { getToken } from "/js/auth.js";
 const url = "https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/admin/usuario"
 
 export function consultarUsuario(documento){
-    validarDocumento(documento);
     return apiGetUsuario(`${url}/datos?documento=${encodeURIComponent(documento)}`, getToken());
 }
 
@@ -24,7 +23,7 @@ export function actualizarEstadousuario(body){
 
 export function eliminarUsuario(documento){
     validarDocumento(documento);
-    return eliminarUsuario(`${url}/eliminar?documento=${encodeURIComponent(documento)}`, getToken());
+    return apiDeleteUsuario(`${url}/eliminar?documento=${encodeURIComponent(documento)}`, getToken());
 }
 
 export function llenarTabla(campos) {
@@ -53,12 +52,13 @@ export function llenarFormulario(campos) {
     return
 }
 
-function validarDocumento(identidad) {
-    const resultado = document.getElementById("resultado");
+export function validarDocumento(identidad) {
+    
+    const valor = identidad.value.trim();
 
-    if (!identidad || identidad.trim() === "") {
-        resultado.innerText = "No ha ingresado el documento.";
+    if (!valor) {
         identidad.value = "";
-        return;
+        return false;
     }
+    return true;
 }

@@ -46,10 +46,6 @@ public class AdminController {
 
     @PutMapping("/usuario/estado")
     public ResponseEntity<?> adminActualizarEstado(@RequestBody ActualizarEstadoAdmin datos) {
-        System.out.println("--------------------------------------");
-        System.out.println(datos.getDocumento());
-        System.out.println("--------------------------------------");
-        
         adminService.adminActualizarEstado(datos);
         return ResponseEntity.ok(Map.of("Mensaje", "Se actualizo el estado del usuario."));
     }

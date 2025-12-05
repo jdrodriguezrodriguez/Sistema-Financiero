@@ -1,4 +1,4 @@
-export function mapearUsuario(data) {
+export function mapearTablaUsuario(data) {
     return [
         { Label: "Nombre", value: data.nombre },
         { Label: "Apellido", value: data.apellido },
@@ -11,6 +11,22 @@ export function mapearUsuario(data) {
         { Label: "Nacimiento", value: data.nacimiento },
         { Label: "Estado", value: data.estadoUsuario },
         { Label: "Bloqueo", value: data.bloqueoUsuario },
+    ];
+}
+
+export function mapearTablaEmpty() {
+    return [
+        { Label: "Nombre", value: "" },
+        { Label: "Apellido", value: "" },
+        { Label: "Documento", value: "" },
+        { Label: "Correo", value: "" },
+        { Label: "Usuario", value: "" },
+        { Label: "Rol", value: "" },
+        { Label: "Número de cuenta", value: "" },
+        { Label: "Cuenta", value: "" },
+        { Label: "Nacimiento", value: "" },
+        { Label: "Estado", value: "" },
+        { Label: "Bloqueo", value: "" },
     ];
 }
 
@@ -31,6 +47,21 @@ export function mapearFormularioUpdate() {
     };
 }
 
+export function mapearDatosPutUsuario(identidad) {
+    return {
+        nombre: document.getElementById("nombreUpdate").value,
+        apellido: document.getElementById("apellidoUpdate").value,
+        documentoActual: identidad,
+        documentoNuevo: document.getElementById("documentoUpdate").value,
+        email: document.getElementById("emailUpdate").value,
+        username: document.getElementById("usernameUpdate").value,
+        rol: document.getElementById("rolUpdate").value,
+        numCuenta: document.getElementById("cuentaUpdate").value,
+        estado: document.getElementById("estadoUpdate").value,
+        nacimiento: document.getElementById("nacimientoUpdate").value
+    };
+}
+
 export function mapearDatosPostUsuario() {
     return {
         nombre: document.getElementById("nombrePost").value,
@@ -42,5 +73,13 @@ export function mapearDatosPostUsuario() {
         nacimiento: document.getElementById("nacimientoPost").value,
         password: document.getElementById("passwordPost").value,
         permisos: document.getElementById("permisoPost").value
+    };
+}
+
+export function mapearEstadoUsuario(identidad) {
+    return {
+        documento: identidad,
+        estado: document.getElementById("estadoUsuario").value,
+        bloqueo: document.getElementById("bloqueoUsuario").value
     };
 }
