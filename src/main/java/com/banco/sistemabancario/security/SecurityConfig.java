@@ -19,13 +19,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.banco.sistemabancario.security.filters.JwtAuthenticationFilter;
 import com.banco.sistemabancario.security.filters.JwtAuthorizationFilter;
+import com.banco.sistemabancario.security.handler.CustomAccessDeniedHandler;
+import com.banco.sistemabancario.security.handler.CustomAuthenticationFailureHandler;
 import com.banco.sistemabancario.security.jwt.JwtUtils;
 
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
-@EnableMethodSecurity                               //PERMITE TRABAJAR CON ANOTACIONES
-@EnableGlobalMethodSecurity(prePostEnabled = true)  //PERMITIR ANOTACIONES PARA LOS CONTROLADORES (@PreAuthorize)
-public class SecurityConfig{
+@EnableMethodSecurity // PERMITE TRABAJAR CON ANOTACIONES
+@EnableGlobalMethodSecurity(prePostEnabled = true) // PERMITIR ANOTACIONES PARA LOS CONTROLADORES (@PreAuthorize)
+public class SecurityConfig {
 
     @Autowired
     JwtUtils jwtUtils;
@@ -36,53 +38,66 @@ public class SecurityConfig{
     @Autowired
     JwtAuthorizationFilter jwtAuthorizationFilter;
 
+    @Autowired
+    CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
+    @Autowired
+    CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception{
-        
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
+            AuthenticationManager authenticationManager) throws Exception {
+
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
         jwtAuthenticationFilter.setFilterProcessesUrl("/autenticar");
+        jwtAuthenticationFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
 
         return httpSecurity
-            .csrf(csrf -> csrf.disable()) //VULNERABILIDAD EN LOS FORM WEB
-            .authorizeHttpRequests(auth -> {
+                .csrf(csrf -> csrf.disable()) // VULNERABILIDAD EN LOS FORM WEB
+                .authorizeHttpRequests(auth -> {
 
-                auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/html/**", "/css/**", "/js/**").permitAll();
-                auth.requestMatchers(HttpMethod.POST, "/api/sistema/personas/registrar").permitAll();
-                
-                auth.requestMatchers("/api/sistema/usuarios/profile/**").hasAnyRole("CLIENTE", "ADMIN");
-                auth.requestMatchers("/api/sistema/usuarios/actualizar").hasAnyRole("CLIENTE", "ADMIN");
-                auth.requestMatchers("/api/sistema/personas/actualizar").hasAnyRole("CLIENTE", "ADMIN");
-                auth.requestMatchers("/api/sistema/transaccion/**").hasAnyRole("CLIENTE", "ADMIN");
+                    auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/html/**", "/css/**", "/js/**")
+                            .permitAll();
+                    auth.requestMatchers(HttpMethod.POST, "/api/sistema/personas/registrar").permitAll();
 
-                auth.requestMatchers("/api/sistema/**").hasRole("ADMIN");
-                
-                auth.anyRequest().authenticated();                                     
-            })
-            .sessionManagement(session ->                                                   //ADMINISTRADOR DE LA SESION
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))             //NO GUARDA LA SESSION EN MEMORIA
+                    auth.requestMatchers("/api/sistema/usuarios/profile/**").hasAnyRole("CLIENTE", "ADMIN");
+                    auth.requestMatchers("/api/sistema/usuarios/actualizar").hasAnyRole("CLIENTE", "ADMIN");
+                    auth.requestMatchers("/api/sistema/personas/actualizar").hasAnyRole("CLIENTE", "ADMIN");
+                    auth.requestMatchers("/api/sistema/transaccion/**").hasAnyRole("CLIENTE", "ADMIN");
 
-            .addFilter(jwtAuthenticationFilter)                                                   //GENERA TOKEN
-            .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class) //VALIDA TOKEN
-            .build();
+                    auth.requestMatchers("/api/sistema/**").hasRole("ADMIN");
+
+                    auth.anyRequest().authenticated();
+                })
+                .exceptionHandling(exception -> {
+                    exception.accessDeniedHandler(customAccessDeniedHandler);
+                })
+                .sessionManagement(session -> // ADMINISTRADOR DE LA SESION
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // NO GUARDA LA SESSION EN MEMORIA
+                .addFilter(jwtAuthenticationFilter) // GENERA TOKEN
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class) // VALIDA TOKEN
+                .build();
     }
 
-    //GESTIONA EL PROCESO DE AUTENTICACION
-    //PROVEEDOR - BUSCA LOS USUARIOS Y DEMAS EN BASE DE DATOS POR MEDIO DEL SERVICIO EN USUARIOS 
-    //(CONVIERTE LOS DATOS DEL USUARIO COMO ROLES, PERMISOS Y DEMAS EN UN OBJETO DE S.SECURITY)
+    // GESTIONA EL PROCESO DE AUTENTICACION
+    // PROVEEDOR - BUSCA LOS USUARIOS Y DEMAS EN BASE DE DATOS POR MEDIO DEL
+    // SERVICIO EN USUARIOS
+    // (CONVIERTE LOS DATOS DEL USUARIO COMO ROLES, PERMISOS Y DEMAS EN UN OBJETO DE
+    // S.SECURITY)
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity, 
-                                                    UserDetailsService userDetailsService, 
-                                                    PasswordEncoder passwordEncoder) throws Exception{
-        AuthenticationManagerBuilder authenticationManagerBuilder = 
-            httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
+    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity,
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity
+                .getSharedObject(AuthenticationManagerBuilder.class);
 
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
         return authenticationManagerBuilder.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
 }

@@ -1,28 +1,31 @@
 import { mapearFormularioUpdate } from "/js/administrador/adminUsuarioUI.js";
 import { apiPutEstadoUsuario } from "/js/administrador/api.js";
-import {apiGetUsuario, apiDeleteUsuario, apiPostUsuario, apiPutUsuario} from "/js/administrador/api.js"
+import { apiGetUsuario, apiDeleteUsuario, apiPostUsuario, apiPutUsuario } from "/js/administrador/api.js"
 import { getToken } from "/js/auth.js";
 
 const url = "https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/admin/usuario"
 
-export function consultarUsuario(documento){
-    return apiGetUsuario(`${url}/datos?documento=${encodeURIComponent(documento)}`, getToken());
+export async function consultarUsuario(documento) {
+    try {
+        return await apiGetUsuario(`${url}/datos?documento=${encodeURIComponent(documento)}`, getToken());
+    } catch (error) {
+        document.getElementById("resultado").innerText = error.message;
+    }
 }
 
-export function actualizarUsuario(body){
+export function actualizarUsuario(body) {
     return apiPutUsuario(`${url}/actualizar`, getToken(), body);
 }
 
-export function crearUsuario(body){
+export function crearUsuario(body) {
     return apiPostUsuario(`${url}/crear`, getToken(), body);
 }
 
-export function actualizarEstadousuario(body){
+export function actualizarEstadousuario(body) {
     return apiPutEstadoUsuario(`${url}/estado`, getToken(), body);
 }
 
-export function eliminarUsuario(documento){
-    validarDocumento(documento);
+export function eliminarUsuario(documento) {
     return apiDeleteUsuario(`${url}/eliminar?documento=${encodeURIComponent(documento)}`, getToken());
 }
 
@@ -53,7 +56,7 @@ export function llenarFormulario(campos) {
 }
 
 export function validarDocumento(identidad) {
-    
+
     const valor = identidad.value.trim();
 
     if (!valor) {

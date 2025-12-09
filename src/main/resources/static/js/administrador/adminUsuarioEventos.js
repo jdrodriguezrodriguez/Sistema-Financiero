@@ -6,7 +6,7 @@ export function adminEventosUsuarios() {
         e.preventDefault();
 
         const documento = document.querySelector("#identidad");
-        
+
         if (!validarDocumento(documento)) {
             llenarTabla(mapearTablaEmpty());
             document.getElementById("resultado").innerText = "No ha ingresado el documento.";
@@ -70,13 +70,24 @@ export function adminEventosUsuarios() {
     })
 
     document.getElementById("confirmarEliminar").addEventListener("click", async () => {
-        const documento = document.querySelector("#identidad").value.trim();
-        eliminarUsuario(documento);
+        const documento = document.querySelector("#identidad");
 
-        document.getElementById("resultado").innerText = "Usuario eliminado.";
-        setTimeout(() => {
-            window.location.href = "/html/administrador/usuarios/gestionUsuarios.html";
-        }, 800);
+        if (!validarDocumento(documento)) {
+            document.getElementById("resultado").innerText = "No ha ingresado el documento.";
+            return;
+        }
+
+        try {
+            await eliminarUsuario(documento);
+
+            document.getElementById("resultado").innerText = "Usuario eliminado.";
+            setTimeout(() => {
+                window.location.href = "/html/administrador/usuarios/gestionUsuarios.html";
+            }, 800);
+        } catch (error) {
+            document.getElementById("resultado").innerText = "Error al eliminar el usuario.";
+            console.error(error);
+        }
     })
 
     //CARGAR DATOS EN EL FORMULARIO DE ACTUALIZAR

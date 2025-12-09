@@ -18,6 +18,7 @@ import com.banco.sistemabancario.entity.Roles;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
 import com.banco.sistemabancario.exception.PasswordInvalidaException;
+import com.banco.sistemabancario.exception.UsuarioNoRegistrado;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
@@ -44,7 +45,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         
         Usuario usuario = usuarioRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("El usuario: " + username + "no existe"));
+            .orElseThrow(() -> new UsuarioNoRegistrado("El usuario: " + username + " no existe"));
 
 
         //TOMAR ROLES y PERMISOS DE USUARIO PARA CONVERTIR A OBJETO DE SPRING SECURITY
@@ -59,8 +60,6 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
             .flatMap(rol -> rol.getPermisosList().stream())  
             .forEach(permiso -> 
                 authorityList.add(new SimpleGrantedAuthority(permiso.getName())));  //AGREGAR CADA PERMISO A CADA ROL
-
-        //CONSTRUCCION DEL OBJETO USERDETAILS DE SPRING SECURITY PARA AUTENTICAR
 
             return new CustomUserDetails(usuario.getIdUsuario(),
                 usuario.getUsername(), 
@@ -88,7 +87,6 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         return usuarioRepository.save(usuario);
     }
 
-    //CONSULTAS
     @Override
     public List<Usuario> obtenerUsuarios(){
         return usuarioRepository.findAll();
@@ -126,7 +124,6 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuario.setCredentialNoExpired(true);
         usuario.setEnabled(true);
 
-        //ROLES/PERMISOS
         Roles rol = rolesService.buscarRoles(RoleEnum.CLIENTE);
         usuario.setRoles(Set.of(rol));
 
@@ -161,7 +158,6 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         return usuarioRepository.save(usuario);
     }
 
-    //VALIDAR QUE EL USERNAME NO EXISTA
     @Override
     public void validarNombreUsuario(String username, int idActual){
 

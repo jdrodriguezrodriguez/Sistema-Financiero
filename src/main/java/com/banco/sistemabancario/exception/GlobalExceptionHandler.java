@@ -24,7 +24,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errores);
     }
 
-    //Exepcion clase UsuarioNoRegistrado
     @ExceptionHandler(UsuarioNoRegistrado.class)
     public ResponseEntity<Map<String, String>> handleUsuarioNoRegistrado(UsuarioNoRegistrado ex){
         Map<String, String> errores = new HashMap<>();
@@ -35,7 +34,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(errores);
     }
 
-    //Exepcion clase CuentaNoencontrada
     @ExceptionHandler(CuentaNoEncontradaException.class)
     public ResponseEntity<Map<String, String>> handleCuentaNoencontradaException(CuentaNoEncontradaException ex){
         Map<String, String> errores = new HashMap<>();
@@ -57,7 +55,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errores);
     }
 
-    //Exepcion clase SaldoInsuficiente
     @ExceptionHandler(SaldoInsuficienteException.class)
     public ResponseEntity<Map<String, String>> hanldeSaldoInsuficienteException(SaldoInsuficienteException ex){
         Map<String, String> errores = new HashMap<>();
@@ -68,7 +65,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errores);
     }
 
-    //Persona no CuentaNoEncontradaException
     @ExceptionHandler(PersonaNoEncontradaException.class)
     public ResponseEntity<Map<String, String>> handlePersonaNoEncontradaException(PersonaNoEncontradaException ex){
         Map<String, String> errores = new HashMap<>();
@@ -79,7 +75,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errores);
     }
 
-    //Documento ya registrado
     @ExceptionHandler(DocumentoYaRegistradoException.class)
     public ResponseEntity<Map<String, String>> handleDocumentoYaRegistrado(DocumentoYaRegistradoException ex) {
         Map<String, String> errores = new HashMap<>();
@@ -90,7 +85,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errores);
     }
 
-    //Correo ya registrado
     @ExceptionHandler(CorreoYaRegistradoException.class)
     public ResponseEntity<Map<String, String>> handleCorreoYaRegistrado(CorreoYaRegistradoException ex) {
         Map<String, String> errores = new HashMap<>();
@@ -101,7 +95,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errores);
     }
 
-    //Password invalida
     @ExceptionHandler(PasswordInvalidaException.class)
     public ResponseEntity<Map<String, String>> handlePasswordInvalida(PasswordInvalidaException ex) {
         Map<String, String> errores = new HashMap<>();
@@ -112,7 +105,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errores);
     }
 
-    //Valor Invalido
     @ExceptionHandler(ValorInvalidoException.class)
     public ResponseEntity<Map<String, String>> handleValorInvalidoException(ValorInvalidoException ex) {
         Map<String, String> errores = new HashMap<>();

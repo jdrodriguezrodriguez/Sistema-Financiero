@@ -10,7 +10,7 @@ export async function apiGetUsuario(url, token) {
 
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detalle || "Error al obtener datos");
+        throw new Error(errorData.error || "Error al obtener datos");
     }
 
     return response.json();
