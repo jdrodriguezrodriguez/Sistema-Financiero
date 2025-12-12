@@ -11,7 +11,9 @@ import com.banco.sistemabancario.dto.Admin.CrearUsuarioAdmin;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.entity.enums.CuentaEnum;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
+import com.banco.sistemabancario.entity.enums.TipoEnum;
 import com.banco.sistemabancario.exception.CorreoYaRegistradoException;
 import com.banco.sistemabancario.exception.DocumentoYaRegistradoException;
 import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
@@ -55,6 +57,21 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(() -> new UsuarioNoencontradoException("No existe usuario para esa persona"));
 
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
+
+        if (usuario.getRol().equals(RoleEnum.ADMIN)) {
+            return new ConsultarUsuarioAdmin(
+                persona.getNombre(),
+                persona.getApellido(),
+                persona.getDocumento(),
+                persona.getCorreo(),
+                usuario.getUsername(),
+                usuario.getRol(),
+                "SIN CUENTA",
+                CuentaEnum.CERRADA,
+                persona.getNacimiento(),
+                usuario.isEnabled(),
+                usuario.isAccountNoLocked());
+        }
 
         return new ConsultarUsuarioAdmin(
                 persona.getNombre(),
@@ -101,7 +118,7 @@ public class AdminServiceImpl implements AdminService {
         usuarioService.validarNombreUsuario(datos.getUsername(), usuario.getIdUsuario());
         usuario.setUsername(datos.getUsername());
 
-        usuario.setRol(RoleEnum.valueOf(datos.getRol()));
+        usuario.setRol(TipoEnum.valueOf(datos.getRol()));
     }
 
     @Transactional
@@ -125,7 +142,7 @@ public class AdminServiceImpl implements AdminService {
                 datos.getRol(),
                 datos.getPermisos());
 
-        if (usuario.getRol() != RoleEnum.EMPLEADO && usuario.getRol() != RoleEnum.ADMIN) {
+        if (usuario.getRol() != TipoEnum.ADMIN) {
             cuentaService.registrarCuenta(usuario);
         }
     }

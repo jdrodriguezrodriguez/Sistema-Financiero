@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.banco.sistemabancario.entity.enums.RoleEnum;
+import com.banco.sistemabancario.entity.enums.TipoEnum;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -39,7 +40,7 @@ public class Usuario {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private RoleEnum rol;
+    private TipoEnum rol;
     
 
     //CAMPOS SECURITY
@@ -63,7 +64,7 @@ public class Usuario {
     public Usuario(){
     }
 
-    public Usuario(int idUsuario, String username, String password, RoleEnum rol, Persona persona, boolean isEnabled, boolean accountNoExpired, boolean accountNoLocked, boolean credentialNoExpired, Set<Roles> roles){
+    public Usuario(int idUsuario, String username, String password, TipoEnum rol, Persona persona, boolean isEnabled, boolean accountNoExpired, boolean accountNoLocked, boolean credentialNoExpired, Set<Roles> roles){
         this.idUsuario = idUsuario;
         this.username = username;
         this.password = password;
@@ -97,10 +98,10 @@ public class Usuario {
         this.password = password;
     }
 
-    public RoleEnum getRol() {
+    public TipoEnum getRol() {
         return rol;
     }
-    public void setRol(RoleEnum rol) {
+    public void setRol(TipoEnum rol) {
         this.rol = rol;
     }
 

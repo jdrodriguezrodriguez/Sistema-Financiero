@@ -3,6 +3,7 @@ package com.banco.sistemabancario.controller;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,7 +18,7 @@ import com.banco.sistemabancario.dto.Admin.CrearUsuarioAdmin;
 import com.banco.sistemabancario.service.Admin.AdminService;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
+@PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping("/api/sistema/admin")
 public class AdminController {

@@ -17,6 +17,7 @@ import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Roles;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
+import com.banco.sistemabancario.entity.enums.TipoEnum;
 import com.banco.sistemabancario.exception.PasswordInvalidaException;
 import com.banco.sistemabancario.exception.UsuarioNoRegistrado;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
@@ -116,7 +117,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuario.setUsername(username);
         usuario.setPassword(password);
         usuario.setPersona(persona);
-        usuario.setRol(RoleEnum.CLIENTE);
+        usuario.setRol(TipoEnum.ESTANDAR);
 
         //SECURITY
         usuario.setAccountNoExpired(true);
@@ -144,7 +145,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         
         usuario.setPassword(password);
         usuario.setPersona(persona);
-        usuario.setRol(RoleEnum.valueOf(rol));
+        usuario.setRol(TipoEnum.valueOf(rol));
         
 
         usuario.setAccountNoExpired(true);

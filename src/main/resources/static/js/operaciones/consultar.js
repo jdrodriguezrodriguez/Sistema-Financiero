@@ -1,4 +1,4 @@
-import { getToken } from "../auth.js";
+/* import { getToken } from "../auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -34,4 +34,4 @@ function consultarSaldoActual() {
                 console.log("No hay id para mostrar saldo.")
             }
         })
-}
+} */

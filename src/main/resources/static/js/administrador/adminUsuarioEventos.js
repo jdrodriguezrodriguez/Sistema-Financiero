@@ -78,7 +78,8 @@ export function adminEventosUsuarios() {
         }
 
         try {
-            await eliminarUsuario(documento);
+            console.log(documento.value);
+            await eliminarUsuario(documento.value);
 
             document.getElementById("resultado").innerText = "Usuario eliminado.";
             setTimeout(() => {

@@ -4,6 +4,7 @@ import java.sql.Date;
 
 import com.banco.sistemabancario.entity.enums.CuentaEnum;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
+import com.banco.sistemabancario.entity.enums.TipoEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,10 +20,10 @@ public class ConsultarUsuarioAdmin {
     private String nombre, apellido, documento, correo, username, numCuenta;
     private CuentaEnum estado;
     private boolean estadoUsuario, bloqueoUsuario;
-    private RoleEnum rol;
+    private TipoEnum rol;
     private Date nacimiento;
 
-    public ConsultarUsuarioAdmin(String nombre, String apellido, String documento, String correo, String username, RoleEnum rol,
+    public ConsultarUsuarioAdmin(String nombre, String apellido, String documento, String correo, String username, TipoEnum rol,
             String numCuenta, CuentaEnum estado, Date nacimiento, boolean estadoUsuario, boolean bloqueoUsuario) {
         this.nombre = nombre;
         this.apellido = apellido;

@@ -4,18 +4,19 @@ import java.sql.Date;
 
 import com.banco.sistemabancario.entity.enums.CuentaEnum;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
+import com.banco.sistemabancario.entity.enums.TipoEnum;
 
 public class DatosDto {
 
     private String nombre, apellido, documento, correo, username, numCuenta;
     private CuentaEnum estado;
-    private RoleEnum rol;
+    private TipoEnum rol;
     private Date nacimiento;
 
     public DatosDto(){
     }
 
-    public DatosDto(String nombre, String apellido, String documento, String correo, String username, RoleEnum rol,
+    public DatosDto(String nombre, String apellido, String documento, String correo, String username, TipoEnum rol,
             String numCuenta, CuentaEnum estado, Date nacimiento) {
         this.nombre = nombre;
         this.apellido = apellido;
@@ -63,10 +64,10 @@ public class DatosDto {
         this.username = username;
     }
 
-    public RoleEnum getRol() {
+    public TipoEnum getRol() {
         return rol;
     }
-    public void setRol(RoleEnum rol) {
+    public void setRol(TipoEnum rol) {
         this.rol = rol;
     }
 

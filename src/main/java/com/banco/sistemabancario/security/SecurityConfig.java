@@ -20,13 +20,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.banco.sistemabancario.security.filters.JwtAuthenticationFilter;
 import com.banco.sistemabancario.security.filters.JwtAuthorizationFilter;
 import com.banco.sistemabancario.security.handler.CustomAccessDeniedHandler;
+import com.banco.sistemabancario.security.handler.CustomAuthenticationEntryPoint;
 import com.banco.sistemabancario.security.handler.CustomAuthenticationFailureHandler;
 import com.banco.sistemabancario.security.jwt.JwtUtils;
 
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
 @EnableMethodSecurity // PERMITE TRABAJAR CON ANOTACIONES
-@EnableGlobalMethodSecurity(prePostEnabled = true) // PERMITIR ANOTACIONES PARA LOS CONTROLADORES (@PreAuthorize)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Autowired
@@ -43,6 +44,9 @@ public class SecurityConfig {
 
     @Autowired
     CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    @Autowired
+    CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
@@ -71,6 +75,7 @@ public class SecurityConfig {
                     auth.anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> {
+                    exception.authenticationEntryPoint(customAuthenticationEntryPoint);
                     exception.accessDeniedHandler(customAccessDeniedHandler);
                 })
                 .sessionManagement(session -> // ADMINISTRADOR DE LA SESION
