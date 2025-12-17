@@ -3,7 +3,6 @@ package com.banco.sistemabancario.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.banco.sistemabancario.entity.enums.RoleEnum;
 import com.banco.sistemabancario.entity.enums.TipoEnum;
 
 import jakarta.persistence.CascadeType;

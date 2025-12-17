@@ -3,7 +3,6 @@ package com.banco.sistemabancario.dto;
 import java.sql.Date;
 
 import com.banco.sistemabancario.entity.enums.CuentaEnum;
-import com.banco.sistemabancario.entity.enums.RoleEnum;
 import com.banco.sistemabancario.entity.enums.TipoEnum;
 
 public class DatosDto {

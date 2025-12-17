@@ -34,7 +34,6 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     private UsuarioRepository usuarioRepository;
     private PersonaRepository personaRepository;
     private RolesService rolesService;
-    private UsuarioUtils usuarioUtils;
 
     public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PersonaRepository personaRepository, RolesService rolesService) {
         this.usuarioRepository = usuarioRepository;
@@ -109,7 +108,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Override
     public Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona){
 
-        String username = usuarioUtils.generarUsername(nombre, apellido);
+        String username = UsuarioUtils.generarUsername(nombre, apellido);
         validarContraseñaUsuario(password);
         
         Usuario usuario = new Usuario();
@@ -170,7 +169,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     public void validarContraseñaUsuario(String password){
-        if (!usuarioUtils.validarPassword(password)) {
+        if (!UsuarioUtils.validarPassword(password)) {
             throw new PasswordInvalidaException("La contraseña debe tener exactamente cuatro digitos.");
         }
     }

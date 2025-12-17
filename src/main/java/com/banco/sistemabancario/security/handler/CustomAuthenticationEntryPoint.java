@@ -32,7 +32,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         Map<String, Object> body = new HashMap();
         
-        body.put("error", "Sin autenticacion. Inicie sesion.");
+        body.put("error", "Sin autenticacion, Token invalido o expirado");
         body.put("path", request.getRequestURI());
         body.put("status", 401);
 

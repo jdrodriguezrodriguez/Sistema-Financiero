@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
 
                     auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/html/**", "/css/**", "/js/**")
-                            .permitAll();
+                            .permitAll();                   
                     auth.requestMatchers(HttpMethod.POST, "/api/sistema/personas/registrar").permitAll();
 
                     auth.requestMatchers("/api/sistema/usuarios/profile/**").hasAnyRole("CLIENTE", "ADMIN");
