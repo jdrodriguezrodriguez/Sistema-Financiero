@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
+import com.banco.sistemabancario.service.PasswordResetTokenService;
 import com.banco.sistemabancario.serviceImpl.DatosDTOServiceImpl;
 import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
 
 @RestController
 @RequestMapping("/api/sistema/usuarios")
@@ -30,6 +33,7 @@ public class UsuarioController {
 
     private UsuarioServiceImpl usuarioService;
     private DatosDTOServiceImpl datosDTOService;
+    private PasswordResetTokenService resetPassword;
 
     public UsuarioController(UsuarioServiceImpl usuarioService, DatosDTOServiceImpl datosDTOService) {
         this.usuarioService = usuarioService;
@@ -48,13 +52,11 @@ public class UsuarioController {
         return ResponseEntity.ok(userInfo);
     }
 
-    //DATOS DEL USUARIO EN LINEA
     @GetMapping("/profile/datos")
     public ResponseEntity<?> datosSesionAutenticada(@AuthenticationPrincipal CustomUserDetails user){
         return ResponseEntity.ok(datosDTOService.datosUsuario(user.getId()));
     }
         
-    //CONSULTAS
     @GetMapping("/{idPersona}")
     public ResponseEntity<?> getMethodName(@PathVariable int idPersona) {
         return usuarioService.obtenerUsuarioPorPersonaId(idPersona)
@@ -67,7 +69,6 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.obtenerUsuarios());
     }
 
-    //ACTUALIZAR
     @PutMapping("/actualizar")
     public ResponseEntity<?> actualizarUsuario(@AuthenticationPrincipal CustomUserDetails user, @Valid @RequestBody ActualizarUsuarioDto datos){
         
@@ -84,4 +85,12 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPasswordUsuario(@RequestBody String Email) {
+        resetPassword.almacenarTokenPassword(Email);
+
+        return ResponseEntity.ok(null);
+    }
+    
 }

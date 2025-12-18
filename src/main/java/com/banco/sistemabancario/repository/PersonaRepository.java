@@ -9,6 +9,7 @@ import com.banco.sistemabancario.entity.Usuario;
 
 public interface PersonaRepository extends JpaRepository<Persona, Integer>{
     Persona findByUsuario(Usuario usuario);
+    Optional<Persona> findByCorreo(String correo);
     Optional<Persona> findByDocumento(String documento);
     boolean existsByDocumento(String documento);
     boolean existsByCorreo(String correo);
