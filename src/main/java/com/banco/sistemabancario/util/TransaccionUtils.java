@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Transaccion;
 
-public class TransaccionUtils {
+public final class TransaccionUtils {
     
     private TransaccionUtils(){}
 

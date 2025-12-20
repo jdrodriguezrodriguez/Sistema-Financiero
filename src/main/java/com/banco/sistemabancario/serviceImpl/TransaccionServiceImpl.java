@@ -23,6 +23,7 @@ public class TransaccionServiceImpl implements TransaccionService {
 
     private TransaccionRepository transaccionRepository;
     private CuentaService cuentaService;
+    private TransaccionUtils transaccionUtils;
 
     public TransaccionServiceImpl(
             TransaccionRepository transaccionRepository, CuentaService cuentaService) {
@@ -55,13 +56,13 @@ public class TransaccionServiceImpl implements TransaccionService {
         cuentaService.descontarSaldo(cuentaEntrada, monto);
         cuentaService.aumentarSaldo(cuentaSalida, monto);
 
-        Transaccion historialRetiro = TransaccionUtils.crearTransaccion(
+        Transaccion historialRetiro = transaccionUtils.crearTransaccion(
                 cuentaEntrada,
                 datos.getCuentaDestino(),
                 "TRANSFERENCIA",
                 monto.negate(),
                 datos.getDescripcion());
-        Transaccion historialDeposito = TransaccionUtils.crearTransaccion(
+        Transaccion historialDeposito = transaccionUtils.crearTransaccion(
                 cuentaSalida,
                 datos.getCuentaDestino(),
                 "TRANSFERENCIA",
@@ -106,7 +107,7 @@ public class TransaccionServiceImpl implements TransaccionService {
             cuenta.getNum_cuenta(), 
             "DEPOSITO", 
             monto,
-            TransaccionUtils.generarFechaActual(), 
+            transaccionUtils.generarFechaActual(), 
             "Deposito de $" + monto);
 
         return transaccionRepository.save(transaccion);

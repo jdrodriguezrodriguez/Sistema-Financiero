@@ -78,6 +78,7 @@ button {
 .register{
     color: darkorange;
     text-decoration: none;
+    font-weight: bold;
 }
 .resultado{
     color: #b11515;
@@ -100,4 +101,24 @@ footer {
     background-color: #1f1f1f;
     color: white;
     margin-top: 30px;
+}
+
+/*RESET PASSWORD:*/
+
+.div-reset{
+    width: 200px;
+    padding-top: 15px;
+    padding-left: 36%;
+}
+
+.resetPassword{
+    color: #b9b737;
+    padding-top: 2rem;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.resetPassword:hover{
+    color: rgb(151, 153, 26);
 }

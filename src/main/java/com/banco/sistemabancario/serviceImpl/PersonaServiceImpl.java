@@ -19,6 +19,7 @@ import com.banco.sistemabancario.util.PersonaUtils;
 public class PersonaServiceImpl implements PersonaService {
 
     private PersonaRepository personaRepository;
+    private PersonaUtils personaUtils;
 
     public PersonaServiceImpl(PersonaRepository personaRepository) {
         this.personaRepository = personaRepository;
@@ -63,7 +64,7 @@ public class PersonaServiceImpl implements PersonaService {
     @Override
     public Persona registrarPersona(RegistroPersonaDto datos) {
         validarDatosRegistro(datos);
-        Persona persona = PersonaUtils.convertirAObjeto(datos);
+        Persona persona = personaUtils.convertirAObjeto(datos);
         return  personaRepository.save(persona);
     }
 

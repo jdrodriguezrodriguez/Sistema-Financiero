@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.dto.Admin;
+package com.banco.sistemabancario.dto.MailReset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class resetPasswordTokenDto {
+public class ResetUsernameTokenDto {
     private String token;
-    private String password;
+    private String newUsername;
 }

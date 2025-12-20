@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
+import com.banco.sistemabancario.dto.MailReset.ResetPasswordTokenDto;
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
-import com.banco.sistemabancario.service.PasswordResetTokenService;
+import com.banco.sistemabancario.service.ResetDataTokenService;
 import com.banco.sistemabancario.serviceImpl.DatosDTOServiceImpl;
 import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
@@ -33,7 +34,7 @@ public class UsuarioController {
 
     private UsuarioServiceImpl usuarioService;
     private DatosDTOServiceImpl datosDTOService;
-    private PasswordResetTokenService resetPassword;
+    private ResetDataTokenService resetPassword;
 
     public UsuarioController(UsuarioServiceImpl usuarioService, DatosDTOServiceImpl datosDTOService) {
         this.usuarioService = usuarioService;
@@ -86,9 +87,16 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("/resetPassword")
-    public ResponseEntity<?> resetPasswordUsuario(@RequestBody String Email) {
+    @PostMapping("/tokenPassword")
+    public ResponseEntity<?> TokenPasswordUsuario(@RequestBody String Email) {
         resetPassword.almacenarTokenPassword(Email);
+
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPasswordUsuario(@RequestBody ResetPasswordTokenDto rTokenDto) {
+        resetPassword.resetPassword(rTokenDto);
 
         return ResponseEntity.ok(null);
     }
