@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.dto.MailReset.ResetPasswordTokenDto;
+import com.banco.sistemabancario.dto.MailReset.ResetUsernameTokenDto;
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
-import com.banco.sistemabancario.service.ResetDataTokenService;
+import com.banco.sistemabancario.service.MailResetService.ResetTokenService;
 import com.banco.sistemabancario.serviceImpl.DatosDTOServiceImpl;
 import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
@@ -34,12 +35,12 @@ public class UsuarioController {
 
     private UsuarioServiceImpl usuarioService;
     private DatosDTOServiceImpl datosDTOService;
-    private ResetDataTokenService resetPassword;
+    private ResetTokenService resetTokenService;
 
-    public UsuarioController(UsuarioServiceImpl usuarioService, DatosDTOServiceImpl datosDTOService, ResetDataTokenService resetPassword) {
+    public UsuarioController(UsuarioServiceImpl usuarioService, DatosDTOServiceImpl datosDTOService, ResetTokenService resetTokenService) {
         this.usuarioService = usuarioService;
         this.datosDTOService = datosDTOService;
-        this.resetPassword = resetPassword;
+        this.resetTokenService = resetTokenService;
     }
 
     //SESION AUTENTICADA
@@ -90,14 +91,28 @@ public class UsuarioController {
 
     @PostMapping("/tokenPassword/{email}")
     public ResponseEntity<?> TokenPasswordUsuario(@PathVariable String email) {
-        resetPassword.almacenarTokenPassword(email);
+        resetTokenService.almacenarTokenPassword(email);
 
         return ResponseEntity.ok(Map.of("Mensaje", "Si el correo es valido, se envio el token al correo."));
     }
 
     @PostMapping("/resetPassword")
     public ResponseEntity<?> resetPasswordUsuario(@RequestBody ResetPasswordTokenDto rTokenDto) {
-        resetPassword.resetPassword(rTokenDto);
+        resetTokenService.resetPassword(rTokenDto);
+
+        return ResponseEntity.ok(Map.of("Mensaje", "Token aceptado."));
+    }
+
+     @PostMapping("/tokenUsername/{email}")
+    public ResponseEntity<?> TokenUsernameUsuario(@PathVariable String email) {
+        resetTokenService.almacenarTokenUsername(email);
+
+        return ResponseEntity.ok(Map.of("Mensaje", "Si el correo es valido, se envio el token al correo."));
+    }
+
+    @PostMapping("/resetUsername")
+    public ResponseEntity<?> resetUsernameUsuario(@RequestBody ResetUsernameTokenDto sTokenDto) {
+        resetTokenService.resetUsername(sTokenDto);
 
         return ResponseEntity.ok(Map.of("Mensaje", "Token aceptado."));
     }

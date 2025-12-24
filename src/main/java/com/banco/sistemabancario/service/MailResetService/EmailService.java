@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.service;
+package com.banco.sistemabancario.service.MailResetService;
 
 public interface EmailService {
     void enviarResetPassword(String email, String token);

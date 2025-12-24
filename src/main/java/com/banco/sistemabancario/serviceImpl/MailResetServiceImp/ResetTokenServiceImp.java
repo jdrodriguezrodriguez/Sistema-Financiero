@@ -12,21 +12,20 @@ import org.springframework.stereotype.Service;
 import com.banco.sistemabancario.dto.MailReset.ResetPasswordTokenDto;
 import com.banco.sistemabancario.dto.MailReset.ResetUsernameTokenDto;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.entity.MailReset.PasswordResetToken;
-import com.banco.sistemabancario.entity.MailReset.UsernameResetToken;
+import com.banco.sistemabancario.entity.MailReset.ResetToken;
+import com.banco.sistemabancario.exception.TokenInvalidoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
-import com.banco.sistemabancario.repository.MailResetRepository.PasswordResetTokenRepository;
-import com.banco.sistemabancario.repository.MailResetRepository.UsernameResetTokenRepository;
-import com.banco.sistemabancario.service.EmailService;
-import com.banco.sistemabancario.service.ResetDataTokenService;
+import com.banco.sistemabancario.repository.MailResetRepository.ResetTokenRepository;
+import com.banco.sistemabancario.service.MailResetService.EmailService;
+import com.banco.sistemabancario.service.MailResetService.ResetTokenService;
 
 import jakarta.transaction.Transactional;
 
 @Service
-public class ResetDataTokenServiceImp implements ResetDataTokenService {
+public class ResetTokenServiceImp implements ResetTokenService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ResetDataTokenServiceImp.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResetTokenServiceImp.class);
 
     @Autowired
     private PersonaRepository personaRepository;
@@ -35,10 +34,7 @@ public class ResetDataTokenServiceImp implements ResetDataTokenService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private PasswordResetTokenRepository passwordResetTokenRepository;
-
-    @Autowired
-    private UsernameResetTokenRepository usernameResetTokenRepository;
+    private ResetTokenRepository resetTokenRepository;
 
     @Autowired
     private EmailService emailService;
@@ -52,8 +48,6 @@ public class ResetDataTokenServiceImp implements ResetDataTokenService {
         personaRepository.findByCorreo(email).ifPresentOrElse(
                 persona -> {
 
-                    logger.info("Correo encontrado: {}", persona.getCorreo());
-
                     Usuario usuario = usuarioRepository.findByPersona(persona);
 
                     if (usuario == null) {
@@ -61,20 +55,20 @@ public class ResetDataTokenServiceImp implements ResetDataTokenService {
                         return;
                     }
 
-                    PasswordResetToken token = new PasswordResetToken();
+                    ResetToken tokenPass = new ResetToken();
 
-                    token.setToken(UUID.randomUUID().toString());
-                    token.setUsuario(usuario);
-                    token.setExpiracion(LocalDateTime.now().plusMinutes(5));
-                    token.setUso(false);
-                    token.setCreacion(generarFechaActual());
+                    tokenPass.setToken(UUID.randomUUID().toString());
+                    tokenPass.setUsuario(usuario);
+                    tokenPass.setExpiracion(LocalDateTime.now().plusMinutes(5));
+                    tokenPass.setUso(false);
+                    tokenPass.setCreacion(generarFechaActual());
 
-                    passwordResetTokenRepository.save(token);
+                    resetTokenRepository.save(tokenPass);
 
                     try {
                         emailService.enviarResetPassword(
                                 persona.getCorreo(),
-                                token.getToken());
+                                tokenPass.getToken());
                     } catch (Exception e) {
                         logger.error("Error enviando email para {}", persona.getCorreo(), e);
                     }
@@ -85,9 +79,38 @@ public class ResetDataTokenServiceImp implements ResetDataTokenService {
 
     @Transactional
     @Override
+    public void almacenarTokenUsername(String email) {
+        personaRepository.findByCorreo(email).ifPresentOrElse(
+            
+            persona -> {
+                Usuario usuario = usuarioRepository.findByPersona(persona);
+
+                ResetToken tokenUser = new ResetToken();
+
+                tokenUser.setToken(UUID.randomUUID().toString());
+                tokenUser.setUsuario(usuario);
+                tokenUser.setExpiracion(LocalDateTime.now().plusMinutes(5));
+                tokenUser.setUso(false);
+                tokenUser.setCreacion(generarFechaActual());
+
+                resetTokenRepository.save(tokenUser);
+
+                try {
+                    emailService.enviarResetUsername(
+                        email,
+                        tokenUser.getToken());
+                } catch (Exception e) {
+                    logger.error("Error enviando email para {}", persona.getCorreo(), e);
+                }
+            }, 
+            () -> logger.error("Correo no encontrado."));
+    }
+
+    @Transactional
+    @Override
     public void resetPassword(ResetPasswordTokenDto pTokenDto) {
-        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(pTokenDto.getToken())
-                .orElseThrow(() -> new RuntimeException("Token inválido"));
+        ResetToken resetToken = resetTokenRepository.findByToken(pTokenDto.getToken())
+                .orElseThrow(() -> new TokenInvalidoException("Token invalido."));
 
         if (resetToken.getExpiracion().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Token expirado");
@@ -103,38 +126,16 @@ public class ResetDataTokenServiceImp implements ResetDataTokenService {
 
         resetToken.setUso(true);
 
-        passwordResetTokenRepository.save(resetToken);
+        resetTokenRepository.save(resetToken);
 
         logger.info("Se reseteo correctamente la contraseña.");
     }
 
     @Transactional
     @Override
-    public void almacenarTokenUsername(String email) {
-        personaRepository.findByCorreo(email).ifPresent(persona -> {
-            Usuario usuario = usuarioRepository.findByPersona(persona);
-
-            UsernameResetToken tokenUsername = new UsernameResetToken();
-
-            tokenUsername.setToken(UUID.randomUUID().toString());
-            tokenUsername.setUsuario(usuario);
-            tokenUsername.setExpiracion(LocalDateTime.now().plusMinutes(5));
-            tokenUsername.setUso(false);
-            tokenUsername.setCreacion(generarFechaActual());
-
-            usernameResetTokenRepository.save(tokenUsername);
-
-            emailService.enviarResetUsername(
-                    email,
-                    tokenUsername.getToken());
-        });
-    }
-
-    @Transactional
-    @Override
     public void resetUsername(ResetUsernameTokenDto sTokenDto) {
-        UsernameResetToken resetToken = usernameResetTokenRepository.findByToken(sTokenDto.getToken())
-                .orElseThrow(() -> new RuntimeException("Token inválido"));
+        ResetToken resetToken = resetTokenRepository.findByToken(sTokenDto.getToken())
+                .orElseThrow(() -> new TokenInvalidoException("Token invalido."));
 
         if (resetToken.getExpiracion().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Token expirado");
@@ -148,7 +149,7 @@ public class ResetDataTokenServiceImp implements ResetDataTokenService {
         usuarioRepository.save(usuario);
 
         resetToken.setUso(true);
-        usernameResetTokenRepository.save(resetToken);
+        resetTokenRepository.save(resetToken);
 
         logger.info("Se reseteo correctamente el usuario.");
     }

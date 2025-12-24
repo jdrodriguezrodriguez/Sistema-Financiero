@@ -7,7 +7,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.banco.sistemabancario.service.EmailService;
+import com.banco.sistemabancario.service.MailResetService.EmailService;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -28,7 +28,7 @@ public class EmailServiceImpl implements EmailService {
 
             javaMailSender.send(mensaje);
 
-            logger.info("Inicio reset de password por correo={}", email);
+            logger.info("Inicio reset de password por correo: {}", email);
 
         } catch (Exception e) {
             logger.error("Error con el metodo enviarResetPassword" + e);
@@ -45,7 +45,7 @@ public class EmailServiceImpl implements EmailService {
 
             javaMailSender.send(mensaje);
 
-            logger.info("Inicio reset de username por correo={}", email);
+            logger.info("Inicio reset de username por correo: {}", email);
         } catch (Exception e) {
             logger.error("Error con el metodo enviarResetUsername" + e);
         }

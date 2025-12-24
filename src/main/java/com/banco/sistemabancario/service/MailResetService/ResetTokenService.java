@@ -1,9 +1,9 @@
-package com.banco.sistemabancario.service;
+package com.banco.sistemabancario.service.MailResetService;
 
 import com.banco.sistemabancario.dto.MailReset.ResetPasswordTokenDto;
 import com.banco.sistemabancario.dto.MailReset.ResetUsernameTokenDto;
 
-public interface ResetDataTokenService {
+public interface ResetTokenService {
     void almacenarTokenPassword(String email);
     void resetPassword(ResetPasswordTokenDto pTokenDto);
     void almacenarTokenUsername(String email);

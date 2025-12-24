@@ -23,7 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "password_reset")
-public class PasswordResetToken {
+public class ResetToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

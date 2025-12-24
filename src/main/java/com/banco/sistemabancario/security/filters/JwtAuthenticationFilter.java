@@ -82,16 +82,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         httpresponse.put("username", user.getUsername());
 
         System.out.println("TOKEN: " + token);
-        System.out.println("Usuario: " + user.getUsername());
-        String roles = user.getAuthorities()
-                   .stream()
-                   .map(a -> a.getAuthority())
-                   .reduce((a, b) -> a + ", " + b)
-                   .orElse("Sin roles");
-
-        System.out.println("Usuario: " + user.getUsername() + " | Roles: " + roles);
-
-
+        
         response.getWriter().write(new ObjectMapper().writeValueAsString(httpresponse));
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

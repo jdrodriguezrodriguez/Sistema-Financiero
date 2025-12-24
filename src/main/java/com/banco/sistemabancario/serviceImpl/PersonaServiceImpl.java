@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,10 +15,13 @@ import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.exception.*;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.service.PersonaService;
+import com.banco.sistemabancario.serviceImpl.MailResetServiceImp.EmailServiceImpl;
 import com.banco.sistemabancario.util.PersonaUtils;
 
 @Service
 public class PersonaServiceImpl implements PersonaService {
+
+    private static final Logger logger =  LoggerFactory.getLogger(EmailServiceImpl.class);
 
     private PersonaRepository personaRepository;
     private PersonaUtils personaUtils;
@@ -72,6 +77,7 @@ public class PersonaServiceImpl implements PersonaService {
     @Transactional
     public void eliminarPersona(int idPersona) {
         Persona persona = obtenerPersonaPorId(idPersona);
+        logger.info("Se elimino la persona con id: ", idPersona);
         personaRepository.delete(persona);
     }
 

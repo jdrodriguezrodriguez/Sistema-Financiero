@@ -19,8 +19,6 @@ public class GlobalExceptionHandler {
         Map<String, String> errores  = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> errores.put(error.getField(), error.getDefaultMessage()));
         
-        /*List<String> errores = ex.getBindingResult().getFieldErrors().stream().map(error ->  error.getDefaultMessage()).toList();*/
-
         return ResponseEntity.badRequest().body(errores);
     }
 
@@ -110,6 +108,16 @@ public class GlobalExceptionHandler {
         Map<String, String> errores = new HashMap<>();
 
         errores.put("error", "Mismo numero de cuenta.");
+        errores.put("detalle", ex.getMessage());
+        
+        return ResponseEntity.badRequest().body(errores);
+    }
+
+    @ExceptionHandler()
+    public ResponseEntity<Map<String, String>> handleTokenInvalidoException(TokenInvalidoException ex){
+        Map<String, String> errores = new HashMap<>();
+
+        errores.put("error", "Token invalido.");
         errores.put("detalle", ex.getMessage());
         
         return ResponseEntity.badRequest().body(errores);
