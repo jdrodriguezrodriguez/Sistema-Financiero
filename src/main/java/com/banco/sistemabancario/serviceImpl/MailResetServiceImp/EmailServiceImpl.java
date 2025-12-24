@@ -7,13 +7,12 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.banco.sistemabancario.controller.TransaccionController;
 import com.banco.sistemabancario.service.EmailService;
 
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    private static final Logger logger =  LoggerFactory.getLogger(TransaccionController.class);
+    private static final Logger logger =  LoggerFactory.getLogger(EmailServiceImpl.class);
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -28,6 +27,9 @@ public class EmailServiceImpl implements EmailService {
             mensaje.setText("Ultiliza el siguiente token para autenticar y cambiar tu contraseña: " + token);
 
             javaMailSender.send(mensaje);
+
+            logger.info("Inicio reset de password por correo={}", email);
+
         } catch (Exception e) {
             logger.error("Error con el metodo enviarResetPassword" + e);
         }
@@ -42,6 +44,8 @@ public class EmailServiceImpl implements EmailService {
             mensaje.setText("Ultiliza el siguiente token para autenticar y cambiar tu usuario: " + token);
 
             javaMailSender.send(mensaje);
+
+            logger.info("Inicio reset de username por correo={}", email);
         } catch (Exception e) {
             logger.error("Error con el metodo enviarResetUsername" + e);
         }

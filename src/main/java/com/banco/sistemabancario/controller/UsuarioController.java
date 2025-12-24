@@ -36,9 +36,10 @@ public class UsuarioController {
     private DatosDTOServiceImpl datosDTOService;
     private ResetDataTokenService resetPassword;
 
-    public UsuarioController(UsuarioServiceImpl usuarioService, DatosDTOServiceImpl datosDTOService) {
+    public UsuarioController(UsuarioServiceImpl usuarioService, DatosDTOServiceImpl datosDTOService, ResetDataTokenService resetPassword) {
         this.usuarioService = usuarioService;
         this.datosDTOService = datosDTOService;
+        this.resetPassword = resetPassword;
     }
 
     //SESION AUTENTICADA
@@ -87,18 +88,18 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("/tokenPassword")
-    public ResponseEntity<?> TokenPasswordUsuario(@RequestBody String Email) {
-        resetPassword.almacenarTokenPassword(Email);
+    @PostMapping("/tokenPassword/{email}")
+    public ResponseEntity<?> TokenPasswordUsuario(@PathVariable String email) {
+        resetPassword.almacenarTokenPassword(email);
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(Map.of("Mensaje", "Si el correo es valido, se envio el token al correo."));
     }
 
     @PostMapping("/resetPassword")
     public ResponseEntity<?> resetPasswordUsuario(@RequestBody ResetPasswordTokenDto rTokenDto) {
         resetPassword.resetPassword(rTokenDto);
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(Map.of("Mensaje", "Token aceptado."));
     }
     
 }

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ import jakarta.transaction.Transactional;
 @Service
 public class ResetDataTokenServiceImp implements ResetDataTokenService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ResetDataTokenServiceImp.class);
+
     @Autowired
     private PersonaRepository personaRepository;
 
@@ -43,22 +47,40 @@ public class ResetDataTokenServiceImp implements ResetDataTokenService {
     @Override
     public void almacenarTokenPassword(String email) {
 
-        personaRepository.findByCorreo(email).ifPresent(persona -> {
-            Usuario usuario = usuarioRepository.findByPersona(persona);
-            PasswordResetToken token = new PasswordResetToken();
+        System.out.println(email);
 
-            token.setToken(UUID.randomUUID().toString());
-            token.setUsuario(usuario);
-            token.setExpiracion(LocalDateTime.now().plusMinutes(5));
-            token.setUso(false);
-            token.setCreacion(generarFechaActual());
+        personaRepository.findByCorreo(email).ifPresentOrElse(
+                persona -> {
 
-            passwordResetTokenRepository.save(token);
+                    logger.info("Correo encontrado: {}", persona.getCorreo());
 
-            emailService.enviarResetPassword(
-                    persona.getCorreo(),
-                    token.getToken());
-        });
+                    Usuario usuario = usuarioRepository.findByPersona(persona);
+
+                    if (usuario == null) {
+                        logger.warn("No se encontró usuario para persona {}", persona.getIdPersona());
+                        return;
+                    }
+
+                    PasswordResetToken token = new PasswordResetToken();
+
+                    token.setToken(UUID.randomUUID().toString());
+                    token.setUsuario(usuario);
+                    token.setExpiracion(LocalDateTime.now().plusMinutes(5));
+                    token.setUso(false);
+                    token.setCreacion(generarFechaActual());
+
+                    passwordResetTokenRepository.save(token);
+
+                    try {
+                        emailService.enviarResetPassword(
+                                persona.getCorreo(),
+                                token.getToken());
+                    } catch (Exception e) {
+                        logger.error("Error enviando email para {}", persona.getCorreo(), e);
+                    }
+
+                },
+                () -> logger.error("Correo no encontrado."));
     }
 
     @Transactional
@@ -82,12 +104,14 @@ public class ResetDataTokenServiceImp implements ResetDataTokenService {
         resetToken.setUso(true);
 
         passwordResetTokenRepository.save(resetToken);
+
+        logger.info("Se reseteo correctamente la contraseña.");
     }
 
     @Transactional
     @Override
     public void almacenarTokenUsername(String email) {
-        personaRepository.findByCorreo(email).ifPresent(persona->{
+        personaRepository.findByCorreo(email).ifPresent(persona -> {
             Usuario usuario = usuarioRepository.findByPersona(persona);
 
             UsernameResetToken tokenUsername = new UsernameResetToken();
@@ -101,9 +125,8 @@ public class ResetDataTokenServiceImp implements ResetDataTokenService {
             usernameResetTokenRepository.save(tokenUsername);
 
             emailService.enviarResetUsername(
-                email, 
-                tokenUsername.getToken()
-            );
+                    email,
+                    tokenUsername.getToken());
         });
     }
 
@@ -111,10 +134,10 @@ public class ResetDataTokenServiceImp implements ResetDataTokenService {
     @Override
     public void resetUsername(ResetUsernameTokenDto sTokenDto) {
         UsernameResetToken resetToken = usernameResetTokenRepository.findByToken(sTokenDto.getToken())
-            .orElseThrow(() -> new RuntimeException("Token inválido"));
-        
+                .orElseThrow(() -> new RuntimeException("Token inválido"));
+
         if (resetToken.getExpiracion().isBefore(LocalDateTime.now())) {
-             throw new RuntimeException("Token expirado");
+            throw new RuntimeException("Token expirado");
         }
         if (resetToken.isUso()) {
             throw new RuntimeException("Token ya utilizado");
@@ -126,6 +149,8 @@ public class ResetDataTokenServiceImp implements ResetDataTokenService {
 
         resetToken.setUso(true);
         usernameResetTokenRepository.save(resetToken);
+
+        logger.info("Se reseteo correctamente el usuario.");
     }
 
     public static String generarFechaActual() {

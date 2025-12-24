@@ -1,0 +1,232 @@
+.container {
+    margin: 0 auto;
+    background: #8B0000;
+    padding: 40px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin-top: 10%;
+}
+
+.container h1 {
+    margin-bottom: 10px;
+}
+
+.container p {
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn {
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #2e2b2b;
+    color: #f4f4f4;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background-color: #444;
+}
+
+.back {
+    display: block;
+    margin-top: 25px;
+    color: #b9b737;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.back:hover {
+    color: rgb(151, 153, 26);
+}
+
+/*OVERLAY PASSWORD*/
+#overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;                                        
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 999; 
+    display: none; 
+}
+
+#overlay-password{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+}
+
+#menu-password {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 500px;
+  max-width: 90%;
+  transform: translate(-50%, -50%);
+  background-color: #3a3a3a; 
+  border: 1px solid #8B0000;
+  padding: 2rem 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
+  z-index: 1000;
+  backdrop-filter: blur(6px);
+  display: none;
+}
+
+#menu-password h2 {
+  margin-top: 0;
+  color: #fff;
+  border-bottom: 1px solid #8B0000;
+  padding-bottom: 0.5rem;
+  width: 100%;
+  text-align: center;
+}
+
+#menu-password button {
+  background-color: #8B0000;
+  border: none;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 2rem;
+  transition: background-color 0.3s ease;
+}
+
+#menu-password button:hover {
+  background-color: #a80000;
+}
+.grupo-campos-usuario{
+    margin-top: 2rem;
+}
+.grupo-campos-usuario label{
+    padding-right: 8px;
+    font-weight: bold;
+    color: #f4f4f4;
+}
+
+.grupo-campos-usuario input{
+    padding: 0rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1.5rem;
+    transition: border 0.3s;
+}
+
+grupo-campos-usuario input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.hidden-update {
+    display: none;
+}
+
+/*OVERLAY PASSWORD*/
+
+#overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;                                        
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 999; 
+    display: none; 
+}
+
+#overlay-username{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+}
+
+#menu-username {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 500px;
+  max-width: 90%;
+  transform: translate(-50%, -50%);
+  background-color: #3a3a3a; 
+  border: 1px solid #8B0000;
+  padding: 2rem 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
+  z-index: 1000;
+  backdrop-filter: blur(6px);
+  display: none;
+}
+
+#menu-username h2 {
+  margin-top: 0;
+  color: #fff;
+  border-bottom: 1px solid #8B0000;
+  padding-bottom: 0.5rem;
+  width: 100%;
+  text-align: center;
+}
+
+#menu-username button {
+  background-color: #8B0000;
+  border: none;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 2rem;
+  transition: background-color 0.3s ease;
+}
+
+#menu-username button:hover {
+  background-color: #a80000;
+}
+.grupo-campos-usuario{
+    margin-top: 2rem;
+}
+.grupo-campos-usuario label{
+    padding-right: 8px;
+    font-weight: bold;
+    color: #f4f4f4;
+}
+
+.grupo-campos-usuario input{
+    padding: 0rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1.5rem;
+    transition: border 0.3s;
+}
+
+grupo-campos-usuario input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.hidden-update {
+    display: none;
+}
