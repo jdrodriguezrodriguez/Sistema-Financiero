@@ -55,6 +55,13 @@ public class PersonaController {
         Persona persona = personaService.obtenerPersonaPorId(idPersona);
         return ResponseEntity.ok(persona);
     }
+
+    //PRUEBA
+    @GetMapping("/numeroCuenta/{numCuenta}")
+    public ResponseEntity<?> buscarNumeroCuenta(@PathVariable String numCuenta) {
+        Persona persona = personaService.obtenerPersonaPorNumeroCuenta(numCuenta);
+        return ResponseEntity.ok(persona);
+    }
     
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")

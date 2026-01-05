@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
-    //Exepcion para @Valid
+    // Exepcion para @Valid
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity <Map<String,String>> ExceptionHandler(MethodArgumentNotValidException ex){
+    public ResponseEntity<Map<String, String>> ExceptionHandler(MethodArgumentNotValidException ex) {
 
-        Map<String, String> errores  = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> errores.put(error.getField(), error.getDefaultMessage()));
-        
+        Map<String, String> errores = new HashMap<>();
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errores.put(error.getField(), error.getDefaultMessage()));
+
         return ResponseEntity.badRequest().body(errores);
     }
 
     @ExceptionHandler(UsuarioNoRegistrado.class)
-    public ResponseEntity<Map<String, String>> handleUsuarioNoRegistrado(UsuarioNoRegistrado ex){
+    public ResponseEntity<Map<String, String>> handleUsuarioNoRegistrado(UsuarioNoRegistrado ex) {
         Map<String, String> errores = new HashMap<>();
 
         errores.put("error", "Usuario no registrado");
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CuentaNoEncontradaException.class)
-    public ResponseEntity<Map<String, String>> handleCuentaNoencontradaException(CuentaNoEncontradaException ex){
+    public ResponseEntity<Map<String, String>> handleCuentaNoencontradaException(CuentaNoEncontradaException ex) {
         Map<String, String> errores = new HashMap<>();
 
         errores.put("error", "Cuenta no existe");
@@ -42,9 +42,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(errores);
     }
 
-    //Exepcion claseIllegalArgument
+    // Exepcion claseIllegalArgument
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> hanldeIllegalArgumentException(IllegalArgumentException ex){
+    public ResponseEntity<Map<String, String>> hanldeIllegalArgumentException(IllegalArgumentException ex) {
         Map<String, String> errores = new HashMap<>();
 
         errores.put("error", "Argumento o valor inapropiado.");
@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SaldoInsuficienteException.class)
-    public ResponseEntity<Map<String, String>> hanldeSaldoInsuficienteException(SaldoInsuficienteException ex){
+    public ResponseEntity<Map<String, String>> hanldeSaldoInsuficienteException(SaldoInsuficienteException ex) {
         Map<String, String> errores = new HashMap<>();
 
         errores.put("error", "Saldo insuficiente");
@@ -64,9 +64,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(PersonaNoEncontradaException.class)
-    public ResponseEntity<Map<String, String>> handlePersonaNoEncontradaException(PersonaNoEncontradaException ex){
+    public ResponseEntity<Map<String, String>> handlePersonaNoEncontradaException(PersonaNoEncontradaException ex) {
         Map<String, String> errores = new HashMap<>();
-        
+
         errores.put("error", "ID no valido");
         errores.put("detalle", ex.getMessage());
 
@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
 
         errores.put("error", "Contraseña inválida");
         errores.put("detalle", ex.getMessage());
-        
+
         return ResponseEntity.badRequest().body(errores);
     }
 
@@ -109,17 +109,37 @@ public class GlobalExceptionHandler {
 
         errores.put("error", "Mismo numero de cuenta.");
         errores.put("detalle", ex.getMessage());
-        
+
         return ResponseEntity.badRequest().body(errores);
     }
 
     @ExceptionHandler()
-    public ResponseEntity<Map<String, String>> handleTokenInvalidoException(TokenInvalidoException ex){
+    public ResponseEntity<Map<String, String>> handleTokenInvalidoException(TokenInvalidoException ex) {
         Map<String, String> errores = new HashMap<>();
 
         errores.put("error", "Token invalido.");
         errores.put("detalle", ex.getMessage());
-        
+
+        return ResponseEntity.badRequest().body(errores);
+    }
+
+    @ExceptionHandler(TokenUsadoException.class)
+    public ResponseEntity<Map<String, String>> handleTokenUsadoException(TokenUsadoException ex) {
+        Map<String, String> errores = new HashMap<>();
+
+        errores.put("error", "Token ya usado.");
+        errores.put("detalle", ex.getMessage());
+
+        return ResponseEntity.badRequest().body(errores);
+    }
+
+    @ExceptionHandler(TokenExpiradoException.class)
+    public ResponseEntity<Map<String, String>> handleTokenExpiradoException(TokenExpiradoException ex) {
+        Map<String, String> errores = new HashMap<>();
+
+        errores.put("error", "Token expirado.");
+        errores.put("detalle", ex.getMessage());
+
         return ResponseEntity.badRequest().body(errores);
     }
 }

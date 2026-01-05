@@ -40,23 +40,22 @@
     </div>
 
     <!--OVERLAY PASSWORD-->
-
     <div id="overlay-password"></div>
     <div id="menu-password" class="hidden-update">
         <h2>Recuperar contraseña</h2>
-        <form id="actualizarDatosUsuario">
-            <div class="grupo-campos-usuario">
-
+        <p>Por favor, ingrese el correo electronico registrado en su cuenta bancaria para recibir las instrucciones de
+            restablecimiento de contraseña.</p>
+        <form id="resetPassword">
+            <div class="grupo-campos-usuario hiddenCorreo">
                 <label for="email">Correo:</label>
                 <input type="email" id="email-pass" name="email" required>
-
             </div>
 
-            <div class="boton-update">
-                <button type="submit">Enviar codigo</button>
+            <div class="correo-campos-token hiddenButtonCorreo">
+                <button class="btn-correo" type="submit">Enviar correo</button>
             </div>
 
-            <div id="resultadoUpdate" class="resultado"></div>
+            <div id="resultadoPassword" class="resultado"></div>
         </form>
     </div>
 
@@ -64,7 +63,10 @@
     <div id="overlay-username"></div>
     <div id="menu-username" class="hidden-update">
         <h2>Recuperar usuario</h2>
-        <form id="actualizarDatosUsuario">
+        <p>Por favor, ingrese el correo electronico asociado a su cuenta bancaria para recibir la información de su
+            nombre de usuario.</p>
+
+        <form id="resetUsername">
             <div class="grupo-campos-usuario">
 
                 <label for="email">Correo:</label>
@@ -73,10 +75,10 @@
             </div>
 
             <div class="boton-update">
-                <button type="submit">Enviar codigo</button>
+                <button class="btn-correo" type="submit">Enviar correo</button>
             </div>
 
-            <div id="resultadoUpdate" class="resultado"></div>
+            <div id="resultadoUser" class="resultado"></div>
         </form>
     </div>
 
@@ -84,7 +86,8 @@
         <p>© 2025 Sistema Financiero</p>
     </footer>
 
-    <script src="/js/reset.js"></script>
+    <script type="module" src="/js/recovery/reset.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 
 </html>

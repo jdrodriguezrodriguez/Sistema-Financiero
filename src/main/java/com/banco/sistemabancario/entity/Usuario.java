@@ -32,6 +32,10 @@ public class Usuario {
     @JoinColumn(name = "idPersona", referencedColumnName = "idPersona")      
     private Persona persona;
 
+    //TEMPORAL
+   @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cuenta cuenta;
+
     @Column(nullable = false)
     private String username;
 

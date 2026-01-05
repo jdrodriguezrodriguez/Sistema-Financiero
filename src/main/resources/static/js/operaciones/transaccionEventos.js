@@ -46,13 +46,14 @@ export async function transaccionEventos() {
     const historial = await consultarHistorial();
     const listHistorial = document.querySelector("#divLista");
 
-    listHistorial.innerHTML = "";
+    if (listHistorial) {
+        listHistorial.innerHTML = "";
 
-    historial.forEach(transaccion => {
-        const item = document.createElement("div");
-        item.className = "data-historia";
+        historial.forEach(transaccion => {
+            const item = document.createElement("div");
+            item.className = "data-historia";
 
-        item.innerHTML = `
+            item.innerHTML = `
                                 <p> <b>Mi cuenta:</b> ${transaccion.cuenta.num_cuenta}<p>
                                 <p> <b>Cuenta externa:</b> ${transaccion.cuenta_destino}<p>
                                 <p> <b>Tipo de movimiento:</b> ${transaccion.tipo}<p>
@@ -60,8 +61,9 @@ export async function transaccionEventos() {
                                 <p> <b>Descripcion:</b> ${transaccion.descripcion}<p>
                                 <p> <b>Fecha:</b> ${transaccion.fecha}<p>
                             `
-        listHistorial.appendChild(item);
-    });
+            listHistorial.appendChild(item);
+        });
+    }
 
 
     //TRANSFERIR
@@ -82,8 +84,13 @@ export async function transaccionEventos() {
                 const data = await transferirDinero(datosTransferencia);
 
                 document.getElementById("resultado").innerText = data.Mensaje
+
+                setTimeout(() => {
+                    window.location.href = "/html/vistas/index.html";
+                }, 800);
+
             } catch (error) {
-                document.getElementById("resultado").innerText = errorData.error;
+                document.getElementById("resultado").innerText = error.message;
             }
         });
     }

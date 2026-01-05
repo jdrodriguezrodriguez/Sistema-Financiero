@@ -4,6 +4,7 @@ package com.banco.sistemabancario.serviceImpl;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import com.banco.sistemabancario.exception.ValorInvalidoException;
 import com.banco.sistemabancario.repository.TransaccionRepository;
 import com.banco.sistemabancario.service.CuentaService;
 import com.banco.sistemabancario.service.TransaccionService;
+import com.banco.sistemabancario.service.MailResetService.EmailService;
 import com.banco.sistemabancario.util.TransaccionUtils;
 
 @Service
@@ -24,6 +26,9 @@ public class TransaccionServiceImpl implements TransaccionService {
     private TransaccionRepository transaccionRepository;
     private CuentaService cuentaService;
     private TransaccionUtils transaccionUtils;
+
+    @Autowired
+    private EmailService emailService;
 
     public TransaccionServiceImpl(
             TransaccionRepository transaccionRepository, CuentaService cuentaService) {
@@ -56,22 +61,26 @@ public class TransaccionServiceImpl implements TransaccionService {
         cuentaService.descontarSaldo(cuentaEntrada, monto);
         cuentaService.aumentarSaldo(cuentaSalida, monto);
 
-        Transaccion historialRetiro = transaccionUtils.crearTransaccion(
+        Transaccion historialEnvio = transaccionUtils.crearTransaccion(
                 cuentaEntrada,
                 datos.getCuentaDestino(),
                 "TRANSFERENCIA",
                 monto.negate(),
                 datos.getDescripcion());
-        Transaccion historialDeposito = transaccionUtils.crearTransaccion(
+
+        Transaccion historialRecibo = transaccionUtils.crearTransaccion(
                 cuentaSalida,
                 datos.getCuentaDestino(),
                 "TRANSFERENCIA",
                 monto,
                 datos.getDescripcion());
 
-        transaccionRepository.saveAll(List.of(historialRetiro, historialDeposito));
+        transaccionRepository.saveAll(List.of(historialEnvio, historialRecibo));
 
-        return historialRetiro;
+
+        emailService.notificarTransaccion(historialEnvio, historialEnvio.getCuenta().getNum_cuenta(), historialEnvio.getCuenta_destino());
+
+        return historialEnvio;
     }
 
     // TRANSFERENCIAS
@@ -109,6 +118,10 @@ public class TransaccionServiceImpl implements TransaccionService {
             monto,
             transaccionUtils.generarFechaActual(), 
             "Deposito de $" + monto);
+
+        emailService.enviarInfoDeposito(
+            transaccion, idUser
+        );
 
         return transaccionRepository.save(transaccion);
     }

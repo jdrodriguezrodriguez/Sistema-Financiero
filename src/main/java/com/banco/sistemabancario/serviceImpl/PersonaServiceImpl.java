@@ -31,6 +31,12 @@ public class PersonaServiceImpl implements PersonaService {
     }
 
     @Override
+    public Persona obtenerPersonaPorNumeroCuenta(String numCuenta) {
+        return personaRepository.findByUsuario_Cuenta_numCuenta(numCuenta)
+                .orElseThrow(() -> new PersonaNoEncontradaException("No se encontro a la persona con el numero de cuenta: " + numCuenta));
+    }
+
+    @Override
     public Persona obtenerPersonaPorId(int idPersona) {
         return personaRepository.findById(idPersona)
                 .orElseThrow(
@@ -49,7 +55,6 @@ public class PersonaServiceImpl implements PersonaService {
         return personaRepository.findAll();
     }
 
-    // ACTUALIZAR PERSONA EXISTENTE
     @Transactional
     @Override
     public Persona actualizarDatosPersona(ActualizarPersonaDto actualizarPersonaDto, int idPersona) {
@@ -64,7 +69,6 @@ public class PersonaServiceImpl implements PersonaService {
         return personaRepository.save(persona);
     }
 
-    // REGISTRAR PERSONA
     @Transactional
     @Override
     public Persona registrarPersona(RegistroPersonaDto datos) {
@@ -73,7 +77,6 @@ public class PersonaServiceImpl implements PersonaService {
         return  personaRepository.save(persona);
     }
 
-    // ELIMINAR PERSONA
     @Transactional
     public void eliminarPersona(int idPersona) {
         Persona persona = obtenerPersonaPorId(idPersona);
@@ -81,19 +84,16 @@ public class PersonaServiceImpl implements PersonaService {
         personaRepository.delete(persona);
     }
 
-    // VALIDAR REGISTRO DEL DOCUMENTO
     @Override
     public boolean documentoYaRegistrado(String documento) {
         return personaRepository.existsByDocumento(documento);
     }
 
-    // VALIDAR REGISTRO DEL CORREO
     @Override
     public boolean correoYaRegistrado(String correo) {
         return personaRepository.existsByCorreo(correo);
     }
 
-    // VALIDAR DATOS REGISTRO
     @Override
     public void validarDatosRegistro(RegistroPersonaDto datos) {
         if (documentoYaRegistrado(datos.getDocumento())) {

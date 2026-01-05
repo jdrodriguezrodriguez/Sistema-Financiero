@@ -105,6 +105,8 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         return personaRepository.findByUsuario(usuario);
     }
 
+    
+
     @Transactional
     @Override
     public Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona){

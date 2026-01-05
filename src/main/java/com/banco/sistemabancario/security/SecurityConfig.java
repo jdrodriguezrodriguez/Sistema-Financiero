@@ -64,7 +64,10 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/html/**", "/css/**", "/js/**")
                             .permitAll();                   
                     auth.requestMatchers(HttpMethod.POST, "/api/sistema/personas/registrar", 
-                        "/api/sistema/usuarios/resetPassword", "/api/sistema/usuarios/tokenPassword/**").permitAll();
+                        "/api/sistema/usuarios/resetPassword", 
+                        "/api/sistema/usuarios/forgotPassword", 
+                        "/api/sistema/usuarios/forgotUsername")
+                            .permitAll();
 
                     auth.requestMatchers("/api/sistema/usuarios/profile/**").hasAnyRole("CLIENTE", "ADMIN");
                     auth.requestMatchers("/api/sistema/usuarios/actualizar").hasAnyRole("CLIENTE", "ADMIN");

@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.banco.sistemabancario.dto.MailReset.ForgotRequest;
 import com.banco.sistemabancario.dto.MailReset.ResetPasswordTokenDto;
-import com.banco.sistemabancario.dto.MailReset.ResetUsernameTokenDto;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.MailReset.ResetToken;
 import com.banco.sistemabancario.exception.TokenInvalidoException;
@@ -41,11 +41,9 @@ public class ResetTokenServiceImp implements ResetTokenService {
 
     @Transactional
     @Override
-    public void almacenarTokenPassword(String email) {
+    public void almacenarTokenPassword(ForgotRequest request) {
 
-        System.out.println(email);
-
-        personaRepository.findByCorreo(email).ifPresentOrElse(
+        personaRepository.findByCorreo(request.getEmail()).ifPresentOrElse(
                 persona -> {
 
                     Usuario usuario = usuarioRepository.findByPersona(persona);
@@ -79,31 +77,26 @@ public class ResetTokenServiceImp implements ResetTokenService {
 
     @Transactional
     @Override
-    public void almacenarTokenUsername(String email) {
-        personaRepository.findByCorreo(email).ifPresentOrElse(
-            
-            persona -> {
-                Usuario usuario = usuarioRepository.findByPersona(persona);
+    public void forgotUsernameUsuario(ForgotRequest request) {
+        personaRepository.findByCorreo(request.getEmail()).ifPresentOrElse(
 
-                ResetToken tokenUser = new ResetToken();
+                persona -> {
+                    Usuario usuario = usuarioRepository.findByPersona(persona);
 
-                tokenUser.setToken(UUID.randomUUID().toString());
-                tokenUser.setUsuario(usuario);
-                tokenUser.setExpiracion(LocalDateTime.now().plusMinutes(5));
-                tokenUser.setUso(false);
-                tokenUser.setCreacion(generarFechaActual());
+                    if (usuario == null) {
+                        logger.warn("No se encontró usuario para persona {}", persona.getIdPersona());
+                        return;
+                    }
 
-                resetTokenRepository.save(tokenUser);
-
-                try {
-                    emailService.enviarResetUsername(
-                        email,
-                        tokenUser.getToken());
-                } catch (Exception e) {
-                    logger.error("Error enviando email para {}", persona.getCorreo(), e);
-                }
-            }, 
-            () -> logger.error("Correo no encontrado."));
+                    try {
+                        emailService.enviarUsername(
+                                request.getEmail(),
+                                usuario.getUsername());
+                    } catch (Exception e) {
+                        logger.error("Error enviando email para {}", persona.getCorreo(), e);
+                    }
+                },
+                () -> logger.error("Correo no encontrado."));
     }
 
     @Transactional
@@ -129,29 +122,6 @@ public class ResetTokenServiceImp implements ResetTokenService {
         resetTokenRepository.save(resetToken);
 
         logger.info("Se reseteo correctamente la contraseña.");
-    }
-
-    @Transactional
-    @Override
-    public void resetUsername(ResetUsernameTokenDto sTokenDto) {
-        ResetToken resetToken = resetTokenRepository.findByToken(sTokenDto.getToken())
-                .orElseThrow(() -> new TokenInvalidoException("Token invalido."));
-
-        if (resetToken.getExpiracion().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Token expirado");
-        }
-        if (resetToken.isUso()) {
-            throw new RuntimeException("Token ya utilizado");
-        }
-
-        Usuario usuario = resetToken.getUsuario();
-        usuario.setUsername(sTokenDto.getNewUsername());
-        usuarioRepository.save(usuario);
-
-        resetToken.setUso(true);
-        resetTokenRepository.save(resetToken);
-
-        logger.info("Se reseteo correctamente el usuario.");
     }
 
     public static String generarFechaActual() {

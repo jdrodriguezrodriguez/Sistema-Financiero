@@ -16,5 +16,5 @@ export async function consultarHistorial(){
 }
 
 export async function transferirDinero(body) {
-    return apiTransferirDinero(`${url}/depositar`, getToken(), body);
+    return apiTransferirDinero(`${url}/transferir`, getToken(), body);
 }

@@ -53,180 +53,62 @@
 }
 
 /*OVERLAY PASSWORD*/
-#overlay{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;                                        
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); 
-    z-index: 999; 
-    display: none; 
-}
 
-#overlay-password{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+#menu-password, #menu-username {
+    display: flex;
+    width: 500px;
+    margin: 0 auto;
+    max-width: 90%;
+    padding: 2rem 2.5rem;
+    border-radius: 10px;
+    margin-top: 5rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
     display: none;
+} 
+
+#menu-password h2, #menu-username h2 {
+    margin-top: 0;
+    color: #fff;
+    border-bottom: 1px solid #8B0000;
+    padding-bottom: 0.5rem;
+    width: 100%;
+    text-align: center;
 }
 
-#menu-password {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 500px;
-  max-width: 90%;
-  transform: translate(-50%, -50%);
-  background-color: #3a3a3a; 
-  border: 1px solid #8B0000;
-  padding: 2rem 2.5rem;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
-  z-index: 1000;
-  backdrop-filter: blur(6px);
-  display: none;
+#menu-password button, #menu-username button {
+    background-color: #8B0000;
+    border: none;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 2rem;
+    transition: background-color 0.3s ease;
 }
 
-#menu-password h2 {
-  margin-top: 0;
-  color: #fff;
-  border-bottom: 1px solid #8B0000;
-  padding-bottom: 0.5rem;
-  width: 100%;
-  text-align: center;
+#menu-password button:hover, #menu-username button:hover {
+    background-color: #a80000;
 }
 
-#menu-password button {
-  background-color: #8B0000;
-  border: none;
-  color: #fff;
-  padding: 0.6rem 1.2rem;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 2rem;
-  transition: background-color 0.3s ease;
-}
-
-#menu-password button:hover {
-  background-color: #a80000;
-}
-.grupo-campos-usuario{
+.grupo-campos-usuario {
     margin-top: 2rem;
 }
-.grupo-campos-usuario label{
+
+.grupo-campos-usuario label {
     padding-right: 8px;
     font-weight: bold;
     color: #f4f4f4;
 }
 
-.grupo-campos-usuario input{
-    padding: 0rem;
+.grupo-campos-usuario input {
+    padding: 0.5rem 2rem;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 1.5rem;
-    transition: border 0.3s;
+    transition: border-color 0.3s ease;
 }
 
 grupo-campos-usuario input:focus {
     border-color: #007bff;
     outline: none;
 }
-
-.hidden-update {
-    display: none;
-}
-
-/*OVERLAY PASSWORD*/
-
-#overlay{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;                                        
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); 
-    z-index: 999; 
-    display: none; 
-}
-
-#overlay-username{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    display: none;
-}
-
-#menu-username {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 500px;
-  max-width: 90%;
-  transform: translate(-50%, -50%);
-  background-color: #3a3a3a; 
-  border: 1px solid #8B0000;
-  padding: 2rem 2.5rem;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
-  z-index: 1000;
-  backdrop-filter: blur(6px);
-  display: none;
-}
-
-#menu-username h2 {
-  margin-top: 0;
-  color: #fff;
-  border-bottom: 1px solid #8B0000;
-  padding-bottom: 0.5rem;
-  width: 100%;
-  text-align: center;
-}
-
-#menu-username button {
-  background-color: #8B0000;
-  border: none;
-  color: #fff;
-  padding: 0.6rem 1.2rem;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 2rem;
-  transition: background-color 0.3s ease;
-}
-
-#menu-username button:hover {
-  background-color: #a80000;
-}
-.grupo-campos-usuario{
-    margin-top: 2rem;
-}
-.grupo-campos-usuario label{
-    padding-right: 8px;
-    font-weight: bold;
-    color: #f4f4f4;
-}
-
-.grupo-campos-usuario input{
-    padding: 0rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1.5rem;
-    transition: border 0.3s;
-}
-
-grupo-campos-usuario input:focus {
-    border-color: #007bff;
-    outline: none;
-}
-
-.hidden-update {
-    display: none;
-}
+ 

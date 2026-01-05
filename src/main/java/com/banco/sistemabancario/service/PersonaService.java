@@ -10,6 +10,7 @@ public interface PersonaService {
     List<Persona> obtenerPersonas();
     Persona obtenerPersonaPorId(int idPersona);
     Persona obtenerPersonaPorDocumento(String documento);
+    Persona obtenerPersonaPorNumeroCuenta(String numCuenta);
     Persona actualizarDatosPersona(ActualizarPersonaDto actualizarPersonaDto, int idPersona);
     Persona registrarPersona(RegistroPersonaDto datos);
     void eliminarPersona(int idPersona);
