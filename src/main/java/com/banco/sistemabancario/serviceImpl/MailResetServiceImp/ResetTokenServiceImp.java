@@ -13,7 +13,10 @@ import com.banco.sistemabancario.dto.MailReset.ForgotRequest;
 import com.banco.sistemabancario.dto.MailReset.ResetPasswordTokenDto;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.MailReset.ResetToken;
+import com.banco.sistemabancario.exception.PasswordInvalidaException;
+import com.banco.sistemabancario.exception.TokenExpiradoException;
 import com.banco.sistemabancario.exception.TokenInvalidoException;
+import com.banco.sistemabancario.exception.TokenUsadoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
 import com.banco.sistemabancario.repository.MailResetRepository.ResetTokenRepository;
@@ -106,11 +109,15 @@ public class ResetTokenServiceImp implements ResetTokenService {
                 .orElseThrow(() -> new TokenInvalidoException("Token invalido."));
 
         if (resetToken.getExpiracion().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Token expirado");
+            throw new TokenExpiradoException("Token expirado");
         }
 
         if (resetToken.isUso()) {
-            throw new RuntimeException("Token ya utilizado");
+            throw new TokenUsadoException("Token ya utilizado");
+        }
+
+        if (!pTokenDto.getPassword().equals(pTokenDto.getNewPassword())) {
+            throw new PasswordInvalidaException("Las contraseña no coindicen.");
         }
 
         Usuario usuario = resetToken.getUsuario();

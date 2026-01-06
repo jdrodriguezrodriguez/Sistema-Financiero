@@ -105,7 +105,15 @@ public class UsuarioController {
 
     @PostMapping("/resetPassword")
     public ResponseEntity<?> resetPasswordUsuario(@RequestBody ResetPasswordTokenDto rTokenDto) {
+
+        System.out.println("PRUEBAAA");
+        System.out.println(rTokenDto.getToken());
+        System.out.println(rTokenDto.getPassword() + " y " + rTokenDto.getNewPassword());
+
+
         resetTokenService.resetPassword(rTokenDto);
+
+        
 
         return ResponseEntity.ok(Map.of("Mensaje", "Token aceptado."));
     }
