@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,59 +20,31 @@ import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
 import com.banco.sistemabancario.entity.enums.TipoEnum;
 import com.banco.sistemabancario.exception.PasswordInvalidaException;
-import com.banco.sistemabancario.exception.UsuarioNoRegistrado;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
-import com.banco.sistemabancario.security.controller.CustomUserDetails;
 import com.banco.sistemabancario.service.RolesService;
 import com.banco.sistemabancario.service.UsuarioService;
 import com.banco.sistemabancario.util.UsuarioUtils;
 
 @Service
-public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
+public class UsuarioServiceImpl implements UsuarioService{
     
     private UsuarioRepository usuarioRepository;
     private PersonaRepository personaRepository;
     private RolesService rolesService;
     private UsuarioUtils usuarioUtils;
+    private PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PersonaRepository personaRepository, RolesService rolesService) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, 
+                            PersonaRepository personaRepository, 
+                            RolesService rolesService,
+                            PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.personaRepository = personaRepository;
         this.rolesService = rolesService;
+        this.passwordEncoder = passwordEncoder;
     }       
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        
-        Usuario usuario = usuarioRepository.findByUsername(username)
-            .orElseThrow(() -> new UsuarioNoRegistrado("El usuario: " + username + " no existe"));
-
-
-        //TOMAR ROLES y PERMISOS DE USUARIO PARA CONVERTIR A OBJETO DE SPRING SECURITY
-        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();   //CREAR LISTA DE PERMISOS,  YA QUE SPRING MANEJA PERMISOS CON GRANTEDAUTHORITY Y ESTA ES UNA DE SUS IMPLEMENTACIONES
-
-        usuario.getRoles()
-            .forEach( rol -> 
-                authorityList.add(
-                    new SimpleGrantedAuthority("ROLE_" .concat(rol.getRoleEnum().name()))));      //TOMAMOS LOS ROLES Y LOS CONVERTIMOS A SimpleGrantedAuthority - PREFIJO ROLE_ OBLIGATORIO
-                                                                                                       
-        usuario.getRoles().stream()     
-            .flatMap(rol -> rol.getPermisosList().stream())  
-            .forEach(permiso -> 
-                authorityList.add(new SimpleGrantedAuthority(permiso.getName())));  //AGREGAR CADA PERMISO A CADA ROL
-
-            return new CustomUserDetails(usuario.getIdUsuario(),
-                usuario.getUsername(), 
-                usuario.getPassword(), 
-                usuario.isEnabled(),
-                usuario.isAccountNoExpired(),
-                usuario.isCredentialNoExpired(),
-                usuario.isAccountNoLocked(),
-                authorityList
-                );
-        }
 
     @Transactional
     @Override
@@ -105,8 +78,6 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         return personaRepository.findByUsuario(usuario);
     }
 
-    
-
     @Transactional
     @Override
     public Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona){
@@ -117,7 +88,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         Usuario usuario = new Usuario();
 
         usuario.setUsername(username);
-        usuario.setPassword(password);
+        usuario.setPassword(passwordEncoder.encode(password));
         usuario.setPersona(persona);
         usuario.setRol(TipoEnum.ESTANDAR);
 
@@ -145,7 +116,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
         validarContraseñaUsuario(password);
         
-        usuario.setPassword(password);
+        usuario.setPassword(passwordEncoder.encode(password));
         usuario.setPersona(persona);
         usuario.setRol(TipoEnum.valueOf(rol));
         

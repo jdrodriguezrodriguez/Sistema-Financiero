@@ -9,10 +9,7 @@ public final class UsuarioUtils {
     }
 
     public static boolean validarPassword(String password){
-        if (password.length() != 4) {
-            return false;
-        }
-        return true;
+        return password != null && password.length() == 4;
     }
 
 }

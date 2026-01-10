@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.dto.MailReset.ForgotRequest;
@@ -41,6 +42,9 @@ public class ResetTokenServiceImp implements ResetTokenService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
@@ -121,7 +125,7 @@ public class ResetTokenServiceImp implements ResetTokenService {
         }
 
         Usuario usuario = resetToken.getUsuario();
-        usuario.setPassword(pTokenDto.getNewPassword());
+        usuario.setPassword(passwordEncoder.encode(pTokenDto.getNewPassword()));
         usuarioRepository.save(usuario);
 
         resetToken.setUso(true);
