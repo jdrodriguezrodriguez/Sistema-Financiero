@@ -1,5 +1,11 @@
 package com.banco.sistemabancario.serviceImpl.Admin;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +17,8 @@ import com.banco.sistemabancario.dto.Admin.CrearUsuarioAdmin;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.entity.Events.AuditoriaEvents;
+import com.banco.sistemabancario.entity.enums.AuditoriaActionEnums;
 import com.banco.sistemabancario.entity.enums.CuentaEnum;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
 import com.banco.sistemabancario.entity.enums.TipoEnum;
@@ -25,6 +33,7 @@ import com.banco.sistemabancario.service.CuentaService;
 import com.banco.sistemabancario.service.PersonaService;
 import com.banco.sistemabancario.service.UsuarioService;
 import com.banco.sistemabancario.service.Admin.AdminService;
+import com.banco.sistemabancario.service.Auditoria.AuditoriaEventosService;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -37,16 +46,18 @@ public class AdminServiceImpl implements AdminService {
     private PersonaService personaService;
     private UsuarioService usuarioService;
 
+    private ApplicationEventPublisher applicationEventPublisher;
+
     public AdminServiceImpl(PersonaRepository personaRepository, UsuarioRepository usuarioRepository,
             CuentaRepository cuentaRepository, PersonaService personaService, UsuarioService usuarioService,
-            CuentaService cuentaService) {
+            CuentaService cuentaService, ApplicationEventPublisher applicationEventPublisher) {
         this.personaRepository = personaRepository;
         this.usuarioRepository = usuarioRepository;
         this.cuentaRepository = cuentaRepository;
         this.personaService = personaService;
         this.usuarioService = usuarioService;
         this.cuentaService = cuentaService;
-
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -158,6 +169,17 @@ public class AdminServiceImpl implements AdminService {
 
         usuario.setAccountNoLocked(datos.isBloqueo());
         usuario.setEnabled(datos.isEstado());
+
+        //EVENTOS AUDITORIA
+        Map<String,Object> cambio = new HashMap<>();
+
+        cambio.put("bloqueo", datos.isBloqueo());
+        cambio.put("activo", datos.isEstado());
+
+        applicationEventPublisher.publishEvent(
+            new AuditoriaEvents(datos.isBloqueo() ? AuditoriaActionEnums.UNBLOCK_USER : AuditoriaActionEnums.BLOCK_USER, 
+                                usuario.getIdUsuario(), cambio, LocalDateTime.now())
+        );
 
         usuarioRepository.save(usuario);
     }
