@@ -1,7 +1,6 @@
 package com.banco.sistemabancario.serviceImpl.Admin;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +16,8 @@ import com.banco.sistemabancario.dto.Admin.CrearUsuarioAdmin;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.entity.Events.AuditoriaEvents;
+import com.banco.sistemabancario.entity.Events.AuditoriaEntity;
+import com.banco.sistemabancario.entity.Events.AuditoriaEvent;
 import com.banco.sistemabancario.entity.enums.AuditoriaActionEnums;
 import com.banco.sistemabancario.entity.enums.CuentaEnum;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
@@ -33,7 +33,6 @@ import com.banco.sistemabancario.service.CuentaService;
 import com.banco.sistemabancario.service.PersonaService;
 import com.banco.sistemabancario.service.UsuarioService;
 import com.banco.sistemabancario.service.Admin.AdminService;
-import com.banco.sistemabancario.service.Auditoria.AuditoriaEventosService;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -177,8 +176,10 @@ public class AdminServiceImpl implements AdminService {
         cambio.put("activo", datos.isEstado());
 
         applicationEventPublisher.publishEvent(
-            new AuditoriaEvents(datos.isBloqueo() ? AuditoriaActionEnums.UNBLOCK_USER : AuditoriaActionEnums.BLOCK_USER, 
-                                usuario.getIdUsuario(), cambio, LocalDateTime.now())
+            new AuditoriaEvent(
+                datos.isBloqueo() ? AuditoriaActionEnums.UNBLOCK_USER : AuditoriaActionEnums.BLOCK_USER, 
+                usuario.getIdUsuario(), 
+                cambio)
         );
 
         usuarioRepository.save(usuario);

@@ -1,60 +1,51 @@
 package com.banco.sistemabancario.service.Auditoria;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-import com.banco.sistemabancario.entity.Events.AuditoriaEvents;
+import com.banco.sistemabancario.entity.Events.AuditoriaEntity;
 import com.banco.sistemabancario.entity.enums.AuditoriaActionEnums;
 import com.banco.sistemabancario.repository.AuditoriaRepository.AuditLogRepository;
-import com.banco.sistemabancario.security.controller.CustomUserDetails;
+import com.banco.sistemabancario.security.Service.AuditoriaUserProvider;
 
+@Service
 public class AuditoriaEventosService {
 
-    @Autowired
-    private AuditLogRepository auditLogRepository;
+    private static final Logger logger =  LoggerFactory.getLogger(AuditoriaEventosService.class);
+
+    private final AuditLogRepository auditLogRepository;
+    private AuditoriaUserProvider userProvider;
+
+    public AuditoriaEventosService(AuditLogRepository auditLogRepository, AuditoriaUserProvider userProvider) {
+        this.auditLogRepository = auditLogRepository;
+        this.userProvider = userProvider;
+    }
 
     public void log(AuditoriaActionEnums actionEnums,
             int targetId,
             Map<String, Object> cambios) {
 
         try {
-
-            AuditoriaEvents auditoriaEvents = new AuditoriaEvents();
+            AuditoriaEntity auditoriaEvents = new AuditoriaEntity();
 
             auditoriaEvents.setAccion(actionEnums);
-            auditoriaEvents.setPerformedBy(getCustomUserId());
+            auditoriaEvents.setPerformedBy(userProvider.getCustomUserId());
             auditoriaEvents.setTargetId(targetId);
             auditoriaEvents.setCambios(
                     cambios == null || cambios.isEmpty()
                             ? null
                             : cambios);
-
+            
             auditLogRepository.save(auditoriaEvents);
+            
+            logger.info("Se registro un cambio por roles administrativos");
 
         } catch (Exception e) {
-            System.err.println("Error marcando cambio en el auditorio: " + e.getMessage());
+            logger.error("Error marcando cambio en auditoría", e);
         }
-    }
-
-    // 0 == ACCION POR USUARIO
-    private Integer getCustomUserId() {
-        try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-            if (auth == null || !auth.isAuthenticated()) {
-                return 0;
-            }
-
-            CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
-
-            return user.getId();
-        } catch (Exception e) {
-            System.err.println("Error al manejar el id autenticado" + e);
-        }
-
-        return null;
     }
 }

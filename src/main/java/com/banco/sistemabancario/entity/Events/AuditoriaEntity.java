@@ -3,6 +3,7 @@ package com.banco.sistemabancario.entity.Events;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -23,7 +24,7 @@ import lombok.Getter;
 @Table(name = "audit_logs")
 @Getter
 @Setter
-public class AuditoriaEvents {
+public class AuditoriaEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,10 +45,11 @@ public class AuditoriaEvents {
     @Column(name = "changes")
     private Map<String, Object> cambios;
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public AuditoriaEvents(){}
-    public AuditoriaEvents(AuditoriaActionEnums accion, Integer targetId, Map<String, Object> cambios, LocalDateTime createdAt){
+    public AuditoriaEntity(){}
+    public AuditoriaEntity(AuditoriaActionEnums accion, Integer targetId, Map<String, Object> cambios, LocalDateTime createdAt){
         this.accion = accion;
         this.targetId = targetId;
         this.cambios = cambios;
