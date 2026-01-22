@@ -2,7 +2,6 @@ package com.banco.sistemabancario.serviceImpl.Admin;
 
 import java.util.HashMap;
 import java.util.Map;
-import com.banco.sistemabancario.serviceImpl.DatosDTOServiceImpl;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -139,15 +138,22 @@ public class AdminServiceImpl implements AdminService {
         usuario.setRol(TipoEnum.valueOf(datos.getRol()));
 
         Map<String, Object> cambio = new HashMap<>();
+        int contador = 0;
 
         if (!datos.getDocumentoActual().equals(datos.getDocumentoNuevo())) {
             cambio.put("documento", datos.getDocumentoNuevo());
+            contador++;
         }
         if (!persona.getCorreo().equals(datos.getEmail())) {
             cambio.put("correo", datos.getEmail());
+            contador++;
         }
         if (!usuario.getRol().name().equals(datos.getRol())) {
             cambio.put("rol", datos.getRol() + " CHANGE_ROLE");
+            contador++;
+        }
+        if (contador == 0) {
+            cambio.put("Actualizacion", "Datos terceros se cambiaron.");
         }
 
         applicationEventPublisher.publishEvent(
@@ -186,7 +192,7 @@ public class AdminServiceImpl implements AdminService {
         Map<String, Object> cambio = new HashMap<>();
 
         cambio.put("persona", Map.of(
-                "persona", persona.getNombre() + persona.getApellido(),
+                "persona", persona.getNombre() + " " + persona.getApellido(),
                 "documento", persona.getDocumento().substring(0, 3) + "***",
                 "correo", persona.getCorreo()));
 
@@ -244,6 +250,7 @@ public class AdminServiceImpl implements AdminService {
         usuarioRepository.save(usuario);
     }
 
+    @Transactional
     @Override
     public void adminEliminarUsuario(String documento) {
         Persona persona = personaRepository.findByDocumento(documento)
@@ -255,7 +262,7 @@ public class AdminServiceImpl implements AdminService {
         Map<String, Object> cambio = new HashMap<>();
 
         cambio.put("persona", Map.of(
-                "nombre", persona.getNombre() + "" + persona.getApellido(),
+                "nombre", persona.getNombre() + " " + persona.getApellido(),
                 "documento", persona.getDocumento().substring(0, 3) + "***"));
 
         personaRepository.delete(persona);

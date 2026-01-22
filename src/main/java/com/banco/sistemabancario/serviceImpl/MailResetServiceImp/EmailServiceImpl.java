@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.entity.Persona;
@@ -31,6 +32,7 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private PersonaService personaService;
 
+    @Async
     @Override
     public void enviarResetPassword(String email, String token) {
 
@@ -47,10 +49,11 @@ public class EmailServiceImpl implements EmailService {
             logger.info("Inicio reset de password por correo: {}", email);
 
         } catch (Exception e) {
-            logger.error("Error con el metodo enviarResetPassword" + e);
+            logger.error("Error con el metodo enviarResetPassword", e);
         }
     }
 
+    @Async
     @Override
     public void enviarUsername(String email, String username) {
         try {
@@ -63,10 +66,11 @@ public class EmailServiceImpl implements EmailService {
 
             logger.info("Inicio envio de username por correo: {}", email);
         } catch (Exception e) {
-            logger.error("Error con el metodo enviarResetUsername" + e);
+            logger.error("Error con el metodo enviarResetUsername", e);
         }
     }
 
+    @Async
     @Override
     public void notificarTransaccion(Transaccion transaccion, String cuentaEmisor, String cuentaReceptor) {
         String emisorMsj = "Estimado cliente,\n\n" +
@@ -117,26 +121,34 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
+    @Async
     @Override
     public void enviarInfoDeposito(Transaccion transaccion, int idUser) {
         Persona persona = usuarioService.obtenerPersonaPorUsuarioId(idUser);
+
+        if (persona == null || persona.getCorreo() == null) {
+            logger.warn("No se pudo notificar el deposito. IdUser: {}",
+                    idUser);
+            return;
+        }
+
         SimpleMailMessage mensaje = new SimpleMailMessage();
 
         try {
             mensaje.setTo(persona.getCorreo());
             mensaje.setSubject("Registro de deposito - BancoLess");
             mensaje.setText("Estimado cliente,\n\n" +
-                "Le confirmamos que su deposito fue realizado exitosamente.\n\n" +
-                "Detalle del deposito:\n" +
-                "-Monto transferido: $" + transaccion.getMonto().abs() + "\n" +
-                "-Fecha de envio: " + transaccion.getFecha() + "\n\n" +
-                "Gracias por confiar en BancoLess.");
+                    "Le confirmamos que su deposito fue realizado exitosamente.\n\n" +
+                    "Detalle del deposito:\n" +
+                    "-Monto transferido: $" + transaccion.getMonto().abs() + "\n" +
+                    "-Fecha de envio: " + transaccion.getFecha() + "\n\n" +
+                    "Gracias por confiar en BancoLess.");
 
             javaMailSender.send(mensaje);
 
             logger.info("Inicio envio datos de deposito al correo: {}", persona.getCorreo());
         } catch (Exception e) {
-            logger.error("Error con el metodo enviarResetPassword" + e);
+            logger.error("Error enviando información de depósito", e);
         }
     }
 

@@ -67,7 +67,8 @@ public class UsuarioServiceImpl implements UsuarioService{
 
     @Override
     public Persona obtenerPersonaPorUsuarioId(int idUsuario) {
-        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsuarioNoencontradoException("No se encontro el usuario con ID: " + idUsuario));
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+            .orElseThrow(() -> new UsuarioNoencontradoException("No se encontro el usuario con ID: " + idUsuario));
 
         return personaRepository.findByUsuario(usuario);
     }
@@ -88,7 +89,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 
         //SECURITY
         usuario.setAccountNoExpired(true);
-        usuario.setAccountNoLocked(true);
+        usuario.setAccountNoLocked(false);
         usuario.setCredentialNoExpired(true);
         usuario.setEnabled(true);
 

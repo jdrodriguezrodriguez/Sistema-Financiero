@@ -103,7 +103,7 @@ public class ResetTokenServiceImp implements ResetTokenService {
                         logger.error("Error enviando email para {}", persona.getCorreo(), e);
                     }
                 },
-                () -> logger.error("Correo no encontrado."));
+                () -> logger.error("Solicitud de recuperacion recibida."));
     }
 
     @Transactional
