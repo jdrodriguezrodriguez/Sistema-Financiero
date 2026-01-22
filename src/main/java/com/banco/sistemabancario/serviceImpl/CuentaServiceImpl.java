@@ -55,8 +55,8 @@ public class CuentaServiceImpl implements CuentaService{
 
     @Override
     public Cuenta buscarCuentaPorIdUser(int idUser) {
-        Cuenta cuenta = cuentaRepository.findByUsuario_IdUsuario(idUser);
-        return cuenta;
+        return cuentaRepository.findByUsuario_IdUsuario(idUser)
+                .orElseThrow(() -> new CuentaNoEncontradaException("Usuario sin cuenta."));
     }
 
     @Override

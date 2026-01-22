@@ -3,17 +3,22 @@ import { consultarSaldo, depositarDinero, consultarHistorial, transferirDinero }
 export async function transaccionEventos() {
 
     //CONSULTAR SALDO
-    const data = await consultarSaldo();
     const listSaldo = document.querySelector("#listaMonto");
 
     if (listSaldo) {
-        const item = document.createElement("h1");
+        try {
+            const data = await consultarSaldo();
 
-        item.textContent = "$" + data.saldo;
-        listSaldo.appendChild(item)
-    } else {
-        console.log("No hay id para mostrar saldo.")
+            const item = document.createElement("h1");
+
+            item.textContent = "$" + data.saldo;
+            listSaldo.appendChild(item)
+
+        } catch (error) {
+            document.getElementById("resultadoUsuario").innerText = error.message
+        }
     }
+
 
 
     //DEPOSITAR DINERO
@@ -36,24 +41,25 @@ export async function transaccionEventos() {
                 }, 800);
 
             } catch (error) {
-                document.getElementById("resultadoUsuario").innerText = errorData.error;
+                document.getElementById("resultadoUsuario").innerText = error.message;
             }
         });
     }
 
 
     //HISTORIAL
-    const historial = await consultarHistorial();
     const listHistorial = document.querySelector("#divLista");
 
     if (listHistorial) {
-        listHistorial.innerHTML = "";
+        try {
+            const historial = await consultarHistorial();
+            listHistorial.innerHTML = "";
 
-        historial.forEach(transaccion => {
-            const item = document.createElement("div");
-            item.className = "data-historia";
+            historial.forEach(transaccion => {
+                const item = document.createElement("div");
+                item.className = "data-historia";
 
-            item.innerHTML = `
+                item.innerHTML = `
                                 <p> <b>Mi cuenta:</b> ${transaccion.cuenta.num_cuenta}<p>
                                 <p> <b>Cuenta externa:</b> ${transaccion.cuenta_destino}<p>
                                 <p> <b>Tipo de movimiento:</b> ${transaccion.tipo}<p>
@@ -61,8 +67,11 @@ export async function transaccionEventos() {
                                 <p> <b>Descripcion:</b> ${transaccion.descripcion}<p>
                                 <p> <b>Fecha:</b> ${transaccion.fecha}<p>
                             `
-            listHistorial.appendChild(item);
-        });
+                listHistorial.appendChild(item);
+            });
+        } catch (error) {
+            document.getElementById("resultadoUsuario").innerText = error.message;
+        }
     }
 
 

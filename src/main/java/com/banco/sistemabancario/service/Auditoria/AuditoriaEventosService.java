@@ -1,6 +1,5 @@
 package com.banco.sistemabancario.service.Auditoria;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.banco.sistemabancario.entity.Events.AuditoriaEntity;
 import com.banco.sistemabancario.entity.enums.AuditoriaActionEnums;
 import com.banco.sistemabancario.repository.AuditoriaRepository.AuditLogRepository;
-import com.banco.sistemabancario.security.Service.AuditoriaUserProvider;
 
 @Service
 public class AuditoriaEventosService {
@@ -18,22 +16,22 @@ public class AuditoriaEventosService {
     private static final Logger logger =  LoggerFactory.getLogger(AuditoriaEventosService.class);
 
     private final AuditLogRepository auditLogRepository;
-    private AuditoriaUserProvider userProvider;
+    
 
-    public AuditoriaEventosService(AuditLogRepository auditLogRepository, AuditoriaUserProvider userProvider) {
+    public AuditoriaEventosService(AuditLogRepository auditLogRepository) {
         this.auditLogRepository = auditLogRepository;
-        this.userProvider = userProvider;
     }
 
     public void log(AuditoriaActionEnums actionEnums,
-            int targetId,
+            Integer performedBy,    
+            Integer targetId,
             Map<String, Object> cambios) {
 
         try {
             AuditoriaEntity auditoriaEvents = new AuditoriaEntity();
 
             auditoriaEvents.setAccion(actionEnums);
-            auditoriaEvents.setPerformedBy(userProvider.getCustomUserId());
+            auditoriaEvents.setPerformedBy(performedBy);
             auditoriaEvents.setTargetId(targetId);
             auditoriaEvents.setCambios(
                     cambios == null || cambios.isEmpty()

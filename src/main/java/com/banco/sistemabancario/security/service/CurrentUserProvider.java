@@ -1,20 +1,25 @@
-package com.banco.sistemabancario.security.Service;
+package com.banco.sistemabancario.security.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
+import com.banco.sistemabancario.security.serviceImpl.AuditorProvider;
 
 @Component
-public class AuditoriaUserProvider {
+public class CurrentUserProvider implements AuditorProvider{
 
+    private static final Logger logger =  LoggerFactory.getLogger(CurrentUserProvider.class);
     // 0 == ACCION POR USUARIO
     public Integer getCustomUserId() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || !auth.isAuthenticated()) {
+            logger.error("Authenticador vacio!");
             return 0;
         }
 
@@ -22,6 +27,7 @@ public class AuditoriaUserProvider {
             return user.getId();
         }
 
+        logger.error("No se encontro algo o error de autenticador!");
         return 0;
     }
 }

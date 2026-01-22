@@ -28,6 +28,7 @@ public class AuditEventListener {
         try {
             auditoriaEventosService.log(
             aEvents.getAccion(), 
+            aEvents.getPerformedBy(),
             aEvents.getTargetId(), 
             aEvents.getCambios());
         } catch (Exception e) {

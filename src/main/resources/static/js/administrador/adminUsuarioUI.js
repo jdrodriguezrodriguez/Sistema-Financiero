@@ -9,8 +9,8 @@ export function mapearTablaUsuario(data) {
         { Label: "Número de cuenta", value: data.numCuenta },
         { Label: "Cuenta", value: data.estado },
         { Label: "Nacimiento", value: data.nacimiento },
-        { Label: "Estado", value: data.estadoUsuario },
-        { Label: "Bloqueo", value: data.bloqueoUsuario },
+        { Label: "Estado", value: data.estadoUsuario ? "Habilitado" : "Deshabilitado" },
+        { Label: "Bloqueo", value: data.bloqueoUsuario ? "Desbloqueado" : "Bloqueado"},
     ];
 }
 
@@ -77,9 +77,12 @@ export function mapearDatosPostUsuario() {
 }
 
 export function mapearEstadoUsuario(identidad) {
+    const estadoTxt = document.getElementById("estadoUsuario").value;
+    const bloqueoTxt = document.getElementById("bloqueoUsuario").value;
+
     return {
         documento: identidad,
-        estado: document.getElementById("estadoUsuario").value,
-        bloqueo: document.getElementById("bloqueoUsuario").value
+        estado: estadoTxt === "Habilitado",
+        bloqueo: bloqueoTxt === "Desbloqueado"
     };
 }

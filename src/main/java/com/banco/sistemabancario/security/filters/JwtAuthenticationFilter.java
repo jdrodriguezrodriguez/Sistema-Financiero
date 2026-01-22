@@ -81,8 +81,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         httpresponse.put("Message", "Autenticacion exitosa");
         httpresponse.put("username", user.getUsername());
 
-        System.out.println("TOKEN: " + token);
-        
         response.getWriter().write(new ObjectMapper().writeValueAsString(httpresponse));
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

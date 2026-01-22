@@ -45,6 +45,7 @@ public class AuditoriaEntity {
     @Column(name = "changes")
     private Map<String, Object> cambios;
 
+    @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 

@@ -6,6 +6,9 @@ import com.banco.sistemabancario.dto.DatosDto;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.entity.enums.CuentaEnum;
+import com.banco.sistemabancario.entity.enums.TipoEnum;
+import com.banco.sistemabancario.exception.CuentaNoEncontradaException;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.repository.PersonaRepository;
@@ -33,6 +36,17 @@ public class DatosDTOServiceImpl implements DatosDTOService {
                 .orElseThrow(() -> new UsuarioNoencontradoException("No se encontro el usuario con ID: " + idUsuario));
         Persona persona = personaRepository.findByUsuario(usuario);
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
+
+        if (usuario.getRol().equals(TipoEnum.ADMIN)) {
+            return new DatosDto(persona.getNombre(), persona.getApellido(), persona.getDocumento(),
+                persona.getCorreo(), usuario.getUsername(), usuario.getRol(),
+                "SIN CUENTA", CuentaEnum.CERRADA, persona.getNacimiento());
+        }
+
+        if (cuenta == null) {
+            throw new CuentaNoEncontradaException(
+                    "Usuario no ADMIN sin cuenta asociada. Usuario ID: " + usuario.getIdUsuario());
+        }
 
         return new DatosDto(persona.getNombre(), persona.getApellido(), persona.getDocumento(),
                 persona.getCorreo(), usuario.getUsername(), usuario.getRol(),

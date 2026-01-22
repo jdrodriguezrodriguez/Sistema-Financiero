@@ -9,10 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.banco.sistemabancario.security.Service.CustomUserDetailsService;
-import com.banco.sistemabancario.security.controller.CustomUserDetails;
 import com.banco.sistemabancario.security.jwt.JwtUtils;
-import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
+import com.banco.sistemabancario.security.service.CustomUserDetailsService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

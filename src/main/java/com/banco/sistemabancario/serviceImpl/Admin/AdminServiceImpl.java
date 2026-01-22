@@ -1,9 +1,8 @@
 package com.banco.sistemabancario.serviceImpl.Admin;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-
+import com.banco.sistemabancario.serviceImpl.DatosDTOServiceImpl;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,19 +15,20 @@ import com.banco.sistemabancario.dto.Admin.CrearUsuarioAdmin;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.entity.Events.AuditoriaEntity;
 import com.banco.sistemabancario.entity.Events.AuditoriaEvent;
 import com.banco.sistemabancario.entity.enums.AuditoriaActionEnums;
 import com.banco.sistemabancario.entity.enums.CuentaEnum;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
 import com.banco.sistemabancario.entity.enums.TipoEnum;
 import com.banco.sistemabancario.exception.CorreoYaRegistradoException;
+import com.banco.sistemabancario.exception.CuentaNoEncontradaException;
 import com.banco.sistemabancario.exception.DocumentoYaRegistradoException;
 import com.banco.sistemabancario.exception.PersonaNoEncontradaException;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
+import com.banco.sistemabancario.security.serviceImpl.AuditorProvider;
 import com.banco.sistemabancario.service.CuentaService;
 import com.banco.sistemabancario.service.PersonaService;
 import com.banco.sistemabancario.service.UsuarioService;
@@ -40,16 +40,18 @@ public class AdminServiceImpl implements AdminService {
     private PersonaRepository personaRepository;
     private UsuarioRepository usuarioRepository;
     private CuentaRepository cuentaRepository;
-    private CuentaService cuentaService;
 
+    private CuentaService cuentaService;
     private PersonaService personaService;
     private UsuarioService usuarioService;
 
+    private AuditorProvider auditorProvider;
     private ApplicationEventPublisher applicationEventPublisher;
 
     public AdminServiceImpl(PersonaRepository personaRepository, UsuarioRepository usuarioRepository,
             CuentaRepository cuentaRepository, PersonaService personaService, UsuarioService usuarioService,
-            CuentaService cuentaService, ApplicationEventPublisher applicationEventPublisher) {
+            CuentaService cuentaService, ApplicationEventPublisher applicationEventPublisher,
+            AuditorProvider auditorProvider) {
         this.personaRepository = personaRepository;
         this.usuarioRepository = usuarioRepository;
         this.cuentaRepository = cuentaRepository;
@@ -57,6 +59,7 @@ public class AdminServiceImpl implements AdminService {
         this.usuarioService = usuarioService;
         this.cuentaService = cuentaService;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.auditorProvider = auditorProvider;
     }
 
     @Override
@@ -68,19 +71,24 @@ public class AdminServiceImpl implements AdminService {
 
         Cuenta cuenta = cuentaRepository.findByUsuario(usuario);
 
-        if (usuario.getRol().equals(RoleEnum.ADMIN)) {
+        if (usuario.getRol().equals(TipoEnum.ADMIN)) {
             return new ConsultarUsuarioAdmin(
-                persona.getNombre(),
-                persona.getApellido(),
-                persona.getDocumento(),
-                persona.getCorreo(),
-                usuario.getUsername(),
-                usuario.getRol(),
-                "SIN CUENTA",
-                CuentaEnum.CERRADA,
-                persona.getNacimiento(),
-                usuario.isEnabled(),
-                usuario.isAccountNoLocked());
+                    persona.getNombre(),
+                    persona.getApellido(),
+                    persona.getDocumento(),
+                    persona.getCorreo(),
+                    usuario.getUsername(),
+                    usuario.getRol(),
+                    "SIN CUENTA",
+                    CuentaEnum.CERRADA,
+                    persona.getNacimiento(),
+                    usuario.isEnabled(),
+                    usuario.isAccountNoLocked());
+        }
+
+        if (cuenta == null) {
+            throw new CuentaNoEncontradaException(
+                    "Usuario no ADMIN sin cuenta asociada. Usuario ID: " + usuario.getIdUsuario());
         }
 
         return new ConsultarUsuarioAdmin(
@@ -129,6 +137,25 @@ public class AdminServiceImpl implements AdminService {
         usuario.setUsername(datos.getUsername());
 
         usuario.setRol(TipoEnum.valueOf(datos.getRol()));
+
+        Map<String, Object> cambio = new HashMap<>();
+
+        if (!datos.getDocumentoActual().equals(datos.getDocumentoNuevo())) {
+            cambio.put("documento", datos.getDocumentoNuevo());
+        }
+        if (!persona.getCorreo().equals(datos.getEmail())) {
+            cambio.put("correo", datos.getEmail());
+        }
+        if (!usuario.getRol().name().equals(datos.getRol())) {
+            cambio.put("rol", datos.getRol() + " CHANGE_ROLE");
+        }
+
+        applicationEventPublisher.publishEvent(
+                new AuditoriaEvent(
+                        AuditoriaActionEnums.UPDATE_USER,
+                        auditorProvider.getCustomUserId(),
+                        usuario.getIdUsuario(),
+                        cambio));
     }
 
     @Transactional
@@ -155,6 +182,20 @@ public class AdminServiceImpl implements AdminService {
         if (usuario.getRol() != TipoEnum.ADMIN) {
             cuentaService.registrarCuenta(usuario);
         }
+
+        Map<String, Object> cambio = new HashMap<>();
+
+        cambio.put("persona", Map.of(
+                "persona", persona.getNombre() + persona.getApellido(),
+                "documento", persona.getDocumento().substring(0, 3) + "***",
+                "correo", persona.getCorreo()));
+
+        applicationEventPublisher.publishEvent(
+                new AuditoriaEvent(
+                        AuditoriaActionEnums.CREATE_USER,
+                        auditorProvider.getCustomUserId(),
+                        usuario.getIdUsuario(),
+                        cambio));
     }
 
     @Transactional
@@ -166,21 +207,39 @@ public class AdminServiceImpl implements AdminService {
         Usuario usuario = usuarioService.obtenerUsuarioPorPersonaId(persona.getIdPersona())
                 .orElseThrow(() -> new UsuarioNoencontradoException("No existe usuario para esa persona"));
 
+        boolean estadoAnterior = usuario.isEnabled();
+        boolean bloqueoAnterior = usuario.isAccountNoLocked();
+
         usuario.setAccountNoLocked(datos.isBloqueo());
         usuario.setEnabled(datos.isEstado());
 
-        //EVENTOS AUDITORIA
-        Map<String,Object> cambio = new HashMap<>();
+        Map<String, Object> cambio = new HashMap<>();
 
-        cambio.put("bloqueo", datos.isBloqueo());
-        cambio.put("activo", datos.isEstado());
+        cambio.put("Bloqueo", datos.isBloqueo() ? "Desbloqueado" : "Bloqueado");
+        cambio.put("Estado", datos.isEstado() ? "Habilitado" : "Deshabilitado");
+
+        AuditoriaActionEnums tempEnum = null;
+
+        if (datos.isEstado() != estadoAnterior) {
+            if (datos.isEstado()) {
+                tempEnum = AuditoriaActionEnums.ACTIVATE_USER;
+            } else {
+                tempEnum = AuditoriaActionEnums.DEACTIVATE_USER;
+            }
+        } else if (datos.isBloqueo() != bloqueoAnterior) {
+            if (datos.isBloqueo()) {
+                tempEnum = AuditoriaActionEnums.UNBLOCK_USER;
+            } else {
+                tempEnum = AuditoriaActionEnums.BLOCK_USER;
+            }
+        }
 
         applicationEventPublisher.publishEvent(
-            new AuditoriaEvent(
-                datos.isBloqueo() ? AuditoriaActionEnums.UNBLOCK_USER : AuditoriaActionEnums.BLOCK_USER, 
-                usuario.getIdUsuario(), 
-                cambio)
-        );
+                new AuditoriaEvent(
+                        tempEnum,
+                        auditorProvider.getCustomUserId(),
+                        usuario.getIdUsuario(),
+                        cambio));
 
         usuarioRepository.save(usuario);
     }
@@ -190,6 +249,22 @@ public class AdminServiceImpl implements AdminService {
         Persona persona = personaRepository.findByDocumento(documento)
                 .orElseThrow(() -> new PersonaNoEncontradaException("No existe persona con ese documento"));
 
+        Usuario usuario = usuarioService.obtenerUsuarioPorPersonaId(persona.getIdPersona())
+                .orElseThrow(() -> new UsuarioNoencontradoException("No existe usuario para esa persona"));
+
+        Map<String, Object> cambio = new HashMap<>();
+
+        cambio.put("persona", Map.of(
+                "nombre", persona.getNombre() + "" + persona.getApellido(),
+                "documento", persona.getDocumento().substring(0, 3) + "***"));
+
         personaRepository.delete(persona);
+
+        applicationEventPublisher.publishEvent(
+                new AuditoriaEvent(
+                        AuditoriaActionEnums.DELETE_USER,
+                        auditorProvider.getCustomUserId(),
+                        usuario.getIdUsuario(),
+                        cambio));
     }
 }

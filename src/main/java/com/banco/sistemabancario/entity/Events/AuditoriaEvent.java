@@ -12,13 +12,15 @@ import lombok.Setter;
 public class AuditoriaEvent {
 
     private AuditoriaActionEnums accion;
+    private Integer performedBy;
     private Integer targetId;
     private Map<String, Object> cambios;
 
 
     public AuditoriaEvent(AuditoriaActionEnums accion,
-                          Integer targetId,
-                          Map<String, Object> cambios) {
+                        Integer performedBy, Integer targetId,
+                        Map<String, Object> cambios) {
+        this.performedBy = performedBy;
         this.accion = accion;
         this.targetId = targetId;
         this.cambios = cambios;
