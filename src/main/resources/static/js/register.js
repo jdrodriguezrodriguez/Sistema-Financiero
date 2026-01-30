@@ -36,7 +36,7 @@ if (idRegistrar) {
 
             .catch(async error => {
                 let errData = await error.json();
-                document.getElementById("resultado").innerText = errData;
+                document.getElementById("resultado").innerText = "Registro fallido. " + JSON.stringify(errData.error);
             });
     });
 }

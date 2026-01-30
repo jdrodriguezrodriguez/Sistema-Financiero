@@ -11,7 +11,7 @@ public interface PersonaService {
     Persona obtenerPersonaPorId(int idPersona);
     Persona obtenerPersonaPorDocumento(String documento);
     Persona obtenerPersonaPorNumeroCuenta(String numCuenta);
-    Persona actualizarDatosPersona(ActualizarPersonaDto actualizarPersonaDto, int idPersona);
+    Persona actualizarDatosPersona(ActualizarPersonaDto actualizarPersonaDto, Persona persona);
     Persona registrarPersona(RegistroPersonaDto datos);
     void eliminarPersona(int idPersona);
 

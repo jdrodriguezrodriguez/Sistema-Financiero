@@ -34,6 +34,33 @@ public class EmailServiceImpl implements EmailService {
 
     @Async
     @Override
+    public void enviarTokenRegistro(String nombreCompleto, String email, String token) {
+        try {
+            String link = frontendUrl + "/login.html?token=" + token;
+
+            SimpleMailMessage mensaje = new SimpleMailMessage();
+            mensaje.setTo(email);
+            mensaje.setSubject("Activar usuario - BancoLess");
+            mensaje.setText(
+                    "¡Registro exitoso!\n\n" +
+                            "Gracias por registrarse.\n\n" +
+                            "Para activar su cuenta y comenzar a utilizar todos nuestros servicios, " +
+                            "por favor haga clic en el siguiente enlace:\n\n" +
+                            link + "\n\n" +
+                            "\n\n Este enlace tendrá una duración de 24 horas.\n\n" +
+                            "Si usted no realizó este registro, puede ignorar este correo.");
+
+            javaMailSender.send(mensaje);
+
+            logger.info("Inicio activacion de usuario: {}", email);
+
+        } catch (Exception e) {
+            logger.error("Error al enviar correo para activar usuario", e);
+        }
+    }
+
+    @Async
+    @Override
     public void enviarResetPassword(String email, String token) {
 
         try {

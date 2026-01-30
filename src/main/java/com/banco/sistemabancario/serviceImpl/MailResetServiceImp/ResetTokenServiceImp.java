@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.banco.sistemabancario.dto.MailReset.ForgotRequest;
 import com.banco.sistemabancario.dto.MailReset.ResetPasswordTokenDto;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.entity.MailReset.RegisterToken;
 import com.banco.sistemabancario.entity.MailReset.ResetToken;
 import com.banco.sistemabancario.exception.PasswordInvalidaException;
 import com.banco.sistemabancario.exception.TokenExpiradoException;
@@ -20,6 +21,7 @@ import com.banco.sistemabancario.exception.TokenInvalidoException;
 import com.banco.sistemabancario.exception.TokenUsadoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
+import com.banco.sistemabancario.repository.MailResetRepository.RegisterTokenRepository;
 import com.banco.sistemabancario.repository.MailResetRepository.ResetTokenRepository;
 import com.banco.sistemabancario.service.MailResetService.EmailService;
 import com.banco.sistemabancario.service.MailResetService.ResetTokenService;
@@ -39,6 +41,9 @@ public class ResetTokenServiceImp implements ResetTokenService {
 
     @Autowired
     private ResetTokenRepository resetTokenRepository;
+
+    @Autowired
+    RegisterTokenRepository registerTokenRepository;
 
     @Autowired
     private EmailService emailService;
@@ -80,6 +85,28 @@ public class ResetTokenServiceImp implements ResetTokenService {
 
                 },
                 () -> logger.error("Correo no encontrado."));
+    }
+
+    @Transactional
+    @Override
+    public void almacenarTokenRegister(String email, String datos, Usuario usuario) {
+        RegisterToken regToken = new RegisterToken();
+
+        regToken.setToken(UUID.randomUUID().toString());
+        regToken.setUsuario(usuario);
+        regToken.setExpiracion(LocalDateTime.now().plusHours(24));
+        regToken.setUso(false);
+
+        registerTokenRepository.save(regToken);
+
+        try {
+            emailService.enviarTokenRegistro(
+                    datos,
+                    email,
+                    regToken.getToken());
+        } catch (Exception e) {
+            logger.error("Error enviando email para {}", email, e);
+        }
     }
 
     @Transactional
@@ -139,5 +166,30 @@ public class ResetTokenServiceImp implements ResetTokenService {
         LocalDateTime ahora = LocalDateTime.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return ahora.format(formato);
+    }
+
+    @Override
+    public void activarUsuario(String token) {
+
+        RegisterToken registerToken = registerTokenRepository.findByToken(token)
+                .orElseThrow(() -> new TokenInvalidoException("Token invalido"));
+
+        if (registerToken.getExpiracion().isBefore(LocalDateTime.now())) {
+            throw new TokenExpiradoException("Token expirado");
+        }
+
+        if (registerToken.isUso()) {
+            throw new TokenUsadoException("Token usado");
+        }
+
+        Usuario usuario = registerToken.getUsuario();
+
+        usuario.setAccountNoLocked(true);
+        usuarioRepository.save(usuario);
+
+        registerToken.setUso(true);
+        registerTokenRepository.save(registerToken);
+
+        logger.info("Se activo correctamente el usuario.");
     }
 }

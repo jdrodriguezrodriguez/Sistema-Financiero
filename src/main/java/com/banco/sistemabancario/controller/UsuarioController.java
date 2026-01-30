@@ -25,6 +25,8 @@ import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/sistema/usuarios")
@@ -60,7 +62,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{idPersona}")
-    public ResponseEntity<?> getMethodName(@PathVariable int idPersona) {
+    public ResponseEntity<?> ConsultarUsuario(@PathVariable int idPersona) {
         return usuarioService.obtenerUsuarioPorPersonaId(idPersona)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -105,16 +107,15 @@ public class UsuarioController {
 
     @PostMapping("/resetPassword")
     public ResponseEntity<?> resetPasswordUsuario(@RequestBody ResetPasswordTokenDto rTokenDto) {
-
-        System.out.println("PRUEBAAA");
-        System.out.println(rTokenDto.getToken());
-        System.out.println(rTokenDto.getPassword() + " y " + rTokenDto.getNewPassword());
-
-
         resetTokenService.resetPassword(rTokenDto);
 
-        
-
         return ResponseEntity.ok(Map.of("Mensaje", "Token aceptado."));
+    }
+
+    @GetMapping("/activar-usuario")
+    public ResponseEntity<?> activarUsuario(@RequestParam String token) {
+        resetTokenService.activarUsuario(token);
+
+        return ResponseEntity.ok(Map.of("Mensaje", "Usuario Activado"));
     }
 }

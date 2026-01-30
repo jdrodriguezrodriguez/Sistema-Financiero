@@ -78,7 +78,11 @@ public class TransaccionServiceImpl implements TransaccionService {
         transaccionRepository.saveAll(List.of(historialEnvio, historialRecibo));
 
 
-        emailService.notificarTransaccion(historialEnvio, historialEnvio.getCuenta().getNum_cuenta(), historialEnvio.getCuenta_destino());
+        emailService.notificarTransaccion(
+            historialEnvio, 
+            historialEnvio.getCuenta().getNum_cuenta(), 
+            historialEnvio.getCuenta_destino()
+        );
 
         return historialEnvio;
     }

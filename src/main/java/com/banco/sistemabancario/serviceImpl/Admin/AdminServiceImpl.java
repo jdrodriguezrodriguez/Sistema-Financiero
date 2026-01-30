@@ -17,7 +17,6 @@ import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.Events.AuditoriaEvent;
 import com.banco.sistemabancario.entity.enums.AuditoriaActionEnums;
 import com.banco.sistemabancario.entity.enums.CuentaEnum;
-import com.banco.sistemabancario.entity.enums.RoleEnum;
 import com.banco.sistemabancario.entity.enums.TipoEnum;
 import com.banco.sistemabancario.exception.CorreoYaRegistradoException;
 import com.banco.sistemabancario.exception.CuentaNoEncontradaException;

@@ -10,4 +10,6 @@ public interface EmailService {
 
     void enviarInfoTransaccion(String correo, String mensaje);
     void enviarInfoDeposito(Transaccion transaccion, int idUser);
+
+    void enviarTokenRegistro(String nombreCompleto, String email, String token);
 }

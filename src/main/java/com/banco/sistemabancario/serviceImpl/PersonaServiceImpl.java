@@ -57,9 +57,7 @@ public class PersonaServiceImpl implements PersonaService {
 
     @Transactional
     @Override
-    public Persona actualizarDatosPersona(ActualizarPersonaDto actualizarPersonaDto, int idPersona) {
-
-        Persona persona = obtenerPersonaPorId(idPersona);
+    public Persona actualizarDatosPersona(ActualizarPersonaDto actualizarPersonaDto, Persona persona) {
 
         persona.setNombre(actualizarPersonaDto.getNombre());
         persona.setApellido(actualizarPersonaDto.getApellido());
@@ -98,12 +96,12 @@ public class PersonaServiceImpl implements PersonaService {
     public void validarDatosRegistro(RegistroPersonaDto datos) {
         if (documentoYaRegistrado(datos.getDocumento())) {
             throw new DocumentoYaRegistradoException(
-                    "Ya existe una persona registrada con el documento: " + datos.getDocumento());
+                    "Documento ya registrado");
         }
 
         if (correoYaRegistrado(datos.getCorreo())) {
             throw new CorreoYaRegistradoException(
-                    "Ya existe una persona registrada con el correo electronico: " + datos.getCorreo());
+                    "Correo ya registrado");
         }
     }
 }

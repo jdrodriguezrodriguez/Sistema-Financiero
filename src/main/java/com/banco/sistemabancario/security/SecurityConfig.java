@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -62,7 +61,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // VULNERABILIDAD EN LOS FORM WEB
                 .authorizeHttpRequests(auth -> {
 
-                    auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/html/**", "/css/**", "/js/**")
+                    auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/html/**", "/css/**", "/js/**", "/api/sistema/usuarios/activar-usuario")
                             .permitAll();                   
                     auth.requestMatchers(HttpMethod.POST, "/api/sistema/personas/registrar", 
                         "/api/sistema/usuarios/resetPassword", 

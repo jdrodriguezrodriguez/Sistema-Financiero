@@ -3,11 +3,8 @@ import { fetchWithAuth, saveUserInfo, getToken } from "./auth.js";
 document.getElementById("loginForm").addEventListener("submit", function (e) {
     e.preventDefault()
 
-
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
-
-
 
     fetch("/autenticar", {
         method: "POST",
@@ -52,3 +49,39 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
             document.getElementById("password").style.background = "#802222af";
         })
 })
+
+//ACTIVAR CUENTA POR TOKEN
+const url = "https://didactic-succotash-6j6w5vxw664c4pvv-8081.app.github.dev/api/sistema/usuarios/activar-usuario";
+function getTokenActivation() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    return token;
+}
+
+async function getApiActivation(token) {
+    const response = await fetch(`${url}?token=${encodeURIComponent(token)}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error)
+    }
+
+    return response.json();
+}
+
+if (getTokenActivation()) {
+    try {
+        const activar = await getApiActivation(getTokenActivation());
+        document.getElementById("resultado").innerText = activar.Mensaje;
+    } catch (error) {
+        document.getElementById("resultado").innerText = error.message;
+    }
+}
+
+
