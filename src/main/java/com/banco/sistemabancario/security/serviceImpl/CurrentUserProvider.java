@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.security.service;
+package com.banco.sistemabancario.security.serviceImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,13 +7,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
-import com.banco.sistemabancario.security.serviceImpl.AuditorProvider;
+import com.banco.sistemabancario.security.service.AuditorProvider;
 
 @Component
 public class CurrentUserProvider implements AuditorProvider{
 
     private static final Logger logger =  LoggerFactory.getLogger(CurrentUserProvider.class);
     // 0 == ACCION POR USUARIO
+    @Override
     public Integer getCustomUserId() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

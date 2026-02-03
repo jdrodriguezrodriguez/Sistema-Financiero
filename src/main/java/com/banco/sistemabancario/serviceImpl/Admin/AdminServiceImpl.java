@@ -26,7 +26,7 @@ import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.CuentaRepository;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
-import com.banco.sistemabancario.security.serviceImpl.AuditorProvider;
+import com.banco.sistemabancario.security.service.AuditorProvider;
 import com.banco.sistemabancario.service.CuentaService;
 import com.banco.sistemabancario.service.PersonaService;
 import com.banco.sistemabancario.service.UsuarioService;

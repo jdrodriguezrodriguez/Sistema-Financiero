@@ -16,4 +16,6 @@ public interface UsuarioService {
     Persona obtenerPersonaPorUsuarioId(int idUsuario);
 
     void validarNombreUsuario(String username, int idActual);
+    void BloqueoUserFailureAuthentication(String username);
+    void DesbloqueoUserFailureAuthentication(String username);
 } 

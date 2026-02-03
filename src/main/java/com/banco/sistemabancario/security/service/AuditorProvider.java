@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.security.serviceImpl;
+package com.banco.sistemabancario.security.service;
 
 public interface AuditorProvider {
     Integer getCustomUserId();
