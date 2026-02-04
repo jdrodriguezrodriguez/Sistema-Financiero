@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.serviceImpl.MailResetServiceImp;
+package com.banco.sistemabancario.serviceImpl.mailResetServiceImp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Transaccion;
 import com.banco.sistemabancario.service.PersonaService;
 import com.banco.sistemabancario.service.UsuarioService;
-import com.banco.sistemabancario.service.MailResetService.EmailService;
+import com.banco.sistemabancario.service.mailResetService.EmailService;
 
 @Service
 public class EmailServiceImpl implements EmailService {

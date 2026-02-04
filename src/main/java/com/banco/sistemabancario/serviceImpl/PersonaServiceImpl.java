@@ -15,7 +15,7 @@ import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.exception.*;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.service.PersonaService;
-import com.banco.sistemabancario.serviceImpl.MailResetServiceImp.EmailServiceImpl;
+import com.banco.sistemabancario.serviceImpl.mailResetServiceImp.EmailServiceImpl;
 import com.banco.sistemabancario.util.PersonaUtils;
 
 @Service

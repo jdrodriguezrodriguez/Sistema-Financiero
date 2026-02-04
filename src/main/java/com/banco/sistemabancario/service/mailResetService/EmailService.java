@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.service.MailResetService;
+package com.banco.sistemabancario.service.mailResetService;
 
 import com.banco.sistemabancario.entity.Transaccion;
 

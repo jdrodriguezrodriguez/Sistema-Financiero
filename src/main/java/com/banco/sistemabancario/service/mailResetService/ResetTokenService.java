@@ -1,7 +1,7 @@
-package com.banco.sistemabancario.service.MailResetService;
+package com.banco.sistemabancario.service.mailResetService;
 
-import com.banco.sistemabancario.dto.MailReset.ForgotRequest;
-import com.banco.sistemabancario.dto.MailReset.ResetPasswordTokenDto;
+import com.banco.sistemabancario.dto.mailReset.ForgotRequest;
+import com.banco.sistemabancario.dto.mailReset.ResetPasswordTokenDto;
 import com.banco.sistemabancario.entity.Usuario;
 
 public interface ResetTokenService {

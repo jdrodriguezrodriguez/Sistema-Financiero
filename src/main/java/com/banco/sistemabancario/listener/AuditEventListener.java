@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import com.banco.sistemabancario.entity.Events.AuditoriaEvent;
-import com.banco.sistemabancario.service.Auditoria.AuditoriaEventosService;
+import com.banco.sistemabancario.entity.events.AuditoriaEvent;
+import com.banco.sistemabancario.service.auditoria.AuditoriaEventosService;
 
 @Component
 public class AuditEventListener {

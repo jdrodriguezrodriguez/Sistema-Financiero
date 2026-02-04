@@ -11,7 +11,7 @@ import com.banco.sistemabancario.service.CuentaService;
 import com.banco.sistemabancario.service.PersonaService;
 import com.banco.sistemabancario.service.UsuarioApplicationService;
 import com.banco.sistemabancario.service.UsuarioService;
-import com.banco.sistemabancario.service.MailResetService.ResetTokenService;
+import com.banco.sistemabancario.service.mailResetService.ResetTokenService;
 
 @Service
 public class UsuarioApplicationServiceImpl implements UsuarioApplicationService {

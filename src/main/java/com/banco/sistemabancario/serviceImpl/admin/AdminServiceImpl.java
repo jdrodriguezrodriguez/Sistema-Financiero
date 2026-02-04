@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.serviceImpl.Admin;
+package com.banco.sistemabancario.serviceImpl.admin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,17 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.banco.sistemabancario.dto.RegistroPersonaDto;
-import com.banco.sistemabancario.dto.Admin.ActualizarEstadoAdmin;
-import com.banco.sistemabancario.dto.Admin.ActualizarUsuarioAdmin;
-import com.banco.sistemabancario.dto.Admin.ConsultarUsuarioAdmin;
-import com.banco.sistemabancario.dto.Admin.CrearUsuarioAdmin;
+import com.banco.sistemabancario.dto.admin.ActualizarEstadoAdmin;
+import com.banco.sistemabancario.dto.admin.ActualizarUsuarioAdmin;
+import com.banco.sistemabancario.dto.admin.ConsultarUsuarioAdmin;
+import com.banco.sistemabancario.dto.admin.CrearUsuarioAdmin;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.entity.Events.AuditoriaEvent;
 import com.banco.sistemabancario.entity.enums.AuditoriaActionEnums;
 import com.banco.sistemabancario.entity.enums.CuentaEnum;
 import com.banco.sistemabancario.entity.enums.TipoEnum;
+import com.banco.sistemabancario.entity.events.AuditoriaEvent;
 import com.banco.sistemabancario.exception.CorreoYaRegistradoException;
 import com.banco.sistemabancario.exception.CuentaNoEncontradaException;
 import com.banco.sistemabancario.exception.DocumentoYaRegistradoException;
@@ -30,7 +30,7 @@ import com.banco.sistemabancario.security.service.AuditorProvider;
 import com.banco.sistemabancario.service.CuentaService;
 import com.banco.sistemabancario.service.PersonaService;
 import com.banco.sistemabancario.service.UsuarioService;
-import com.banco.sistemabancario.service.Admin.AdminService;
+import com.banco.sistemabancario.service.admin.AdminService;
 
 @Service
 public class AdminServiceImpl implements AdminService {

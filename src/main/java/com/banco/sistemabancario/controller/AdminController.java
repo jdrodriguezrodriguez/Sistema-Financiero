@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.banco.sistemabancario.dto.Admin.ActualizarEstadoAdmin;
-import com.banco.sistemabancario.dto.Admin.ActualizarUsuarioAdmin;
-import com.banco.sistemabancario.dto.Admin.CrearUsuarioAdmin;
-import com.banco.sistemabancario.service.Admin.AdminService;
+import com.banco.sistemabancario.dto.admin.ActualizarEstadoAdmin;
+import com.banco.sistemabancario.dto.admin.ActualizarUsuarioAdmin;
+import com.banco.sistemabancario.dto.admin.CrearUsuarioAdmin;
+import com.banco.sistemabancario.service.admin.AdminService;
+
 import org.springframework.web.bind.annotation.PostMapping;
 
 @PreAuthorize("hasRole('ADMIN')")

@@ -1,9 +1,9 @@
-package com.banco.sistemabancario.service.Admin;
+package com.banco.sistemabancario.service.admin;
 
-import com.banco.sistemabancario.dto.Admin.ActualizarEstadoAdmin;
-import com.banco.sistemabancario.dto.Admin.ActualizarUsuarioAdmin;
-import com.banco.sistemabancario.dto.Admin.ConsultarUsuarioAdmin;
-import com.banco.sistemabancario.dto.Admin.CrearUsuarioAdmin;
+import com.banco.sistemabancario.dto.admin.ActualizarEstadoAdmin;
+import com.banco.sistemabancario.dto.admin.ActualizarUsuarioAdmin;
+import com.banco.sistemabancario.dto.admin.ConsultarUsuarioAdmin;
+import com.banco.sistemabancario.dto.admin.CrearUsuarioAdmin;
 
 public interface AdminService {
     void adminActualizarUsuario(ActualizarUsuarioAdmin datos);

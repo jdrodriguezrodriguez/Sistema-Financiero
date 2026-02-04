@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.service.Auditoria;
+package com.banco.sistemabancario.service.auditoria;
 
 import java.util.Map;
 
@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.banco.sistemabancario.entity.Events.AuditoriaEntity;
 import com.banco.sistemabancario.entity.enums.AuditoriaActionEnums;
-import com.banco.sistemabancario.repository.AuditoriaRepository.AuditLogRepository;
+import com.banco.sistemabancario.entity.events.AuditoriaEntity;
+import com.banco.sistemabancario.repository.auditoriaRepository.AuditLogRepository;
 
 @Service
 public class AuditoriaEventosService {

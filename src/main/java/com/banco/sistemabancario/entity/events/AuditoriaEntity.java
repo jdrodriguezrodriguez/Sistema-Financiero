@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.entity.Events;
+package com.banco.sistemabancario.entity.events;
 
 import java.time.LocalDateTime;
 import java.util.Map;

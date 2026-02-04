@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
-import com.banco.sistemabancario.dto.MailReset.ForgotRequest;
-import com.banco.sistemabancario.dto.MailReset.ResetPasswordTokenDto;
+import com.banco.sistemabancario.dto.mailReset.ForgotRequest;
+import com.banco.sistemabancario.dto.mailReset.ResetPasswordTokenDto;
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
-import com.banco.sistemabancario.service.MailResetService.ResetTokenService;
+import com.banco.sistemabancario.service.mailResetService.ResetTokenService;
 import com.banco.sistemabancario.serviceImpl.DatosDTOServiceImpl;
 import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 

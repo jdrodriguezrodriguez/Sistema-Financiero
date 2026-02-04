@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.banco.sistemabancario.entity.MailReset.RegisterToken;
-import com.banco.sistemabancario.entity.MailReset.ResetToken;
 import com.banco.sistemabancario.entity.enums.TipoEnum;
+import com.banco.sistemabancario.entity.mailReset.RegisterToken;
+import com.banco.sistemabancario.entity.mailReset.ResetToken;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

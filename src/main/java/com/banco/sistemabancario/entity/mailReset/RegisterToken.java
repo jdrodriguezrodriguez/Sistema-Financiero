@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.entity.MailReset;
+package com.banco.sistemabancario.entity.mailReset;
 
 import java.time.LocalDateTime;
 

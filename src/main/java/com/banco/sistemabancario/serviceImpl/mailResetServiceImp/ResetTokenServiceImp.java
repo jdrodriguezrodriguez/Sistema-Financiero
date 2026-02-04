@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.serviceImpl.MailResetServiceImp;
+package com.banco.sistemabancario.serviceImpl.mailResetServiceImp;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,21 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.banco.sistemabancario.dto.MailReset.ForgotRequest;
-import com.banco.sistemabancario.dto.MailReset.ResetPasswordTokenDto;
+import com.banco.sistemabancario.dto.mailReset.ForgotRequest;
+import com.banco.sistemabancario.dto.mailReset.ResetPasswordTokenDto;
 import com.banco.sistemabancario.entity.Usuario;
-import com.banco.sistemabancario.entity.MailReset.RegisterToken;
-import com.banco.sistemabancario.entity.MailReset.ResetToken;
+import com.banco.sistemabancario.entity.mailReset.RegisterToken;
+import com.banco.sistemabancario.entity.mailReset.ResetToken;
 import com.banco.sistemabancario.exception.PasswordInvalidaException;
 import com.banco.sistemabancario.exception.TokenExpiradoException;
 import com.banco.sistemabancario.exception.TokenInvalidoException;
 import com.banco.sistemabancario.exception.TokenUsadoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
-import com.banco.sistemabancario.repository.MailResetRepository.RegisterTokenRepository;
-import com.banco.sistemabancario.repository.MailResetRepository.ResetTokenRepository;
-import com.banco.sistemabancario.service.MailResetService.EmailService;
-import com.banco.sistemabancario.service.MailResetService.ResetTokenService;
+import com.banco.sistemabancario.repository.mailResetRepository.RegisterTokenRepository;
+import com.banco.sistemabancario.repository.mailResetRepository.ResetTokenRepository;
+import com.banco.sistemabancario.service.mailResetService.EmailService;
+import com.banco.sistemabancario.service.mailResetService.ResetTokenService;
 
 import jakarta.transaction.Transactional;
 

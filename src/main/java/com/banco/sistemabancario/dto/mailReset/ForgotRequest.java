@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.dto.MailReset;
+package com.banco.sistemabancario.dto.mailReset;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

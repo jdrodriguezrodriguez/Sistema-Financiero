@@ -15,7 +15,7 @@ import com.banco.sistemabancario.exception.ValorInvalidoException;
 import com.banco.sistemabancario.repository.TransaccionRepository;
 import com.banco.sistemabancario.service.CuentaService;
 import com.banco.sistemabancario.service.TransaccionService;
-import com.banco.sistemabancario.service.MailResetService.EmailService;
+import com.banco.sistemabancario.service.mailResetService.EmailService;
 import com.banco.sistemabancario.util.TransaccionUtils;
 
 @Service
