@@ -22,7 +22,6 @@ public class Persona {
     @OneToOne(mappedBy = "persona", cascade = CascadeType.ALL, orphanRemoval = true)
     private Usuario usuario;
 
-    
     @Column(nullable = false)
     private String nombre;
 

@@ -30,13 +30,13 @@ if (idRegistrar) {
                 document.getElementById("resultado").innerText = data.Mensaje
 
                 setTimeout(() => {
-                    window.location.href = "/html/login.html";
+                    window.location.href = "/html/vistas/login.html";
                 }, 800);
             })
 
             .catch(async error => {
                 let errData = await error.json();
-                document.getElementById("resultado").innerText = errData;
+                document.getElementById("resultado").innerText = "Registro fallido. " + JSON.stringify(errData.error);
             });
     });
 }

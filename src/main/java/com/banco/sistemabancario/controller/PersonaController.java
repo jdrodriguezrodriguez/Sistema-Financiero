@@ -1,7 +1,6 @@
 package com.banco.sistemabancario.controller;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +17,8 @@ import com.banco.sistemabancario.dto.ActualizarPersonaDto;
 import com.banco.sistemabancario.dto.RegistroPersonaDto;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
-import com.banco.sistemabancario.serviceImpl.PersonaServiceImpl;
-import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
+import com.banco.sistemabancario.service.PersonaService;
+import com.banco.sistemabancario.service.UsuarioApplicationService;
 
 import jakarta.validation.Valid;
 
@@ -27,72 +26,62 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
-
 @RestController
 @RequestMapping("/api/sistema/personas")
 public class PersonaController {
-    
-    private static final Logger logger =  LoggerFactory.getLogger(PersonaController.class);
 
-    private PersonaServiceImpl personaService;
-    private UsuarioServiceImpl usuarioService;
+    private static final Logger logger = LoggerFactory.getLogger(PersonaController.class);
 
-    public PersonaController(PersonaServiceImpl personaService, UsuarioServiceImpl usuarioService) {
+    private PersonaService personaService;
+    private UsuarioApplicationService applicationService;
+
+    public PersonaController(PersonaService personaService,
+            UsuarioApplicationService applicationService) {
         this.personaService = personaService;
-        this.usuarioService = usuarioService;
+        this.applicationService = applicationService;
     }
 
-    //CONSULTAS
     @GetMapping("/{idPersona}")
     public ResponseEntity<?> buscarPersonaPorId(@PathVariable int idPersona) {
-        return personaService.obtenerPersonaPorId(idPersona)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Persona persona = personaService.obtenerPersonaPorId(idPersona);
+        return ResponseEntity.ok(persona);
     }
-    
+
+    // PRUEBA
+    @GetMapping("/numeroCuenta/{numCuenta}")
+    public ResponseEntity<?> buscarNumeroCuenta(@PathVariable String numCuenta) {
+        Persona persona = personaService.obtenerPersonaPorNumeroCuenta(numCuenta);
+        return ResponseEntity.ok(persona);
+    }
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> listarPersonas() {
         return ResponseEntity.ok(personaService.obtenerPersonas());
     }
-    
-    //CREAR
+
     @PostMapping("/registrar")
     public ResponseEntity<?> registroPersona(@Valid @RequestBody RegistroPersonaDto datos) {
-       
-        try{
-            personaService.registrarPersona(datos);
-            logger.info("El registro se realizo correctamente");
-            return ResponseEntity.ok(Map.of("Mensaje", "Registro exitoso"));
-            
-        }catch(IllegalArgumentException e){
-            logger.error("Error al registrar a la persona {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }       
+        applicationService.registrarPersona(datos);
+
+        logger.info("El registro se realizo correctamente");
+        return ResponseEntity.ok(Map.of("Mensaje", "Registro exitoso"));
     }
 
-    //ACTUALIZAR
     @PutMapping("/actualizar")
-    public ResponseEntity<?> actualizarPersona(@AuthenticationPrincipal CustomUserDetails user, @Valid @RequestBody ActualizarPersonaDto actualizarPersonaDto){  
-        try{
-            Persona persona = usuarioService.obtenerPersonaPorUsuarioId(user.getId());
-            personaService.actualizarDatosPersona(actualizarPersonaDto, persona.getIdPersona());
-            
-            logger.info("Los datos personales fueron actualizados correctamente");
-            return ResponseEntity.ok(Map.of("Mensaje", "Actualizacion exitosa"));
-            
-        }catch(NoSuchElementException e){
-            logger.error("Error en actualizar los datos personales:", e);
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> actualizarPersona(@AuthenticationPrincipal CustomUserDetails user,
+            @Valid @RequestBody ActualizarPersonaDto actualizarPersonaDto) {
+
+        applicationService.actualizarPersona(user.getId(), actualizarPersonaDto);
+
+        logger.info("Los datos personales fueron actualizados correctamente");
+        return ResponseEntity.ok(Map.of("Mensaje", "Actualizacion exitosa"));
     }
 
-    //ELIMINAR
     @DeleteMapping("/{idPersona}")
-    public ResponseEntity<?> eliminarPersona(@PathVariable int idPersona){
+    public ResponseEntity<?> eliminarPersona(@PathVariable int idPersona) {
 
         personaService.eliminarPersona(idPersona);
-        return ResponseEntity.ok(Map.of("Mensaje","Persona eliminada"));
+        return ResponseEntity.ok(Map.of("Mensaje", "Persona eliminada"));
     }
 }

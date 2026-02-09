@@ -1,9 +1,13 @@
 package com.banco.sistemabancario.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import com.banco.sistemabancario.entity.enums.RoleEnum;
+import com.banco.sistemabancario.entity.enums.TipoEnum;
+import com.banco.sistemabancario.entity.mailReset.RegisterToken;
+import com.banco.sistemabancario.entity.mailReset.ResetToken;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,6 +21,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -29,8 +34,17 @@ public class Usuario {
     private Integer idUsuario;
 
     @OneToOne
-    @JoinColumn(name = "idPersona", referencedColumnName = "idPersona")      
+    @JoinColumn(name = "idPersona", referencedColumnName = "idPersona")
     private Persona persona;
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cuenta cuenta;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<ResetToken> resetToken = new ArrayList<>();
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private RegisterToken registerToken;
 
     @Column(nullable = false)
     private String username;
@@ -39,10 +53,9 @@ public class Usuario {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private RoleEnum rol;
-    
+    private TipoEnum rol;
 
-    //CAMPOS SECURITY
+    // CAMPOS SECURITY
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
@@ -55,15 +68,15 @@ public class Usuario {
     @Column(name = "credential_no_expired")
     private boolean credentialNoExpired;
 
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)        //CARGAR TODOS LOS ROLES DEL USUARIO
-    @JoinTable(name = "user_roles", joinColumns =  @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE) // CARGAR TODOS LOS ROLES DEL USUARIO
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Roles> roles = new HashSet<>();
 
-    public Usuario(){
+    public Usuario() {
     }
 
-    public Usuario(int idUsuario, String username, String password, RoleEnum rol, Persona persona, boolean isEnabled, boolean accountNoExpired, boolean accountNoLocked, boolean credentialNoExpired, Set<Roles> roles){
+    public Usuario(int idUsuario, String username, String password, TipoEnum rol, Persona persona, boolean isEnabled,
+            boolean accountNoExpired, boolean accountNoLocked, boolean credentialNoExpired, Set<Roles> roles) {
         this.idUsuario = idUsuario;
         this.username = username;
         this.password = password;
@@ -76,16 +89,18 @@ public class Usuario {
         this.roles = roles;
     }
 
-    public Integer getIdUsuario(){
+    public Integer getIdUsuario() {
         return idUsuario;
     }
-    public void setIdUsuario(Integer idUsuario){
+
+    public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
 
     public String getUsername() {
         return username;
     }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -93,20 +108,23 @@ public class Usuario {
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public RoleEnum getRol() {
+    public TipoEnum getRol() {
         return rol;
     }
-    public void setRol(RoleEnum rol) {
+
+    public void setRol(TipoEnum rol) {
         this.rol = rol;
     }
 
     public Persona getPersona() {
         return persona;
     }
+
     public void setPersona(Persona persona) {
         this.persona = persona;
     }
@@ -114,6 +132,7 @@ public class Usuario {
     public boolean isEnabled() {
         return isEnabled;
     }
+
     public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
     }
@@ -121,6 +140,7 @@ public class Usuario {
     public boolean isAccountNoExpired() {
         return accountNoExpired;
     }
+
     public void setAccountNoExpired(boolean accountNoExpired) {
         this.accountNoExpired = accountNoExpired;
     }
@@ -128,6 +148,7 @@ public class Usuario {
     public boolean isAccountNoLocked() {
         return accountNoLocked;
     }
+
     public void setAccountNoLocked(boolean accountNoLocked) {
         this.accountNoLocked = accountNoLocked;
     }
@@ -135,6 +156,7 @@ public class Usuario {
     public boolean isCredentialNoExpired() {
         return credentialNoExpired;
     }
+
     public void setCredentialNoExpired(boolean credentialNoExpired) {
         this.credentialNoExpired = credentialNoExpired;
     }
@@ -142,6 +164,7 @@ public class Usuario {
     public Set<Roles> getRoles() {
         return roles;
     }
+
     public void setRoles(Set<Roles> roles) {
         this.roles = roles;
     }

@@ -8,9 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.banco.sistemabancario.security.jwt.JwtUtils;
-import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
+import com.banco.sistemabancario.security.serviceImpl.CustomUserDetailsService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,7 +24,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter{
     JwtUtils jwtUtils;
 
     @Autowired
-    private UsuarioServiceImpl usuarioService;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, 
@@ -36,11 +35,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter{
 
         if(tokenheader != null && tokenheader.startsWith("Bearer ")){
             
-            String token = tokenheader.substring(7);
+            String token = tokenheader.substring(7).trim();
 
-            if (jwtUtils.isTokenValid(token)) {
+            if (!token.isBlank() && jwtUtils.isTokenValid(token)) {
                 String username = jwtUtils.getUsernameFromToken(token);
-                UserDetails userDetails = usuarioService.loadUserByUsername(username);
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
                 UsernamePasswordAuthenticationToken authenticationToken = 
                             new UsernamePasswordAuthenticationToken(userDetails, null ,userDetails.getAuthorities());

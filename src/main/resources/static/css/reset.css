@@ -1,0 +1,180 @@
+.container {
+    margin: 0 auto;
+    background: #8B0000;
+    padding: 40px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin-top: 10%;
+}
+
+.container h1 {
+    margin-bottom: 10px;
+}
+
+.container p {
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn {
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #2e2b2b;
+    color: #f4f4f4;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background-color: #444;
+}
+
+.back {
+    display: block;
+    margin-top: 25px;
+    color: #b9b737;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.back:hover {
+    color: rgb(151, 153, 26);
+}
+
+/*OVERLAY PASSWORD*/
+
+#menu-password, #menu-username {
+    display: flex;
+    width: 500px;
+    margin: 0 auto;
+    max-width: 90%;
+    padding: 2rem 2.5rem;
+    border-radius: 10px;
+    margin-top: 5rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    display: none;
+} 
+
+#menu-password h2, #menu-username h2 {
+    margin-top: 0;
+    color: #fff;
+    border-bottom: 1px solid #8B0000;
+    padding-bottom: 0.5rem;
+    width: 100%;
+    text-align: center;
+}
+
+#menu-password button, #menu-username button {
+    background-color: #8B0000;
+    border: none;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 2rem;
+    transition: background-color 0.3s ease;
+}
+
+#menu-password button:hover, #menu-username button:hover {
+    background-color: #a80000;
+}
+
+.grupo-campos-usuario {
+    margin-top: 2rem;
+}
+
+.grupo-campos-usuario label {
+    padding-right: 8px;
+    font-weight: bold;
+    color: #f4f4f4;
+}
+
+.grupo-campos-usuario input {
+    padding: 0.5rem 2rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+grupo-campos-usuario input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+ 
+/******************/
+/*RESETEO PASSWORD*/
+/******************/
+
+.change-password {
+  max-width: 420px;
+  margin: 10rem auto;
+  padding: 30px;
+  background-color: #f4f4f4;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.change-password h2 {
+  text-align: center;
+  color: #8B0000;
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.input-group label {
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.input-group input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus {
+  border-color: #8B0000;
+  box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.12);
+}
+
+.change-password button {
+  width: 100%;
+  padding: 12px;
+  background-color: #8B0000;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
+}
+
+.change-password button:hover {
+  background-color: #a00000;
+}
+
+.change-password button:active {
+  transform: scale(0.98);
+}

@@ -54,6 +54,11 @@ public class JwtUtils {
     //VALIDAR TOKEN DE ACCESO
     public boolean isTokenValid(String token){
         try {
+
+            if (token == null && token.isBlank()) {
+                return false;
+            }
+            
             Jwts.parser()
                 .setSigningKey(getSignatureKey())
                 .build()

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="/css/index.css"> 
+    <link rel="stylesheet" href="/css/register.css">
+
+</head>
+<body>
+    <header>
+        <nav class="nav">
+            <div class="logo">Registrar persona</div> 
+            <ul class="menu">
+                <li><a href="#" class="enlace" id="inicio">Inicio</a></li>
+                <li><a href="#" class="enlace" id="contacto">Contáctanos</a></li> 
+                <li><a href="/html/vistas/login.html" class="enlace" id="login">Iniciar sesion</a></li> 
+                <li><a href="/html/vistas/register.html" class="enlace" id="register">Registrarme</a></li> 
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="div-form">
+            <section class="section-form">
+                <h2>Completa tus datos</h2>
+                <form id="RegistrarForm">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" required>
+
+                    <label for="documento">Apellido:</label>
+                    <input type="text" id="apellido" name="apellido" required>
+
+                    <label for="documento">Documento:</label>
+                    <input type="text" id="documento" name="documento" required>
+
+                    <label for="documento">Nacimiento</label>
+                    <input type="date" id="nacimiento" name="nacimiento" required>
+
+                    <label for="correo">Correo Electrónico:</label>
+                    <input type="email" id="correo" name="correo" required>
+
+                    <label for="correo">Contraseña:</label>
+                    <input type="password" id="password" name="password" required>
+
+                    <button type="submit">Registrarse</button>
+                </form>
+                <div id="resultado" class="resultado"></div>
+            </section>  
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Sistema Financiero</p>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script type="module" src="/js/register.js"></script>
+</body>
+</html>

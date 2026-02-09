@@ -43,7 +43,7 @@ function actualizarDatosPersona() {
                     document.getElementById("resultadoPersona").innerText = data.Mensaje
                     
                     setTimeout(() => {
-                        window.location.href = "/html/index.html";
+                        window.location.href = "/html/vistas/index.html";
                     }, 800);
                 })
 
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     removeToken();
 
                     setTimeout(() => {
-                        window.location.href = "/html/login.html";
+                        window.location.href = "/html/vistas/login.html";
                     }, 800);
                     
                 })

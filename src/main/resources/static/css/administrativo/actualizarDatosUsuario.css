@@ -1,0 +1,129 @@
+.formulario-actualizar {
+    max-width: 500px;
+    margin: 7rem auto 2rem;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.formulario-actualizar h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    color: #333;
+}
+
+.dos-columnas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+}
+
+.columna label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.columna input {
+    width: 100%;
+    padding: 6px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+
+.grupo-campos label{
+    font-weight: bold;
+    color: #555;
+}
+
+.grupo-campos input, .grupo-campos-usuario input{
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border 0.3s;
+}
+
+.grupo-campos input:focus, grupo-campos-usuario input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.boton-container {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.boton-update{
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.boton-container button{
+    background-color: #8B0000;
+  border: none;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.boton-container button:hover{
+   background-color: #a30000;
+}
+
+/*ENLACE PARA UPDATE*/
+.link-hidden{
+    width: 550px;
+    margin:  0 auto;
+    font-size: 18px;
+}
+
+.linkUsuario{
+    color: inherit;
+    text-decoration: none;
+}
+
+.linkUsuario span{
+    color: #a30000;
+}
+
+/* Estilos para los selects */
+.columna select {
+    width: 100%;
+    margin-top: 5px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    font-size: 0.95rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color .15s ease, box-shadow .15s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+}
+
+.columna select:hover {
+    border-color: #9ca3af;
+}
+
+.columna select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+
+.columna label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 8px;
+    color: #374151;
+}

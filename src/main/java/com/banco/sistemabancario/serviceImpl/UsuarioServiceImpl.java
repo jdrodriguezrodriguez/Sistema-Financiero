@@ -1,73 +1,52 @@
 package com.banco.sistemabancario.serviceImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
 import com.banco.sistemabancario.entity.Persona;
 import com.banco.sistemabancario.entity.Roles;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.enums.RoleEnum;
+import com.banco.sistemabancario.entity.enums.TipoEnum;
+import com.banco.sistemabancario.exception.PasswordInvalidaException;
 import com.banco.sistemabancario.exception.UsuarioNoencontradoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
-import com.banco.sistemabancario.security.controller.CustomUserDetails;
+import com.banco.sistemabancario.service.RolesService;
 import com.banco.sistemabancario.service.UsuarioService;
+import com.banco.sistemabancario.util.UsuarioUtils;
 
 @Service
-public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
+public class UsuarioServiceImpl implements UsuarioService{
+
+    private static final Logger logger =  LoggerFactory.getLogger(UsuarioServiceImpl.class);
     
+    private UsuarioUtils usuarioUtils;
+
     private UsuarioRepository usuarioRepository;
     private PersonaRepository personaRepository;
-    private RolesServiceImpl rolesServiceImpl;
+    private RolesService rolesService;
+    private PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PersonaRepository personaRepository, RolesServiceImpl rolesServiceImpl) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, 
+                            PersonaRepository personaRepository, 
+                            RolesService rolesService,
+                            PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.personaRepository = personaRepository;
-        this.rolesServiceImpl = rolesServiceImpl;
+        this.rolesService = rolesService;
+        this.passwordEncoder = passwordEncoder;
     }       
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        
-        Usuario usuario = usuarioRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("El usuario: " + username + "no existe"));
-
-
-        //TOMAR ROLES y PERMISOS DE USUARIO PARA CONVERTIR A OBJETO DE SPRING SECURITY
-        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();   //CREAR LISTA DE PERMISOS,  YA QUE SPRING MANEJA PERMISOS CON GRANTEDAUTHORITY Y ESTA ES UNA DE SUS IMPLEMENTACIONES
-
-        usuario.getRoles()
-            .forEach( rol -> 
-                authorityList.add(
-                    new SimpleGrantedAuthority("ROLE_" .concat(rol.getRoleEnum().name()))));      //TOMAMOS LOS ROLES Y LOS CONVERTIMOS A SimpleGrantedAuthority - PREFIJO ROLE_ OBLIGATORIO
-                                                                                                       
-        usuario.getRoles().stream()     
-            .flatMap(rol -> rol.getPermisosList().stream())  
-            .forEach(permiso -> 
-                authorityList.add(new SimpleGrantedAuthority(permiso.getName())));  //AGREGAR CADA PERMISO A CADA ROL
-
-        //CONSTRUCCION DEL OBJETO USERDETAILS DE SPRING SECURITY PARA AUTENTICAR
-
-            return new CustomUserDetails(usuario.getIdUsuario(),
-                usuario.getUsername(), 
-                usuario.getPassword(), 
-                usuario.isEnabled(),
-                usuario.isAccountNoExpired(),
-                usuario.isCredentialNoExpired(),
-                usuario.isAccountNoLocked(),
-                authorityList
-                );
-        }
-
+    @Transactional
     @Override
     public Usuario actualizarDatosUsuario(ActualizarUsuarioDto datos, int idUsuario){
         
@@ -82,56 +61,117 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         return usuarioRepository.save(usuario);
     }
 
-    //CONSULTAS
     @Override
     public List<Usuario> obtenerUsuarios(){
         return usuarioRepository.findAll();
     }
 
     @Override
-    public Optional<Usuario> obtenerUsuarioPorId(int idPersona){
-        Optional<Usuario> usuario = usuarioRepository.findByPersona_IdPersona(idPersona);
-
-        if (!usuario.isPresent()) {
-            throw new UsuarioNoencontradoException("No se encontro a la persona con el ID" + idPersona);
-        }
-
-        return usuario;
+    public Optional<Usuario> obtenerUsuarioPorPersonaId(int idPersona){
+        return usuarioRepository.findByPersona_IdPersona(idPersona);
     }
 
     @Override
     public Persona obtenerPersonaPorUsuarioId(int idUsuario) {
-        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsuarioNoencontradoException("No se encontro el usuario con ID: " + idUsuario));
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+            .orElseThrow(() -> new UsuarioNoencontradoException("No se encontro el usuario con ID: " + idUsuario));
 
         return personaRepository.findByUsuario(usuario);
     }
 
-    //REGISTRAR USUARIO
+    @Override
+    public Usuario obtenerUsuarioPorUsername(String username){
+        return usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new UsuarioNoencontradoException("No se encontro el usuario el username: " + username));
+    }
+
+    @Transactional
     @Override
     public Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona){
 
-        String username = UsuarioServiceImpl.generarUsername(nombre, apellido);
+        String username = usuarioUtils.generarUsername(nombre, apellido);
+        validarContraseñaUsuario(password);
+        
         Usuario usuario = new Usuario();
 
         usuario.setUsername(username);
-        usuario.setPassword(password);
+        usuario.setPassword(passwordEncoder.encode(password));
         usuario.setPersona(persona);
-        usuario.setRol(RoleEnum.CLIENTE);
+        usuario.setRol(TipoEnum.ESTANDAR);
 
         //SECURITY
         usuario.setAccountNoExpired(true);
-        usuario.setAccountNoLocked(true);
+        usuario.setAccountNoLocked(false);
         usuario.setCredentialNoExpired(true);
         usuario.setEnabled(true);
 
-        //ROLES/PERMISOS
-        Roles rol = rolesServiceImpl.buscarRoles(RoleEnum.CLIENTE);
+        Roles rol = rolesService.buscarRoles(RoleEnum.CLIENTE);
         usuario.setRoles(Set.of(rol));
 
         return usuarioRepository.save(usuario);
     }
 
-    //VALIDAR QUE EL USERNAME NO EXISTA
+    @Transactional
+    @Override
+    public Usuario adminRegistrarUsuario(String username, String password, Persona persona, String rol, String permisos){
+
+        Usuario usuario = new Usuario();
+        
+        validarNombreUsuario(username, 0);
+
+        usuario.setUsername(username);
+
+        validarContraseñaUsuario(password);
+        
+        usuario.setPassword(passwordEncoder.encode(password));
+        usuario.setPersona(persona);
+        usuario.setRol(TipoEnum.valueOf(rol));
+        
+
+        usuario.setAccountNoExpired(true);
+        usuario.setAccountNoLocked(true);
+        usuario.setCredentialNoExpired(true);
+        usuario.setEnabled(true);
+
+        Roles roles = rolesService.buscarRoles(RoleEnum.valueOf(permisos));
+        usuario.setRoles(Set.of(roles));
+
+        return usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    @Override
+    public void BloqueoUserFailureAuthentication(String username) {
+        Usuario userFailer = usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new UsuarioNoencontradoException("El usuario no se encontro"));
+
+        userFailer.setAccountNoLocked(false);
+        logger.warn("Usuario {} bloqueado por multiples fallos de autenticacion", username);
+
+        usuarioRepository.save(userFailer);
+       /*  Timer timer = new Timer();
+        TimerTask tarea = new TimerTask() {
+            @Override
+            public void run() {
+                DesbloqueoUserFailureAuthentication(username);
+                logger.warn("Usuario {} desbloqueado despues de tiempo de espera", username);
+            }   
+        };
+        timer.schedule(tarea, 900000); */
+    }
+
+    @Transactional
+    @Override
+    public void DesbloqueoUserFailureAuthentication(String username){
+         Usuario userTrue = usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new UsuarioNoencontradoException("El usuario no se encontro"));
+
+        userTrue.setAccountNoLocked(true);
+        logger.warn("Usuario {} desbloqueado despues de tiempo de espera", username);
+        
+        usuarioRepository.save(userTrue);
+    }
+
     @Override
     public void validarNombreUsuario(String username, int idActual){
 
@@ -142,15 +182,9 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         }
     }
 
-    //GENERAR NOMBRE DE USUARIO
-    public static String generarUsername(String nombre, String apellido){
-        return nombre.substring(0, Math.min(4, nombre.length())) + apellido.substring(0, Math.min(2, apellido.length()));
-    }
-    //VALIDAR CONTRASEÑA
-    public static boolean validarPassword(String password){
-        if (password.length() != 4) {
-            return false;
+    public void validarContraseñaUsuario(String password){
+        if (!usuarioUtils.validarPassword(password)) {
+            throw new PasswordInvalidaException("La contraseña debe tener exactamente cuatro digitos.");
         }
-        return true;
     }
 }

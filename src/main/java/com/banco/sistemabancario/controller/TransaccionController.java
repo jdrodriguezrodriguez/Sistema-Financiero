@@ -33,7 +33,6 @@ public class TransaccionController {
         this.transaccionService = transaccionService;
     }
 
-    //TRANSFERIR
     @PostMapping("/transferir")
     public ResponseEntity<?> transferirDinero(@AuthenticationPrincipal CustomUserDetails user,@Valid @RequestBody TransferirDineroDto datos) {
 
@@ -48,7 +47,6 @@ public class TransaccionController {
         }
     }
 
-    //DEPOSITAR
     @PostMapping("/depositar")
     public ResponseEntity<?> depositarDinero(@RequestBody String valor, @AuthenticationPrincipal CustomUserDetails user){
         try {
@@ -59,8 +57,6 @@ public class TransaccionController {
             return ResponseEntity.badRequest().body("Error al depositar el dinero: " + e);
         }
     }
-
-    //CONSULTAR HISTORIAL
     @GetMapping("/historial")
     public ResponseEntity<?> consultarTransacciones(@AuthenticationPrincipal CustomUserDetails user) {
         try {
@@ -72,7 +68,6 @@ public class TransaccionController {
         }
     }
     
-    //CONSULTAR DINERO
     @GetMapping("/saldo")
     public ResponseEntity<?> consultarDinero(@AuthenticationPrincipal CustomUserDetails user) {
         try {

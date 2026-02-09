@@ -15,28 +15,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banco.sistemabancario.dto.ActualizarUsuarioDto;
+import com.banco.sistemabancario.dto.mailReset.ForgotRequest;
+import com.banco.sistemabancario.dto.mailReset.ResetPasswordTokenDto;
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
+import com.banco.sistemabancario.service.mailResetService.ResetTokenService;
 import com.banco.sistemabancario.serviceImpl.DatosDTOServiceImpl;
 import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/sistema/usuarios")
 public class UsuarioController {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
     private UsuarioServiceImpl usuarioService;
     private DatosDTOServiceImpl datosDTOService;
+    private ResetTokenService resetTokenService;
 
-    public UsuarioController(UsuarioServiceImpl usuarioService, DatosDTOServiceImpl datosDTOService) {
+    public UsuarioController(UsuarioServiceImpl usuarioService, DatosDTOServiceImpl datosDTOService,
+            ResetTokenService resetTokenService) {
         this.usuarioService = usuarioService;
         this.datosDTOService = datosDTOService;
+        this.resetTokenService = resetTokenService;
     }
 
-    //SESION AUTENTICADA
     @GetMapping("/profile")
     public ResponseEntity<?> CurrentUser(@AuthenticationPrincipal CustomUserDetails user) {
 
@@ -48,29 +56,27 @@ public class UsuarioController {
         return ResponseEntity.ok(userInfo);
     }
 
-    //DATOS DEL USUARIO EN LINEA
     @GetMapping("/profile/datos")
-    public ResponseEntity<?> datosSesionAutenticada(@AuthenticationPrincipal CustomUserDetails user){
+    public ResponseEntity<?> datosSesionAutenticada(@AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(datosDTOService.datosUsuario(user.getId()));
     }
-        
-    //CONSULTAS
+
     @GetMapping("/{idPersona}")
-    public ResponseEntity<?> getMethodName(@PathVariable int idPersona) {
-        return usuarioService.obtenerUsuarioPorId(idPersona)
-            .map(ResponseEntity::ok)
-            .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> ConsultarUsuario(@PathVariable int idPersona) {
+        return usuarioService.obtenerUsuarioPorPersonaId(idPersona)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
-    
+
     @GetMapping
-    public ResponseEntity<?> listarUsuarios(){
+    public ResponseEntity<?> listarUsuarios() {
         return ResponseEntity.ok(usuarioService.obtenerUsuarios());
     }
 
-    //ACTUALIZAR
     @PutMapping("/actualizar")
-    public ResponseEntity<?> actualizarUsuario(@AuthenticationPrincipal CustomUserDetails user, @Valid @RequestBody ActualizarUsuarioDto datos){
-        
+    public ResponseEntity<?> actualizarUsuario(@AuthenticationPrincipal CustomUserDetails user,
+            @Valid @RequestBody ActualizarUsuarioDto datos) {
+
         try {
             usuarioService.actualizarDatosUsuario(datos, user.getId());
             logger.info("Usuario actualizado correctamente");
@@ -83,5 +89,33 @@ public class UsuarioController {
             logger.error("Validacion fallida", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/forgotUsername")
+    public ResponseEntity<?> forgotUsernameUsuario(@RequestBody ForgotRequest request) {
+        resetTokenService.forgotUsernameUsuario(request);
+
+        return ResponseEntity.ok(Map.of("Mensaje", "Si el correo es valido, se envio el token al correo."));
+    }
+
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<?> TokenPasswordUsuario(@RequestBody ForgotRequest request) {
+        resetTokenService.almacenarTokenPassword(request);
+
+        return ResponseEntity.ok(Map.of("Mensaje", "Si el correo es valido, se envio el token al correo."));
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPasswordUsuario(@RequestBody ResetPasswordTokenDto rTokenDto) {
+        resetTokenService.resetPassword(rTokenDto);
+
+        return ResponseEntity.ok(Map.of("Mensaje", "Token aceptado."));
+    }
+
+    @GetMapping("/activar-usuario")
+    public ResponseEntity<?> activarUsuario(@RequestParam String token) {
+        resetTokenService.activarUsuario(token);
+
+        return ResponseEntity.ok(Map.of("Mensaje", "Usuario Activado"));
     }
 }

@@ -57,6 +57,15 @@ header{
 
 
 /*PERFIL MENU */
+.menu-perfil{
+    list-style: none;
+    position: relative;
+}
+
+.menu-perfil > li {
+    position: relative;
+}
+
 .menu-perfil li a:hover{
     padding: 5px 10px;
     background: #e7e41a;
@@ -64,14 +73,41 @@ header{
     border-radius: 15px;
 }
 
-.menu-perfil{
-    list-style: none;
-}
-
 .enlace-perfil{
     color: #eafa0b;
     text-decoration: none;
     font-size: 22px;
+}
+
+/* SUBMENU - ADMINISTRADOR */
+.submenu-items{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #222;
+    border-radius: 10px;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    min-width: 150px;
+    min-height: 100px;
+    display: none;
+}
+
+.submenu-items li a{
+    display: block;
+    padding: 10px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.submenu-items li a:hover{
+    background: #e7e41a;
+    color: #000;
+}
+
+.submenu:hover .submenu-items{
+    display: block;
 }
 
 .menu{
@@ -201,7 +237,6 @@ footer {
     margin-top: 8rem;
 }
 
-
 /*ERROR RESULTADO*/
 
 .resultado{
@@ -210,9 +245,10 @@ footer {
     text-align: center;
     font-weight: bold;
 }
-
-
 .admin{
     width: 300px;
     height: auto;
 }
+
+/*GESTIONAR - ADMIN*/
+
