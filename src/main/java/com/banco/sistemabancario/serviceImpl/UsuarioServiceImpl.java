@@ -3,8 +3,6 @@ package com.banco.sistemabancario.serviceImpl;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +79,12 @@ public class UsuarioServiceImpl implements UsuarioService{
         return personaRepository.findByUsuario(usuario);
     }
 
+    @Override
+    public Usuario obtenerUsuarioPorUsername(String username){
+        return usuarioRepository.findByUsername(username)
+            .orElseThrow(() -> new UsuarioNoencontradoException("No se encontro el usuario el username: " + username));
+    }
+
     @Transactional
     @Override
     public Usuario registrarUsuario(String nombre, String apellido, String password, Persona persona){
@@ -135,14 +139,17 @@ public class UsuarioServiceImpl implements UsuarioService{
         return usuarioRepository.save(usuario);
     }
 
+    @Transactional
     @Override
     public void BloqueoUserFailureAuthentication(String username) {
         Usuario userFailer = usuarioRepository.findByUsername(username)
             .orElseThrow(() -> new UsuarioNoencontradoException("El usuario no se encontro"));
 
         userFailer.setAccountNoLocked(false);
+        logger.warn("Usuario {} bloqueado por multiples fallos de autenticacion", username);
 
-        Timer timer = new Timer();
+        usuarioRepository.save(userFailer);
+       /*  Timer timer = new Timer();
         TimerTask tarea = new TimerTask() {
             @Override
             public void run() {
@@ -150,18 +157,18 @@ public class UsuarioServiceImpl implements UsuarioService{
                 logger.warn("Usuario {} desbloqueado despues de tiempo de espera", username);
             }   
         };
-        timer.schedule(tarea, 900000);
-
-        usuarioRepository.save(userFailer);
+        timer.schedule(tarea, 900000); */
     }
 
+    @Transactional
     @Override
     public void DesbloqueoUserFailureAuthentication(String username){
          Usuario userTrue = usuarioRepository.findByUsername(username)
             .orElseThrow(() -> new UsuarioNoencontradoException("El usuario no se encontro"));
 
         userTrue.setAccountNoLocked(true);
-
+        logger.warn("Usuario {} desbloqueado despues de tiempo de espera", username);
+        
         usuarioRepository.save(userTrue);
     }
 

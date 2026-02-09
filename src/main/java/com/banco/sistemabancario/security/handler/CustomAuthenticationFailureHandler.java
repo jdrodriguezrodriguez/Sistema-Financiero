@@ -49,11 +49,14 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         
         if (exception instanceof BadCredentialsException) {
             body.put("error", "User/Password incorrectos");
-            if (loginFailureService.agregarUsuario(username)) {
+            if (loginFailureService.registrarFalloLogin(username)) {
                 body.put("error", "Usuario bloqueado por multiples fallos de autenticacion");
             }
         }else if(exception instanceof LockedException){
             body.put("error", "Usuario bloqueado");
+            if (loginFailureService.DesbloqueoUserFailureAuthentication(username)) {
+                body.put("error", "Bloqueo expirado, vuelva a intentar.");
+            }
         }else if(exception instanceof DisabledException){
             body.put("error", "Usuario deshabiliado");
         }else if(exception instanceof CredentialsExpiredException){

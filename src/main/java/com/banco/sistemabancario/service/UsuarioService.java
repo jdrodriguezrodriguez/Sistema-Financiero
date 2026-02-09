@@ -14,6 +14,7 @@ public interface UsuarioService {
     Usuario adminRegistrarUsuario(String username, String password, Persona persona, String rol, String permisos);
     Optional<Usuario> obtenerUsuarioPorPersonaId(int idPersona);
     Persona obtenerPersonaPorUsuarioId(int idUsuario);
+    Usuario obtenerUsuarioPorUsername(String username);
 
     void validarNombreUsuario(String username, int idActual);
     void BloqueoUserFailureAuthentication(String username);

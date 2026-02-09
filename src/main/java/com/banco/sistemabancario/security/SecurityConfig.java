@@ -21,6 +21,7 @@ import com.banco.sistemabancario.security.filters.JwtAuthorizationFilter;
 import com.banco.sistemabancario.security.handler.CustomAccessDeniedHandler;
 import com.banco.sistemabancario.security.handler.CustomAuthenticationEntryPoint;
 import com.banco.sistemabancario.security.handler.CustomAuthenticationFailureHandler;
+import com.banco.sistemabancario.security.handler.CustomAuthenticationSuccessHandler;
 import com.banco.sistemabancario.security.jwt.JwtUtils;
 
 @Configuration(proxyBeanMethods = false)
@@ -42,6 +43,9 @@ public class SecurityConfig {
     CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Autowired
+    CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    @Autowired
     CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Autowired
@@ -55,6 +59,7 @@ public class SecurityConfig {
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
         jwtAuthenticationFilter.setFilterProcessesUrl("/autenticar");
         jwtAuthenticationFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
+        jwtAuthenticationFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
 
         return httpSecurity
                 .csrf(csrf -> csrf.disable()) // VULNERABILIDAD EN LOS FORM WEB
