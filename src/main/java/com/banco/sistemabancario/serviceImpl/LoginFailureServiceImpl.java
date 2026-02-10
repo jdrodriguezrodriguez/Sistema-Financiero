@@ -8,17 +8,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.banco.sistemabancario.dto.AuthFailerContext;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.entity.failureAuthentication.LoginFailure;
 import com.banco.sistemabancario.entity.failureAuthentication.SeguridadUsuario;
+import com.banco.sistemabancario.repository.LoginFailureRepository;
 import com.banco.sistemabancario.repository.SeguridadUsuarioRepository;
+import com.banco.sistemabancario.service.LoginFailureService;
 import com.banco.sistemabancario.service.UsuarioService;
 
 import jakarta.transaction.Transactional;
 
 @Service
-public class LoginFailureService {
+public class LoginFailureServiceImpl implements LoginFailureService {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginFailureService.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoginFailureServiceImpl.class);
     private static final int INTENTOS_MAX = 3;
     private static final Duration BLOQUEO_1 = Duration.ofMinutes(1);
     private static final Duration BLOQUEO_2 = Duration.ofMinutes(2);
@@ -26,18 +30,23 @@ public class LoginFailureService {
 
     private UsuarioService usuarioService;
     private SeguridadUsuarioRepository seguridadUsuarioRepository;
+    private LoginFailureRepository loginFailureRepository;
 
-    public LoginFailureService(UsuarioService usuarioService, SeguridadUsuarioRepository seguridadUsuarioRepository) {
+    public LoginFailureServiceImpl(UsuarioService usuarioService,
+            SeguridadUsuarioRepository seguridadUsuarioRepository,
+            LoginFailureRepository loginFailureRepository) {
         this.usuarioService = usuarioService;
         this.seguridadUsuarioRepository = seguridadUsuarioRepository;
+        this.loginFailureRepository = loginFailureRepository;
     }
 
     @Transactional
-    public boolean registrarFalloLogin(String username) {
-        Usuario userFailerLogin = usuarioService.obtenerUsuarioPorUsername(username);
+    @Override
+    public boolean registrarFalloLogin(AuthFailerContext aFailerContext) {
+        Usuario userFailerLogin = usuarioService.obtenerUsuarioPorUsername(aFailerContext.getUsername());
         return seguridadUsuarioRepository.findById(userFailerLogin.getIdUsuario())
                 .map(existenteFailer -> {
-                    if (validarFailerUsuario(existenteFailer, userFailerLogin)) {
+                    if (validarFailerUsuario(existenteFailer, aFailerContext)) {
                         return true;
                     }
                     existenteFailer.setFailed_attempts(existenteFailer.getFailed_attempts() + 1);
@@ -45,7 +54,7 @@ public class LoginFailureService {
                     return false;
 
                 }).orElseGet(() -> {
-                    Usuario newUserFailerLogin = usuarioService.obtenerUsuarioPorUsername(username);
+                    Usuario newUserFailerLogin = usuarioService.obtenerUsuarioPorUsername(aFailerContext.getUsername());
                     SeguridadUsuario newSecurityFailer = new SeguridadUsuario(
                             newUserFailerLogin.getIdUsuario(),
                             1,
@@ -60,18 +69,19 @@ public class LoginFailureService {
                 });
     };
 
-    public boolean validarFailerUsuario(SeguridadUsuario userSecurityLogin, Usuario userFailerLogin) {
+    @Override
+    public boolean validarFailerUsuario(SeguridadUsuario userSecurityLogin, AuthFailerContext aFailerContext) {
         if (userSecurityLogin.getFailed_attempts() + 1 >= INTENTOS_MAX) {
-            BloqueoUserFailureAuthentication(userSecurityLogin, userFailerLogin.getUsername());
+            bloqueoUserFailureAuthentication(userSecurityLogin, aFailerContext);
             return true;
         }
         return false;
     }
 
-    // BLOQUEAR USUARIO TEMPORALMENTE
     @Transactional
-    public void BloqueoUserFailureAuthentication(SeguridadUsuario userSecurityLogin, String username) {
-        usuarioService.BloqueoUserFailureAuthentication(username);
+    @Override
+    public void bloqueoUserFailureAuthentication(SeguridadUsuario userSecurityLogin, AuthFailerContext aFailerContext) {
+        usuarioService.BloqueoUserFailureAuthentication(aFailerContext.getUsername());
 
         int Lock_count = 0;
 
@@ -89,16 +99,24 @@ public class LoginFailureService {
         userSecurityLogin.setLock_count(Lock_count);
         userSecurityLogin.setLocked_until(LocalDateTime.now().plus(duration));
 
+        LoginFailure auditLoginFailure = new LoginFailure(
+            userSecurityLogin.getIdUsuarioLog(), 
+            aFailerContext.getIp_address()
+        );
+        
+        logger.info("LA IP ES: {}" , aFailerContext.getIp_address());
+        loginFailureRepository.save(auditLoginFailure);
         seguridadUsuarioRepository.save(userSecurityLogin);
     }
 
-    // USUARIO LOGEADO CORRECTAMENTE
     @Transactional
+    @Override
     public void limpiarUsuarioFailer(String username) {
         Usuario userFailerLogin = usuarioService.obtenerUsuarioPorUsername(username);
         Optional<SeguridadUsuario> securityFailer = seguridadUsuarioRepository.findById(userFailerLogin.getIdUsuario());
 
-        if (!securityFailer.isPresent() && securityFailer.get().getFailed_attempts() == 0 && securityFailer.get().getLock_count() == 0) {
+        if (!securityFailer.isPresent() && securityFailer.get().getFailed_attempts() == 0
+                && securityFailer.get().getLock_count() == 0) {
             return;
         }
 
@@ -110,9 +128,9 @@ public class LoginFailureService {
         seguridadUsuarioRepository.save(securityFailer.get());
     }
 
-    // TIEMPO BLOQUEO DE EXPIRACION COMPLETADO
     @Transactional
-    public boolean DesbloqueoUserFailureAuthentication(String username) {
+    @Override
+    public boolean desbloqueoUserFailureAuthentication(String username) {
         Usuario userBlock = usuarioService.obtenerUsuarioPorUsername(username);
         SeguridadUsuario securityFailer = seguridadUsuarioRepository.findById(userBlock.getIdUsuario())
                 .orElseThrow(() -> new IllegalStateException("Usuario sin problemas de login."));
@@ -122,7 +140,7 @@ public class LoginFailureService {
             usuarioService.DesbloqueoUserFailureAuthentication(userBlock.getUsername());
 
             securityFailer.setFailed_attempts(0);
-            //securityFailer.setLock_count(0);
+            // securityFailer.setLock_count(0);
             securityFailer.setLocked_until(null);
 
             seguridadUsuarioRepository.save(securityFailer);

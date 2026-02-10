@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.banco.sistemabancario.serviceImpl.LoginFailureService;
+import com.banco.sistemabancario.serviceImpl.LoginFailureServiceImpl;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,9 +14,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private LoginFailureService loginFailureService;
+    private LoginFailureServiceImpl loginFailureService;
 
-    public CustomAuthenticationSuccessHandler(LoginFailureService loginFailureService) {
+    public CustomAuthenticationSuccessHandler(LoginFailureServiceImpl loginFailureService) {
         this.loginFailureService = loginFailureService;
     } 
 
