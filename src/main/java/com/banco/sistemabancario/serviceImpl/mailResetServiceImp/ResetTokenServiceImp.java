@@ -14,7 +14,7 @@ import com.banco.sistemabancario.dto.mailReset.ForgotRequest;
 import com.banco.sistemabancario.dto.mailReset.ResetPasswordTokenDto;
 import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.mailReset.RegisterToken;
-import com.banco.sistemabancario.entity.mailReset.ResetToken;
+import com.banco.sistemabancario.entity.mailReset.ResetPasswordToken;
 import com.banco.sistemabancario.exception.PasswordInvalidaException;
 import com.banco.sistemabancario.exception.TokenExpiradoException;
 import com.banco.sistemabancario.exception.TokenInvalidoException;
@@ -22,7 +22,7 @@ import com.banco.sistemabancario.exception.TokenUsadoException;
 import com.banco.sistemabancario.repository.PersonaRepository;
 import com.banco.sistemabancario.repository.UsuarioRepository;
 import com.banco.sistemabancario.repository.mailResetRepository.RegisterTokenRepository;
-import com.banco.sistemabancario.repository.mailResetRepository.ResetTokenRepository;
+import com.banco.sistemabancario.repository.mailResetRepository.ResetPasswordTokenRepository;
 import com.banco.sistemabancario.service.mailResetService.EmailService;
 import com.banco.sistemabancario.service.mailResetService.ResetTokenService;
 
@@ -40,7 +40,7 @@ public class ResetTokenServiceImp implements ResetTokenService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private ResetTokenRepository resetTokenRepository;
+    private ResetPasswordTokenRepository resetPasswordTokenRepository;
 
     @Autowired
     RegisterTokenRepository registerTokenRepository;
@@ -65,7 +65,7 @@ public class ResetTokenServiceImp implements ResetTokenService {
                         return;
                     }
 
-                    ResetToken tokenPass = new ResetToken();
+                    ResetPasswordToken tokenPass = new ResetPasswordToken();
 
                     tokenPass.setToken(UUID.randomUUID().toString());
                     tokenPass.setUsuario(usuario);
@@ -73,7 +73,7 @@ public class ResetTokenServiceImp implements ResetTokenService {
                     tokenPass.setUso(false);
                     tokenPass.setCreacion(generarFechaActual());
 
-                    resetTokenRepository.save(tokenPass);
+                    resetPasswordTokenRepository.save(tokenPass);
 
                     try {
                         emailService.enviarResetPassword(
@@ -136,7 +136,7 @@ public class ResetTokenServiceImp implements ResetTokenService {
     @Transactional
     @Override
     public void resetPassword(ResetPasswordTokenDto pTokenDto) {
-        ResetToken resetToken = resetTokenRepository.findByToken(pTokenDto.getToken())
+        ResetPasswordToken resetToken = resetPasswordTokenRepository.findByToken(pTokenDto.getToken())
                 .orElseThrow(() -> new TokenInvalidoException("Token invalido."));
 
         if (resetToken.getExpiracion().isBefore(LocalDateTime.now())) {
@@ -157,7 +157,7 @@ public class ResetTokenServiceImp implements ResetTokenService {
 
         resetToken.setUso(true);
 
-        resetTokenRepository.save(resetToken);
+        resetPasswordTokenRepository.save(resetToken);
 
         logger.info("Se reseteo correctamente la contraseña.");
     }

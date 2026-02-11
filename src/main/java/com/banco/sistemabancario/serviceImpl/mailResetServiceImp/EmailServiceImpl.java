@@ -97,7 +97,6 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    @Async
     @Override
     public void notificarTransaccion(Transaccion transaccion, String cuentaEmisor, String cuentaReceptor) {
         String emisorMsj = "Estimado cliente,\n\n" +

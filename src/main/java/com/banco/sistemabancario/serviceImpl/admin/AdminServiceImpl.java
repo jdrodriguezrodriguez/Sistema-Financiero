@@ -17,7 +17,7 @@ import com.banco.sistemabancario.entity.Usuario;
 import com.banco.sistemabancario.entity.enums.AuditoriaActionEnums;
 import com.banco.sistemabancario.entity.enums.CuentaEnum;
 import com.banco.sistemabancario.entity.enums.TipoEnum;
-import com.banco.sistemabancario.entity.events.AuditoriaEvent;
+import com.banco.sistemabancario.events.AdminAuditoriaEvent;
 import com.banco.sistemabancario.exception.CorreoYaRegistradoException;
 import com.banco.sistemabancario.exception.CuentaNoEncontradaException;
 import com.banco.sistemabancario.exception.DocumentoYaRegistradoException;
@@ -156,7 +156,7 @@ public class AdminServiceImpl implements AdminService {
         }
 
         applicationEventPublisher.publishEvent(
-                new AuditoriaEvent(
+                new AdminAuditoriaEvent(
                         AuditoriaActionEnums.UPDATE_USER,
                         auditorProvider.getCustomUserId(),
                         usuario.getIdUsuario(),
@@ -196,7 +196,7 @@ public class AdminServiceImpl implements AdminService {
                 "correo", persona.getCorreo()));
 
         applicationEventPublisher.publishEvent(
-                new AuditoriaEvent(
+                new AdminAuditoriaEvent(
                         AuditoriaActionEnums.CREATE_USER,
                         auditorProvider.getCustomUserId(),
                         usuario.getIdUsuario(),
@@ -240,7 +240,7 @@ public class AdminServiceImpl implements AdminService {
         }
 
         applicationEventPublisher.publishEvent(
-                new AuditoriaEvent(
+                new AdminAuditoriaEvent(
                         tempEnum,
                         auditorProvider.getCustomUserId(),
                         usuario.getIdUsuario(),
@@ -267,7 +267,7 @@ public class AdminServiceImpl implements AdminService {
         personaRepository.delete(persona);
 
         applicationEventPublisher.publishEvent(
-                new AuditoriaEvent(
+                new AdminAuditoriaEvent(
                         AuditoriaActionEnums.DELETE_USER,
                         auditorProvider.getCustomUserId(),
                         usuario.getIdUsuario(),
