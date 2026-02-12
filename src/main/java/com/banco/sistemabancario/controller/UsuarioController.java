@@ -100,7 +100,7 @@ public class UsuarioController {
 
     @PostMapping("/forgotPassword")
     public ResponseEntity<?> TokenPasswordUsuario(@RequestBody ForgotRequest request) {
-        resetTokenService.almacenarTokenPassword(request);
+        resetTokenService.almacenarTokenResetPassword(request);
 
         return ResponseEntity.ok(Map.of("Mensaje", "Si el correo es valido, se envio el token al correo."));
     }

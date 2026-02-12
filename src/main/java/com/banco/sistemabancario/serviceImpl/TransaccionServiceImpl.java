@@ -18,7 +18,6 @@ import com.banco.sistemabancario.exception.ValorInvalidoException;
 import com.banco.sistemabancario.repository.TransaccionRepository;
 import com.banco.sistemabancario.service.CuentaService;
 import com.banco.sistemabancario.service.TransaccionService;
-import com.banco.sistemabancario.service.mailResetService.EmailService;
 import com.banco.sistemabancario.util.TransaccionUtils;
 
 @Service
@@ -31,9 +30,6 @@ public class TransaccionServiceImpl implements TransaccionService {
     private TransaccionUtils transaccionUtils;
 
     private ApplicationEventPublisher applicationEventPublisher;
-
-    @Autowired
-    private EmailService emailService;
 
     public TransaccionServiceImpl(TransaccionRepository transaccionRepository,
             CuentaService cuentaService, ApplicationEventPublisher applicationEventPublisher) {
