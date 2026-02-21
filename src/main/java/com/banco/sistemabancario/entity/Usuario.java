@@ -75,9 +75,8 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(int idUsuario, String username, String password, TipoEnum rol, Persona persona, boolean isEnabled,
+    public Usuario(String username, String password, TipoEnum rol, Persona persona, boolean isEnabled,
             boolean accountNoExpired, boolean accountNoLocked, boolean credentialNoExpired, Set<Roles> roles) {
-        this.idUsuario = idUsuario;
         this.username = username;
         this.password = password;
         this.rol = rol;

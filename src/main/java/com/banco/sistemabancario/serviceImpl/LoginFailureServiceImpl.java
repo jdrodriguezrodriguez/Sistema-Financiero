@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.banco.sistemabancario.dto.AuthFailerContext;
 import com.banco.sistemabancario.entity.Usuario;
+import com.banco.sistemabancario.entity.failureAuthentication.AuthFailerContext;
 import com.banco.sistemabancario.entity.failureAuthentication.LoginFailure;
 import com.banco.sistemabancario.entity.failureAuthentication.SeguridadUsuario;
 import com.banco.sistemabancario.repository.LoginFailureRepository;
@@ -54,9 +54,8 @@ public class LoginFailureServiceImpl implements LoginFailureService {
                     return false;
 
                 }).orElseGet(() -> {
-                    Usuario newUserFailerLogin = usuarioService.obtenerUsuarioPorUsername(aFailerContext.getUsername());
                     SeguridadUsuario newSecurityFailer = new SeguridadUsuario(
-                            newUserFailerLogin.getIdUsuario(),
+                            userFailerLogin.getIdUsuario(),
                             1,
                             null,
                             null,

@@ -13,7 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import com.banco.sistemabancario.dto.AuthFailerContext;
+import com.banco.sistemabancario.entity.failureAuthentication.AuthFailerContext;
 import com.banco.sistemabancario.serviceImpl.LoginFailureServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

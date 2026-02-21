@@ -1,5 +1,10 @@
-package com.banco.sistemabancario.dto;
+package com.banco.sistemabancario.entity.failureAuthentication;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class AuthFailerContext {
     
     private String username;
@@ -11,12 +16,5 @@ public class AuthFailerContext {
     public AuthFailerContext(String username, String ip_address) {
         this.username = username;
         this.ip_address = ip_address;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-    public String getIp_address() {
-        return ip_address;
     }
 }

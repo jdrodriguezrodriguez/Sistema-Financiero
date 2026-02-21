@@ -56,7 +56,7 @@ public class UsuarioServiceImpl implements UsuarioService{
         validarNombreUsuario(datos.getUsername(), usuario.getIdUsuario());
 
         usuario.setUsername(datos.getUsername());
-        usuario.setPassword(datos.getPassword());
+        usuario.setPassword(passwordEncoder.encode(datos.getPassword()));
 
         return usuarioRepository.save(usuario);
     }
@@ -163,7 +163,7 @@ public class UsuarioServiceImpl implements UsuarioService{
     @Transactional
     @Override
     public void DesbloqueoUserFailureAuthentication(String username){
-         Usuario userTrue = usuarioRepository.findByUsername(username)
+        Usuario userTrue = usuarioRepository.findByUsername(username)
             .orElseThrow(() -> new UsuarioNoencontradoException("El usuario no se encontro"));
 
         userTrue.setAccountNoLocked(true);

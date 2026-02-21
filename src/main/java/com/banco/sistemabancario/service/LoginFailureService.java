@@ -1,6 +1,6 @@
 package com.banco.sistemabancario.service;
 
-import com.banco.sistemabancario.dto.AuthFailerContext;
+import com.banco.sistemabancario.entity.failureAuthentication.AuthFailerContext;
 import com.banco.sistemabancario.entity.failureAuthentication.SeguridadUsuario;
 
 public interface LoginFailureService{
