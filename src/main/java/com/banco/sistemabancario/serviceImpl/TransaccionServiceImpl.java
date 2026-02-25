@@ -23,6 +23,8 @@ import com.banco.sistemabancario.util.TransaccionUtils;
 public class TransaccionServiceImpl implements TransaccionService {
 
     private static final BigDecimal MONTO_MINIMO = new BigDecimal("2000.00");
+    private final String OPERACION_1 = "TRANSFERENCIA";
+    private final String OPERACION_2 = "DEPOSITO";
 
     private TransaccionRepository transaccionRepository;
     private CuentaService cuentaService;
@@ -64,14 +66,14 @@ public class TransaccionServiceImpl implements TransaccionService {
         Transaccion historialEnvio = transaccionUtils.crearTransaccion(
                 cuentaEntrada,
                 datos.getCuentaDestino(),
-                "TRANSFERENCIA",
+                OPERACION_1,
                 monto.negate(),
                 datos.getDescripcion());
 
         Transaccion historialRecibo = transaccionUtils.crearTransaccion(
                 cuentaSalida,
                 datos.getCuentaDestino(),
-                "TRANSFERENCIA",
+                OPERACION_1,
                 monto,
                 datos.getDescripcion());
 
@@ -116,7 +118,7 @@ public class TransaccionServiceImpl implements TransaccionService {
         Transaccion transaccion = new Transaccion(
                 cuenta,
                 cuenta.getNum_cuenta(),
-                "DEPOSITO",
+                OPERACION_2,
                 monto,
                 transaccionUtils.generarFechaActual(),
                 "Deposito de $" + monto);
