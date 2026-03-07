@@ -1,4 +1,4 @@
-package com.banco.sistemabancario.entity.events;
+package com.banco.sistemabancario.events;
 
 import java.util.Map;
 
@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AuditoriaEvent {
+public class AdminAuditoriaEvent {
 
     private AuditoriaActionEnums accion;
     private Integer performedBy;
@@ -17,7 +17,7 @@ public class AuditoriaEvent {
     private Map<String, Object> cambios;
 
 
-    public AuditoriaEvent(AuditoriaActionEnums accion,
+    public AdminAuditoriaEvent(AuditoriaActionEnums accion,
                         Integer performedBy, Integer targetId,
                         Map<String, Object> cambios) {
         this.performedBy = performedBy;

@@ -40,8 +40,7 @@ public class Persona {
     public Persona(){
     }
 
-    public Persona(int idPersona, String nombre, String apellido, String correo, String documento, Date nacimiento) {
-        this.idPersona = idPersona;
+    public Persona(String nombre, String apellido, String correo, String documento, Date nacimiento) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
@@ -51,9 +50,6 @@ public class Persona {
 
     public Integer getIdPersona() {
         return idPersona;
-    }
-    public void setIdPersona(Integer idPersona) {
-        this.idPersona = idPersona;
     }
 
     public String getNombre() {

@@ -18,10 +18,12 @@ import com.banco.sistemabancario.dto.TransferirDineroDto;
 import com.banco.sistemabancario.security.controller.CustomUserDetails;
 import com.banco.sistemabancario.serviceImpl.TransaccionServiceImpl;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
+@Tag(name = "Transacciones", description = "Operaciones para depositar, transferir y consultar valores del sistema financiero.")
 @RestController
 @RequestMapping("/api/sistema/transaccion")
 public class TransaccionController {

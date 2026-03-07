@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.banco.sistemabancario.entity.enums.TipoEnum;
 import com.banco.sistemabancario.entity.mailReset.RegisterToken;
-import com.banco.sistemabancario.entity.mailReset.ResetToken;
+import com.banco.sistemabancario.entity.mailReset.ResetPasswordToken;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -41,7 +41,7 @@ public class Usuario {
     private Cuenta cuenta;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<ResetToken> resetToken = new ArrayList<>();
+    private List<ResetPasswordToken> resetToken = new ArrayList<>();
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private RegisterToken registerToken;
@@ -75,9 +75,8 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(int idUsuario, String username, String password, TipoEnum rol, Persona persona, boolean isEnabled,
+    public Usuario(String username, String password, TipoEnum rol, Persona persona, boolean isEnabled,
             boolean accountNoExpired, boolean accountNoLocked, boolean credentialNoExpired, Set<Roles> roles) {
-        this.idUsuario = idUsuario;
         this.username = username;
         this.password = password;
         this.rol = rol;

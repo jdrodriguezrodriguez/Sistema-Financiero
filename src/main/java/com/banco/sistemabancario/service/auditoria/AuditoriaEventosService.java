@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.banco.sistemabancario.entity.AuditoriaEntity;
 import com.banco.sistemabancario.entity.enums.AuditoriaActionEnums;
-import com.banco.sistemabancario.entity.events.AuditoriaEntity;
 import com.banco.sistemabancario.repository.auditoriaRepository.AuditLogRepository;
 
 @Service

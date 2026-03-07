@@ -30,7 +30,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
 
-        Map<String, Object> body = new HashMap();
+        Map<String, Object> body = new HashMap<>();
         
         body.put("error", "Sin autenticacion, Token invalido o expirado");
         body.put("path", request.getRequestURI());

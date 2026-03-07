@@ -1,9 +1,5 @@
 package com.banco.sistemabancario.util;
 
-import java.util.Scanner;
-
-import com.banco.sistemabancario.entity.Usuario;
-
 public final class UsuarioUtils {
 
     private UsuarioUtils() {

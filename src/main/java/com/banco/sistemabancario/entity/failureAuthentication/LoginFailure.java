@@ -12,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Table(name = "login_failure")
@@ -20,7 +19,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class LoginFailure {
     
     @Id
@@ -34,5 +32,13 @@ public class LoginFailure {
     private LocalDateTime attempted_at;
     
     private String ip_address;
+
+    public LoginFailure(){
+    }
+
+    public LoginFailure(int id_usuario, String ip_address) {
+        this.id_usuario = id_usuario;
+        this.ip_address = ip_address;
+    }
 }
 

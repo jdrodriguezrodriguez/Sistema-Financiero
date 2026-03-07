@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.banco.sistemabancario.entity.Persona;
@@ -32,7 +31,6 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private PersonaService personaService;
 
-    @Async
     @Override
     public void enviarTokenRegistro(String nombreCompleto, String email, String token) {
         try {
@@ -59,7 +57,6 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    @Async
     @Override
     public void enviarResetPassword(String email, String token) {
 
@@ -80,7 +77,6 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    @Async
     @Override
     public void enviarUsername(String email, String username) {
         try {
@@ -97,7 +93,6 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    @Async
     @Override
     public void notificarTransaccion(Transaccion transaccion, String cuentaEmisor, String cuentaReceptor) {
         String emisorMsj = "Estimado cliente,\n\n" +
@@ -148,7 +143,6 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    @Async
     @Override
     public void enviarInfoDeposito(Transaccion transaccion, int idUser) {
         Persona persona = usuarioService.obtenerPersonaPorUsuarioId(idUser);

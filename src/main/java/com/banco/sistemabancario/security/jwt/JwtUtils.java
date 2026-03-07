@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.banco.sistemabancario.exception.GlobalExceptionHandler;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,17 +19,12 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtils {
 
     private static final Logger logger =  LoggerFactory.getLogger(JwtUtils.class);
-    private final GlobalExceptionHandler globalExceptionHandler;
     
     @Value("${jwt.secret.key}")
     private String secretKey;
 
     @Value("${jwt.time.expiration}")
     private String timeExpiration;
-
-    JwtUtils(GlobalExceptionHandler globalExceptionHandler) {
-        this.globalExceptionHandler = globalExceptionHandler;
-    }
 
     //CREAER TOKEN
     public String generateAccessToken(String username){

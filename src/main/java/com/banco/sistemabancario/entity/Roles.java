@@ -38,17 +38,9 @@ public class Roles {
     // Constructor sin argumentos requerido por Hibernate
     public Roles() {}
 
-    public Roles(Integer id, RoleEnum roleEnum, Set<Permisos> permisosList) {
-        this.id = id;
+    public Roles(RoleEnum roleEnum, Set<Permisos> permisosList) {
         this.roleEnum = roleEnum;
         this.permisosList = permisosList;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public RoleEnum getRoleEnum() {

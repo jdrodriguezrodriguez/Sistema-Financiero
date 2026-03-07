@@ -30,82 +30,97 @@ import com.banco.sistemabancario.security.jwt.JwtUtils;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    @Autowired
-    JwtUtils jwtUtils;
+        @Autowired
+        JwtUtils jwtUtils;
 
-    @Autowired
-    UserDetailsService userDetailsService;
+        @Autowired
+        UserDetailsService userDetailsService;
 
-    @Autowired
-    JwtAuthorizationFilter jwtAuthorizationFilter;
+        @Autowired
+        JwtAuthorizationFilter jwtAuthorizationFilter;
 
-    @Autowired
-    CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+        @Autowired
+        CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
-    @Autowired
-    CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+        @Autowired
+        CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
-    @Autowired
-    CustomAccessDeniedHandler customAccessDeniedHandler;
+        @Autowired
+        CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    @Autowired
-    CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+        @Autowired
+        CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
-            AuthenticationManager authenticationManager) throws Exception {
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
+                        AuthenticationManager authenticationManager) throws Exception {
 
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
-        jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
-        jwtAuthenticationFilter.setFilterProcessesUrl("/autenticar");
-        jwtAuthenticationFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
-        jwtAuthenticationFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
+                JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
+                jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
+                jwtAuthenticationFilter.setFilterProcessesUrl("/autenticar");
+                jwtAuthenticationFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
+                jwtAuthenticationFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
 
-        return httpSecurity
-                .csrf(csrf -> csrf.disable()) // VULNERABILIDAD EN LOS FORM WEB
-                .authorizeHttpRequests(auth -> {
+                return httpSecurity
+                                .csrf(csrf -> csrf.disable()) // VULNERABILIDAD EN LOS FORM WEB
+                                .authorizeHttpRequests(auth -> {
 
-                    auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/html/**", "/css/**", "/js/**", "/api/sistema/usuarios/activar-usuario")
-                            .permitAll();                   
-                    auth.requestMatchers(HttpMethod.POST, "/api/sistema/personas/registrar", 
-                        "/api/sistema/usuarios/resetPassword", 
-                        "/api/sistema/usuarios/forgotPassword", 
-                        "/api/sistema/usuarios/forgotUsername")
-                            .permitAll();
+                                        auth.requestMatchers(HttpMethod.GET, "/favicon.ico", "/Images/**", "/html/**",
+                                                        "/css/**", "/js/**",
+                                                        "/api/sistema/usuarios/activar-usuario")
+                                                        .permitAll();
+                                        auth.requestMatchers(HttpMethod.POST, "/api/sistema/personas/registrar",
+                                                        "/api/sistema/usuarios/resetPassword",
+                                                        "/api/sistema/usuarios/forgotPassword",
+                                                        "/api/sistema/usuarios/forgotUsername")
+                                                        .permitAll();
 
-                    auth.requestMatchers("/api/sistema/usuarios/profile/**").hasAnyRole("CLIENTE", "ADMIN");
-                    auth.requestMatchers("/api/sistema/usuarios/actualizar").hasAnyRole("CLIENTE", "ADMIN");
-                    auth.requestMatchers("/api/sistema/personas/actualizar").hasAnyRole("CLIENTE", "ADMIN");
-                    auth.requestMatchers("/api/sistema/transaccion/**").hasAnyRole("CLIENTE", "ADMIN");
+                                        auth.requestMatchers(
+                                                        "/swagger-ui/**",
+                                                        "/v3/api-docs/**",
+                                                        "/swagger-ui.html",
+                                                        "/swagger-resources/**",
+                                                        "/webjars/**").permitAll();
 
-                    auth.requestMatchers("/api/sistema/**").hasRole("ADMIN");
+                                        auth.requestMatchers("/api/sistema/usuarios/profile/**").hasAnyRole("CLIENTE",
+                                                        "ADMIN");
+                                        auth.requestMatchers("/api/sistema/usuarios/actualizar").hasAnyRole("CLIENTE",
+                                                        "ADMIN");
+                                        auth.requestMatchers("/api/sistema/personas/actualizar").hasAnyRole("CLIENTE",
+                                                        "ADMIN");
+                                        auth.requestMatchers("/api/sistema/transaccion/**").hasAnyRole("CLIENTE",
+                                                        "ADMIN");
 
-                    auth.anyRequest().authenticated();
-                })
-                .exceptionHandling(exception -> {
-                    exception.authenticationEntryPoint(customAuthenticationEntryPoint);
-                    exception.accessDeniedHandler(customAccessDeniedHandler);
-                })
-                .sessionManagement(session -> // ADMINISTRADOR DE LA SESION
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // NO GUARDA LA SESSION EN MEMORIA
-                .addFilter(jwtAuthenticationFilter) // GENERA TOKEN
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class) // VALIDA TOKEN
-                .build();
-    }
+                                        auth.requestMatchers("/api/sistema/**").hasRole("ADMIN");
 
-    // GESTIONA EL PROCESO DE AUTENTICACION
-    // PROVEEDOR - BUSCA LOS USUARIOS Y DEMAS EN BASE DE DATOS POR MEDIO DEL
-    // SERVICIO EN USUARIOS
-    // (CONVIERTE LOS DATOS DEL USUARIO COMO ROLES, PERMISOS Y DEMAS EN UN OBJETO DE
-    // S.SECURITY)
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity,
-            UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity
-                .getSharedObject(AuthenticationManagerBuilder.class);
+                                        auth.anyRequest().authenticated();
+                                })
+                                .exceptionHandling(exception -> {
+                                        exception.authenticationEntryPoint(customAuthenticationEntryPoint);
+                                        exception.accessDeniedHandler(customAccessDeniedHandler);
+                                })
+                                .sessionManagement(session -> // ADMINISTRADOR DE LA SESION
+                                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // NO GUARDA LA SESSION
+                                                                                                // EN MEMORIA
+                                .addFilter(jwtAuthenticationFilter) // GENERA TOKEN
+                                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class) // VALIDA
+                                                                                                                     // TOKEN
+                                .build();
+        }
 
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-        return authenticationManagerBuilder.build();
-    }
+        // GESTIONA EL PROCESO DE AUTENTICACION
+        // PROVEEDOR - BUSCA LOS USUARIOS Y DEMAS EN BASE DE DATOS POR MEDIO DEL
+        // SERVICIO EN USUARIOS
+        // (CONVIERTE LOS DATOS DEL USUARIO COMO ROLES, PERMISOS Y DEMAS EN UN OBJETO DE
+        // S.SECURITY)
+        @Bean
+        public AuthenticationManager authenticationManager(HttpSecurity httpSecurity,
+                        UserDetailsService userDetailsService,
+                        PasswordEncoder passwordEncoder) throws Exception {
+                AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity
+                                .getSharedObject(AuthenticationManagerBuilder.class);
+
+                authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+                return authenticationManagerBuilder.build();
+        }
 }

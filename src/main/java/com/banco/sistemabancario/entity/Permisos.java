@@ -20,8 +20,7 @@ public class Permisos {
 
     public Permisos() {}
     
-    public Permisos(Integer id, String name) {
-        this.id = id;
+    public Permisos(String name) {
         this.name = name;
     }
 

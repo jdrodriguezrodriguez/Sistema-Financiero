@@ -4,39 +4,41 @@ package com.banco.sistemabancario.serviceImpl;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.banco.sistemabancario.dto.TransferirDineroDto;
 import com.banco.sistemabancario.entity.Cuenta;
 import com.banco.sistemabancario.entity.Transaccion;
+import com.banco.sistemabancario.events.EmailDepositoEvent;
+import com.banco.sistemabancario.events.EmailTransaccionEvent;
 import com.banco.sistemabancario.exception.ValorInvalidoException;
 import com.banco.sistemabancario.repository.TransaccionRepository;
 import com.banco.sistemabancario.service.CuentaService;
 import com.banco.sistemabancario.service.TransaccionService;
-import com.banco.sistemabancario.service.mailResetService.EmailService;
 import com.banco.sistemabancario.util.TransaccionUtils;
 
 @Service
 public class TransaccionServiceImpl implements TransaccionService {
 
     private static final BigDecimal MONTO_MINIMO = new BigDecimal("2000.00");
+    private final String OPERACION_1 = "TRANSFERENCIA";
+    private final String OPERACION_2 = "DEPOSITO";
 
     private TransaccionRepository transaccionRepository;
     private CuentaService cuentaService;
     private TransaccionUtils transaccionUtils;
 
-    @Autowired
-    private EmailService emailService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
-    public TransaccionServiceImpl(
-            TransaccionRepository transaccionRepository, CuentaService cuentaService) {
+    public TransaccionServiceImpl(TransaccionRepository transaccionRepository,
+            CuentaService cuentaService, ApplicationEventPublisher applicationEventPublisher) {
         this.transaccionRepository = transaccionRepository;
         this.cuentaService = cuentaService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    // TRANSFERIR
     @Override
     @Transactional
     public Transaccion transferir(int idUser, TransferirDineroDto datos) {
@@ -64,37 +66,35 @@ public class TransaccionServiceImpl implements TransaccionService {
         Transaccion historialEnvio = transaccionUtils.crearTransaccion(
                 cuentaEntrada,
                 datos.getCuentaDestino(),
-                "TRANSFERENCIA",
+                OPERACION_1,
                 monto.negate(),
                 datos.getDescripcion());
 
         Transaccion historialRecibo = transaccionUtils.crearTransaccion(
                 cuentaSalida,
                 datos.getCuentaDestino(),
-                "TRANSFERENCIA",
+                OPERACION_1,
                 monto,
                 datos.getDescripcion());
 
         transaccionRepository.saveAll(List.of(historialEnvio, historialRecibo));
 
-
-        emailService.notificarTransaccion(
-            historialEnvio, 
-            historialEnvio.getCuenta().getNum_cuenta(), 
-            historialEnvio.getCuenta_destino()
+        applicationEventPublisher.publishEvent(
+            new EmailTransaccionEvent(
+                historialEnvio, 
+                historialEnvio.getCuenta().getNum_cuenta(), 
+                historialEnvio.getCuenta_destino())
         );
 
         return historialEnvio;
     }
 
-    // TRANSFERENCIAS
     @Override
     public List<Transaccion> transacciones(int idUser) {
         Cuenta cuenta = cuentaService.buscarCuentaPorIdUser(idUser);
         return transaccionRepository.findByCuenta(cuenta);
     }
 
-    // DEPOSITAR
     @Transactional
     @Override
     public Transaccion depositar(int idUser, String valor) {
@@ -116,21 +116,22 @@ public class TransaccionServiceImpl implements TransaccionService {
         cuentaService.aumentarSaldo(cuenta, monto);
 
         Transaccion transaccion = new Transaccion(
-            cuenta, 
-            cuenta.getNum_cuenta(), 
-            "DEPOSITO", 
-            monto,
-            transaccionUtils.generarFechaActual(), 
-            "Deposito de $" + monto);
+                cuenta,
+                cuenta.getNum_cuenta(),
+                OPERACION_2,
+                monto,
+                transaccionUtils.generarFechaActual(),
+                "Deposito de $" + monto);
 
-        emailService.enviarInfoDeposito(
-            transaccion, idUser
+        applicationEventPublisher.publishEvent(
+            new EmailDepositoEvent(
+                transaccion, idUser
+            )
         );
 
         return transaccionRepository.save(transaccion);
     }
 
-    // CONSULTAR
     public BigDecimal consultar(int idUser) {
         Cuenta cuenta = cuentaService.buscarCuentaPorIdUser(idUser);
         return cuenta.getSaldo();
