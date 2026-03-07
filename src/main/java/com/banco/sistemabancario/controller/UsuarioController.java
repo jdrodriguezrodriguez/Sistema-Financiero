@@ -49,6 +49,11 @@ public class UsuarioController {
         this.resetTokenService = resetTokenService;
     }
 
+    @Operation(summary = "Obtener usuario autenticado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario autenticado obtenido."),
+            @ApiResponse(responseCode = "403", description = "Usuario sin autenticar")
+    })
     @GetMapping("/profile")
     public ResponseEntity<?> CurrentUser(@AuthenticationPrincipal CustomUserDetails user) {
 
@@ -60,6 +65,11 @@ public class UsuarioController {
         return ResponseEntity.ok(userInfo);
     }
 
+    @Operation(summary = "Datos del usuario autenticado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de datos obtenida correctamente"),
+            @ApiResponse(responseCode = "403", description = "Usuario sin autenticar")
+    })
     @GetMapping("/profile/datos")
     public ResponseEntity<?> datosSesionAutenticada(@AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(datosDTOService.datosUsuario(user.getId()));
@@ -82,6 +92,11 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.obtenerUsuarios());
     }
 
+    @Operation(summary = "Actualizar datos del usuario", description = "Permite actualizar el nombre o contraseña del usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Actualizacion exitosa."),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado.")
+    })
     @PutMapping("/actualizar")
     public ResponseEntity<?> actualizarUsuario(@AuthenticationPrincipal CustomUserDetails user,
             @Valid @RequestBody ActualizarUsuarioDto datos) {
@@ -100,16 +115,14 @@ public class UsuarioController {
         }
     }
 
-    @Operation(
-        summary = "Recuperar nombre de usuario mediante correo electronico", 
-        description = "Permite solicitar el nombre de usuario asociado a un correo electrónico registrado."
-    )
+    @Operation(summary = "Recuperar nombre de usuario mediante correo electronico", description = "Permite solicitar el nombre de usuario asociado a un correo electrónico registrado.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Solicitud procesada. Si el correo está registrado se enviará un mensaje."),
             @ApiResponse(responseCode = "403", description = "Acceso denegado")
     })
     @PostMapping("/forgotUsername")
-    public ResponseEntity<?> forgotUsernameUsuario(@RequestBody ForgotRequest request) {
+    public ResponseEntity<?> forgotUsernameUsuario(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Correo del usuario para recuperar cuenta", required = true) @RequestBody ForgotRequest request) {
         resetTokenService.forgotUsernameUsuario(request);
 
         return ResponseEntity.ok(Map.of("Mensaje", "Si el correo es valido, se envio el token al correo."));
