@@ -1,5 +1,6 @@
 package com.banco.sistemabancario.dto.mailReset;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -15,5 +16,6 @@ public class ForgotRequest {
 
     @Email
     @NotBlank(message = "El correo es obligatorio.")
+    @Schema(description = "Correo del usuario", example = "juan@gmail.com")
     String email;
 }

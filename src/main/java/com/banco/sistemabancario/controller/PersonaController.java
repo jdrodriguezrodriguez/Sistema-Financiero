@@ -20,12 +20,14 @@ import com.banco.sistemabancario.security.controller.CustomUserDetails;
 import com.banco.sistemabancario.service.PersonaService;
 import com.banco.sistemabancario.service.UsuarioApplicationService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
+@Tag(name = "Personas", description = "Operaciones relacionadas con la gestion de personas registradas en el sistema.")
 @RestController
 @RequestMapping("/api/sistema/personas")
 public class PersonaController {

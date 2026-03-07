@@ -17,8 +17,11 @@ import com.banco.sistemabancario.dto.admin.ActualizarUsuarioAdmin;
 import com.banco.sistemabancario.dto.admin.CrearUsuarioAdmin;
 import com.banco.sistemabancario.service.admin.AdminService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.web.bind.annotation.PostMapping;
 
+@Tag(name = "Administracion", description = "Operaciones administrativas para la gestion de usuarios del sistema.")
 @PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping("/api/sistema/admin")

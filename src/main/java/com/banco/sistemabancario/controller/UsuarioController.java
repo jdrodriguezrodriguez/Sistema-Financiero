@@ -22,12 +22,16 @@ import com.banco.sistemabancario.service.mailResetService.ResetTokenService;
 import com.banco.sistemabancario.serviceImpl.DatosDTOServiceImpl;
 import com.banco.sistemabancario.serviceImpl.UsuarioServiceImpl;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
+@Tag(name = "Usuarios", description = "Operaciones para gestionar los usuarios del sistema.")
 @RestController
 @RequestMapping("/api/sistema/usuarios")
 public class UsuarioController {
@@ -68,6 +72,11 @@ public class UsuarioController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Obtener todos los usuarios")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista obtenida correctamente"),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado")
+    })
     @GetMapping
     public ResponseEntity<?> listarUsuarios() {
         return ResponseEntity.ok(usuarioService.obtenerUsuarios());
@@ -91,6 +100,14 @@ public class UsuarioController {
         }
     }
 
+    @Operation(
+        summary = "Recuperar nombre de usuario mediante correo electronico", 
+        description = "Permite solicitar el nombre de usuario asociado a un correo electrónico registrado."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Solicitud procesada. Si el correo está registrado se enviará un mensaje."),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado")
+    })
     @PostMapping("/forgotUsername")
     public ResponseEntity<?> forgotUsernameUsuario(@RequestBody ForgotRequest request) {
         resetTokenService.forgotUsernameUsuario(request);
